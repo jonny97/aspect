@@ -389,8 +389,8 @@ namespace aspect
 
                                 //cout << "test3.1\n";
                                 typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
-                                  //(GridTools::find_active_cell_around_point<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
-                                  (GridTools::find_active_cell_around_point_quick<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
+                                  (GridTools::find_active_cell_around_point<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
+                                  //(GridTools::find_active_cell_around_point_quick<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
                                 //std::cout << "Point successful!\n";
                                 //cout << "test3.2\n";
 
@@ -443,8 +443,8 @@ namespace aspect
                             //Modify the find_active_cell_around_point to only search for nearest vertex  and adj. cells, instead of searching all cells in the simulation
 
                             typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
-                              //(GridTools::find_active_cell_around_point<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
-                              (GridTools::find_active_cell_around_point_quick<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
+                              (GridTools::find_active_cell_around_point<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
+                              //(GridTools::find_active_cell_around_point_quick<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
                             //std::cout << "Point successful!\n";
 
                             if (it->is_locally_owned())
@@ -596,8 +596,8 @@ namespace aspect
                                 //Modify the find_active_cell_around_point to only search for nearest vertex  and adj. cells, instead of searching all cells in the simulation
 
                                 typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
-                                  //(GridTools::find_active_cell_around_point<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
-                                  (GridTools::find_active_cell_around_point_quick<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
+                                  (GridTools::find_active_cell_around_point<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
+                                  //(GridTools::find_active_cell_around_point_quick<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
                                 //std::cout << "Point successful!\n";
 
                                 if (it->is_locally_owned())
