@@ -66,6 +66,17 @@ namespace aspect
                              const double total_num_particles) = 0;
       };
 
+      template <int dim, class T>
+      class InterfaceLimits: public Interface<dim, T>
+      {
+        public:
+          virtual
+          void
+          generate_particles(Particle::World<dim, T> &world,
+                             const double total_num_particles,
+                             double *limits) = 0;
+      };
+
 
       /**
        * Create a generator object.

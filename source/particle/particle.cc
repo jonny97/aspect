@@ -42,6 +42,8 @@ namespace aspect
       :
       location (),
       velocity (),
+      lastLocation (),
+      lastVelocity (),
       id (0),
       is_local (true),
       check_vel (true)
@@ -63,6 +65,13 @@ namespace aspect
       location = new_loc;
     }
 
+    template <int dim>
+    void
+    BaseParticle<dim>::set_lastLocation (const Point<dim> &new_loc)
+    {
+      lastLocation = new_loc;
+    }
+
 
     template <int dim>
     void
@@ -77,6 +86,16 @@ namespace aspect
       for (unsigned int i = 0; i < dim; ++i)
         {
           data.push_back(velocity(i));
+        }
+      // Write old location data
+      for (unsigned int i = 0; i < dim; ++i)
+        {
+          data.push_back(lastLocation(i));
+        }
+      // Write old velocity data
+      for (unsigned int i = 0; i < dim; ++i)
+        {
+          data.push_back(lastVelocity(i));
         }
       data.push_back(id);
     }
@@ -95,6 +114,16 @@ namespace aspect
         {
           velocity (i) = data[p++];
         }
+      // Read old location data
+      for (unsigned int i = 0; i < dim; ++i)
+        {
+          lastLocation (i) = data[p++];
+        }
+      // Write old velocity data
+      for (unsigned int i = 0; i < dim; ++i)
+        {
+          lastVelocity (i) = data[p++];
+        }
       id = data[p++];
       return p;
     }
@@ -103,7 +132,7 @@ namespace aspect
     unsigned int
     BaseParticle<dim>::data_len ()
     {
-      return (dim + dim + 1);
+      return (dim + dim + dim + dim + 1);
     }
 
 
@@ -115,6 +144,13 @@ namespace aspect
     }
 
     template <int dim>
+    Point<dim>
+    BaseParticle<dim>::get_lastLocation () const
+    {
+      return lastLocation;
+    }
+
+    template <int dim>
     void
     BaseParticle<dim>::set_velocity (Point<dim> new_vel)
     {
@@ -122,10 +158,24 @@ namespace aspect
     }
 
     template <int dim>
+    void
+    BaseParticle<dim>::set_lastVelocity (Point<dim> new_vel)
+    {
+      lastVelocity = new_vel;
+    }
+
+    template <int dim>
     Point<dim>
     BaseParticle<dim>::get_velocity () const
     {
       return velocity;
+    }
+
+    template <int dim>
+    Point<dim>
+    BaseParticle<dim>::get_lastVelocity () const
+    {
+      return lastVelocity;
     }
 
     template <int dim>
@@ -172,6 +222,11 @@ namespace aspect
         MPIDataInfo ("pos", dim));
       data_info.push_back (
         MPIDataInfo ("velocity", dim));
+      // Add the old position, old velocity
+      data_info.push_back (
+        MPIDataInfo ("oldpos", dim));
+      data_info.push_back (
+        MPIDataInfo ("oldvelocity", dim));
       data_info.push_back (MPIDataInfo ("id", 1));
     }
 

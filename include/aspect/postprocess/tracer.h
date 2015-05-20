@@ -94,6 +94,46 @@ namespace aspect
          */
         void set_next_data_output_time (const double current_time);
 
+        /**
+         * Type of generator to create tracer particles
+         */
+        std::string                     generator_type;
+
+        /**
+         * With a radial generation, amount of shells to use
+         */
+        double                     radGen_shellCount;
+
+        /**
+         * Smallest Radius at which the radial uniform generator will create particles
+         */
+        double                          radGen_limit_radiusMin;
+
+        /**
+         * Largest Radius at which the radial uniform generator will create particles
+         */
+        double                          radGen_limit_radiusMax;
+
+        /**
+         * Smallest Theta angle at which the radial uniform generator will create particles
+         */
+        double                          radGen_limit_thetaMin;
+
+        /**
+         * Largest Theta angle at which the radial uniform generator will create particles
+         */
+        double                          radGen_limit_thetaMax;
+
+        /**
+         * Smallest Phi angle at which the radial uniform generator will create particles, in 3d
+         */
+        double                          radGen_limit_phiMin;
+
+        /**
+         * Largest Phi angle at which the radial uniform generator will create particles, in 3d
+         */
+        double                          radGen_limit_phiMax;
+
 
       public:
         /**

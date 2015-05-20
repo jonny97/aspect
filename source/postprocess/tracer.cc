@@ -52,7 +52,8 @@ namespace aspect
         {
           // Create a generator object using a random uniform distribution
           generator = Particle::Generator::create_generator_object<dim,Particle::BaseParticle<dim> >
-                      ("random_uniform");
+            (generator_type);
+          //          ("random_uniform");
 
           // Create an output object depending on what the parameters specify
           output = Particle::Output::create_output_object<dim,Particle::BaseParticle<dim> >
@@ -78,7 +79,40 @@ namespace aspect
           next_data_output_time = this->get_time();
 
           // Add the specified number of particles
-          generator->generate_particles(world, n_initial_tracers);
+          if (generator_type.compare("random_uniform") == 0)
+          {
+            generator->generate_particles(world, n_initial_tracers);
+          }
+          else if (generator_type.compare("radial_uniform") == 0)
+          {
+            double *limits = new double[7];
+            limits[0] = radGen_shellCount;
+            limits[1] = radGen_limit_radiusMin;
+            limits[2] = radGen_limit_radiusMax;
+            limits[3] = radGen_limit_thetaMin;
+            limits[4] = radGen_limit_thetaMax;
+            limits[5] = radGen_limit_phiMin;
+            limits[6] = radGen_limit_phiMax;
+            static_cast<Particle::Generator::InterfaceLimits<dim, Particle::BaseParticle<dim> > *>(generator)->generate_particles(world, n_initial_tracers, limits);
+          }
+          else if (generator_type.compare("box_uniform") == 0)
+          {
+            double *limits = new double[7];
+            limits[0] = radGen_shellCount;
+            limits[1] = radGen_limit_radiusMin;
+            limits[2] = radGen_limit_radiusMax;
+            limits[3] = radGen_limit_thetaMin;
+            limits[4] = radGen_limit_thetaMax;
+            limits[5] = radGen_limit_phiMin;
+            limits[6] = radGen_limit_phiMax;
+						
+						//std::cout << "radGen_limit_radiusMin: " << radGen_limit_radiusMin << "\nradGen_limit_radiusMax: " << radGen_limit_radiusMax << "\n";
+					  //std::cout << "radGen_limit_thetaMin: " << radGen_limit_thetaMin << "\nradGen_limit_thetaMax: " << radGen_limit_thetaMax << "\n";
+						
+						//std::cout << "@limits[2]: " << limits[2] << "\nlimits[1]: " << limits[1] << "\n";
+					  //std::cout << "@limits[4]: " << limits[4] << "\nlimits[3]: " << limits[3] << "\n";
+            static_cast<Particle::Generator::InterfaceLimits<dim, Particle::BaseParticle<dim> > *>(generator)->generate_particles(world, n_initial_tracers, limits);
+          }
           world.finished_adding_particles();
 
           initialized = true;
@@ -153,6 +187,32 @@ namespace aspect
           prm.declare_entry("Integration scheme", "rk2",
                             Patterns::Selection(Particle::Integrator::integrator_object_names()),
                             "Integration scheme to move particles.");
+          prm.declare_entry("Generation type", "random_uniform",
+                            Patterns::Selection(Particle::Generator::generator_object_names()),
+                            "Type of particle generation to use.");
+                            
+          prm.declare_entry("Shell count", "10",
+                            Patterns::Double (0),
+                            "Amount of shells between minimal and maximal radius.");
+                            
+          prm.declare_entry("Radius min", "0",
+                            Patterns::Double (0),
+                            "Minimum Radius in a radial generation.");
+          prm.declare_entry("Radius max", "10",
+                            Patterns::Double (0),
+                            "Maximum Radius in a radial generation.");
+          prm.declare_entry("Theta min", "0",
+                            Patterns::Double (0),
+                            "Minimum Theta in a radial generation in degrees.");
+          prm.declare_entry("Theta max", "360",
+                            Patterns::Double (0),
+                            "Maximum Theta in a radial generation in degrees.");
+          prm.declare_entry("Phi min", "0",
+                            Patterns::Double (0),
+                            "Minimum Phi in a radial generation in degrees (3d only, 0-180).");
+          prm.declare_entry("Phi max", "180",
+                            Patterns::Double (0),
+                            "Maximum Phi in a radial generation in degrees (3d only, 0-180).");
         }
         prm.leave_subsection ();
       }
@@ -178,6 +238,18 @@ namespace aspect
                                    "recompile deal.ii with HDF5 support turned on."));
 #endif
           integration_scheme = prm.get("Integration scheme");
+          
+          generator_type = prm.get("Generation type");
+          if ((generator_type == "radial_uniform") || (generator_type == "box_uniform"))
+          {
+            radGen_shellCount = prm.get_double("Shell count");
+            radGen_limit_radiusMin = prm.get_double("Radius min");
+            radGen_limit_radiusMax = prm.get_double("Radius max");
+            radGen_limit_thetaMin = prm.get_double("Theta min");
+            radGen_limit_thetaMax = prm.get_double("Theta max");
+            radGen_limit_phiMin = prm.get_double("Phi min");
+            radGen_limit_phiMax = prm.get_double("Phi max");
+          }
         }
         prm.leave_subsection ();
       }

@@ -62,9 +62,19 @@ namespace aspect
         Point<dim>      location;
 
         /**
+         * Last particle location
+         */
+        Point<dim>      lastLocation;
+
+        /**
          * Current particle velocity
          */
         Point<dim>      velocity;
+
+        /**
+         * Last particle velocity
+         */
+        Point<dim>      lastVelocity;
 
         /**
          * Globally unique ID of particle
@@ -167,6 +177,39 @@ namespace aspect
          */
         Point<dim>
         get_velocity () const;
+
+        /**
+         * Set the old location of this particle. Note that this does not check
+         * whether this is a valid location in the simulation domain.
+         *
+         * @param [in] new_loc The new location for this particle.
+         */
+        void
+        set_lastLocation (const Point<dim> &new_loc);
+
+        /**
+         * Get the old location of this particle.
+         *
+         * @return The location of this particle.
+         */
+        Point<dim>
+        get_lastLocation () const;
+
+        /**
+         * Set the old velocity of this particle.
+         *
+         * @param [in] new_vel The new velocity for this particle.
+         */
+        void
+        set_lastVelocity (Point<dim> new_vel);
+
+        /**
+         * Get the old velocity of this particle.
+         *
+         * @return The velocity of this particle.
+         */
+        Point<dim>
+        get_lastVelocity () const;
 
         /**
          * Get the ID number of this particle.

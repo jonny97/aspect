@@ -1898,13 +1898,15 @@ namespace aspect
         computing_timer.exit_section();
       }
 
+      solve_timestep ();
+
     // start the principal loop over time steps:
     do
       {
         start_timestep ();
 
         // then do the core work: assemble systems and solve
-        solve_timestep ();
+        ////solve_timestep ();
 
         pcout << std::endl;
 

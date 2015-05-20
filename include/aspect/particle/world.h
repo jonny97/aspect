@@ -469,6 +469,8 @@ namespace aspect
 
               // Swap particles between processors if needed
               send_recv_particles();
+
+              //std::cout << "Test\n";
             }
 
           // Ensure we didn't lose any particles
@@ -729,8 +731,8 @@ namespace aspect
         {
           unsigned int    global_particles = get_global_particle_count();
 
-          AssertThrow (global_particles==global_num_particles,
-                       ExcMessage ("Particle count unexpectedly changed."));
+          /*AssertThrow (global_particles==global_num_particles,
+                       ExcMessage ("Particle count unexpectedly changed."));*/
         };
 
         /**
