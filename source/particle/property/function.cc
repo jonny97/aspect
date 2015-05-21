@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -18,7 +18,6 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/global.h>
 #include <aspect/particle/property/function.h>
 
 namespace aspect

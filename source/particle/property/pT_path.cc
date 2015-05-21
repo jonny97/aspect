@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -18,7 +18,6 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/global.h>
 #include <aspect/particle/property/pT_path.h>
 
 namespace aspect
@@ -28,17 +27,13 @@ namespace aspect
     namespace Property
     {
       template <int dim>
-      PTPath<dim>::PTPath()
-      {}
-
-      template <int dim>
       void
       PTPath<dim>::initialize_particle(std::vector<double> &data,
                                          const Point<dim> &position,
                                          const Vector<double> &solution)
       {
-        for (unsigned int i = 0; i < data_len(); i++)
-          data.push_back(solution[dim+i]);
+          data.push_back(solution[this->introspection().component_indices.pressure]);
+          data.push_back(solution[this->introspection().component_indices.temperature]);
       }
 
       template <int dim>
@@ -48,8 +43,8 @@ namespace aspect
                                    const Point<dim> &position,
                                    const Vector<double> &solution)
       {
-        for (unsigned int i = 0; i < data_len(); i++)
-          data[data_position++] = solution[dim+i];
+          data[data_position++] = solution[this->introspection().component_indices.pressure];
+          data[data_position++] = solution[this->introspection().component_indices.temperature];
       }
 
       template <int dim>
@@ -77,20 +72,6 @@ namespace aspect
       {
         data_info.push_back(aspect::Particle::MPIDataInfo("p", 1));
         data_info.push_back(aspect::Particle::MPIDataInfo("T", 1));
-      }
-
-
-      template <int dim>
-      void
-      PTPath<dim>::declare_parameters (ParameterHandler &prm)
-      {
-      }
-
-
-      template <int dim>
-      void
-      PTPath<dim>::parse_parameters (ParameterHandler &prm)
-      {
       }
     }
   }

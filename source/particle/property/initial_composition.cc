@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -18,7 +18,6 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/global.h>
 #include <aspect/particle/property/initial_composition.h>
 
 namespace aspect
@@ -28,17 +27,13 @@ namespace aspect
     namespace Property
     {
       template <int dim>
-      InitialComposition<dim>::InitialComposition()
-      {}
-
-      template <int dim>
       void
       InitialComposition<dim>::initialize_particle(std::vector<double> &data,
                                          const Point<dim> &position,
                                          const Vector<double> &solution)
       {
         for (unsigned int i = 0; i < data_len(); i++)
-        data.push_back(solution[dim+2+i]);
+        data.push_back(solution[this->introspection().component_indices.compositional_fields[i]]);
       }
 
       template <int dim>
@@ -63,20 +58,6 @@ namespace aspect
             field_name << "initial C_" << i;
             data_info.push_back(aspect::Particle::MPIDataInfo(field_name.str(), 1));
           }
-      }
-
-
-      template <int dim>
-      void
-      InitialComposition<dim>::declare_parameters (ParameterHandler &prm)
-      {
-      }
-
-
-      template <int dim>
-      void
-      InitialComposition<dim>::parse_parameters (ParameterHandler &prm)
-      {
       }
     }
   }

@@ -22,6 +22,7 @@
 #define __aspect__particle_property_pT_path_h
 
 #include <aspect/particle/property/interface.h>
+#include <aspect/simulator_access.h>
 
 namespace aspect
 {
@@ -34,11 +35,9 @@ namespace aspect
      * functional description provided in the input file.
      */
     template <int dim>
-    class PTPath : public Interface<dim>
+    class PTPath : public Interface<dim>, public ::aspect::SimulatorAccess<dim>
     {
       public:
-        PTPath();
-
         /**
          * Initialization function. This function is called once at the
          * beginning of the program after parse_parameters is run.
@@ -73,21 +72,6 @@ namespace aspect
          * @param [in,out] data_info Vector to append MPIDataInfo objects to
          */
         void add_mpi_types(std::vector<MPIDataInfo> &data_info) const;
-
-
-        /**
-         * Declare the parameters this class takes through input files.
-         */
-        static
-        void
-        declare_parameters (ParameterHandler &prm);
-
-        /**
-         * Read the parameters this class declares from the parameter file.
-         */
-        virtual
-        void
-        parse_parameters (ParameterHandler &prm);
     };
     }
   }

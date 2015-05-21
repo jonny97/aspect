@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -28,10 +28,6 @@ namespace aspect
     namespace Property
     {
       template <int dim>
-      InitialPosition<dim>::InitialPosition()
-      {}
-
-      template <int dim>
       void
       InitialPosition<dim>::initialize_particle(std::vector<double> &data,
                                          const Point<dim> &position,
@@ -58,20 +54,6 @@ namespace aspect
       InitialPosition<dim>::add_mpi_types(std::vector<MPIDataInfo> &data_info) const
       {
         data_info.push_back(aspect::Particle::MPIDataInfo("initial position", data_len()));
-      }
-
-
-      template <int dim>
-      void
-      InitialPosition<dim>::declare_parameters (ParameterHandler &prm)
-      {
-      }
-
-
-      template <int dim>
-      void
-      InitialPosition<dim>::parse_parameters (ParameterHandler &prm)
-      {
       }
     }
   }
