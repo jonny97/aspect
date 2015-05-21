@@ -643,8 +643,19 @@ namespace aspect
         &global_num_particles
         ;
     }
+  }
+}
 
-    template class World<2>;
-    template class World<3>;
+
+
+// explicit instantiation of the functions we implement in this file
+namespace aspect
+{
+  namespace Particle
+  {
+#define INSTANTIATE(dim) \
+    template class World<dim>;
+
+    ASPECT_INSTANTIATE(INSTANTIATE)
   }
 }

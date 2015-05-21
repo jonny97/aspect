@@ -278,10 +278,6 @@ namespace aspect
                                                                factory_function);
     }
 
-
-    // explicit instantiation
-    template class Manager<2>;
-    template class Manager<3>;
     }
   }
 }
@@ -294,7 +290,8 @@ namespace aspect
     namespace Property
     {
 #define INSTANTIATE(dim) \
-  template class Interface<dim>;
+  template class Interface<dim>; \
+  template class Manager<dim>;
 
       ASPECT_INSTANTIATE(INSTANTIATE)
     }
