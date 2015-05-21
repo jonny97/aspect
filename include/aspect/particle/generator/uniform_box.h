@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_generator_random_uniform_h
-#define __aspect__particle_generator_random_uniform_h
+#ifndef __aspect__particle_generator_uniform_box_h
+#define __aspect__particle_generator_uniform_box_h
 
 #include <aspect/particle/generator/interface.h>
 #include <aspect/simulator_access.h>
@@ -34,7 +34,7 @@ namespace aspect
     {
       // Generate random uniform distribution of particles over entire simulation domain
       template <int dim>
-      class RandomUniformGenerator : public Interface<dim>, public SimulatorAccess<dim>
+      class UniformBox : public Interface<dim>, public SimulatorAccess<dim>
       {
         public:
           /**
@@ -42,7 +42,7 @@ namespace aspect
            *
            * @param[in] The MPI communicator for synchronizing particle generation.
            */
-          RandomUniformGenerator();
+          UniformBox();
 
           /**
            * Generate a uniformly randomly distributed set of particles in the current triangulation.
@@ -54,8 +54,9 @@ namespace aspect
                              const double total_num_particles);
 
           /**
-           * Generate a set of particles uniformly randomly distributed within the
-           * specified triangulation. This is done using "roulette wheel" style
+           * TODO: Update comments
+           * Generate a set of particles uniformly distributed within the
+           * specified triangulation.
            * selection weighted by cell volume. We do cell-by-cell assignment of
            * particles because the decomposition of the mesh may result in a highly
            * non-rectangular local mesh which makes uniform particle distribution difficult.
@@ -64,18 +65,10 @@ namespace aspect
            * @param [in] num_particles The number of particles to generate in this subdomain
            * @param [in] start_id The starting ID to assign to generated particles
            */
-          void uniform_random_particles_in_subdomain (Particle::World<dim> &world,
+          void uniformly_distributed_particles_in_subdomain (Particle::World<dim> &world,
                                                       const unsigned int num_particles,
                                                       const unsigned int start_id);
 
-        private:
-          /**
-           * Random number generator and an object that describes a
-           * uniform distribution on the interval [0,1]. These
-           * will be used to generate particle locations at random.
-           */
-          boost::mt19937            random_number_generator;
-          boost::uniform_01<double> uniform_distribution_01;
       };
 
 

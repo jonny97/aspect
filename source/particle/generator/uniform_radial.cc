@@ -18,7 +18,7 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#include <aspect/particle/generator/random_uniform.h>
+#include <aspect/particle/generator/uniform_radial.h>
 
 #include <boost/random.hpp>
 
@@ -29,7 +29,8 @@ namespace aspect
   {
     namespace Generator
     {
-      // Generate random uniform distribution of particles over entire simulation domain
+      // Generate a uniform radial distribution of particles over the specified region
+      // in the computational domain
 
           /**
            * Constructor.
@@ -37,7 +38,7 @@ namespace aspect
            * @param[in] The MPI communicator for synchronizing particle generation.
            */
         template <int dim>
-        RandomUniformGenerator<dim>::RandomUniformGenerator() {}
+        UniformRadial<dim>::UniformRadial() {}
 
           /**
            * Generate a uniformly randomly distributed set of particles in the current triangulation.
@@ -45,7 +46,7 @@ namespace aspect
           // TODO: fix the particle system so it works even with processors assigned 0 cells
         template <int dim>
         void
-        RandomUniformGenerator<dim>::generate_particles(Particle::World<dim> &world,
+		UniformRadial<dim>::generate_particles(Particle::World<dim> &world,
                                                         const double total_num_particles)
         {
           double      total_volume, local_volume, subdomain_fraction, start_fraction, end_fraction;
@@ -79,13 +80,12 @@ namespace aspect
           const unsigned int  end_id   = static_cast<unsigned int>(fmin(std::ceil(end_fraction*total_num_particles), total_num_particles));
           const unsigned int  subdomain_particles = end_id - start_id;
 
-          uniform_random_particles_in_subdomain(world, subdomain_particles, start_id);
+          uniformly_distributed_particles_in_subdomain(world, subdomain_particles, start_id);
         }
 
           /**
-           * Generate a set of particles uniformly randomly distributed within the
-           * specified triangulation. This is done using "roulette wheel" style
-           * selection weighted by cell volume. We do cell-by-cell assignment of
+           * Generate a set of particles uniformly distributed within the
+           * specified region.  We do cell-by-cell assignment of
            * particles because the decomposition of the mesh may result in a highly
            * non-rectangular local mesh which makes uniform particle distribution difficult.
            *
@@ -95,90 +95,147 @@ namespace aspect
            */
         template <int dim>
           void
-          RandomUniformGenerator<dim>::uniform_random_particles_in_subdomain (Particle::World<dim> &world,
+          UniformRadial<dim>::uniformly_distributed_particles_in_subdomain (Particle::World<dim> &world,
                                                       const unsigned int num_particles,
                                                       const unsigned int start_id)
           {
-            unsigned int          i, d, v, num_tries, cur_id;
-            double                total_volume, roulette_spin;
-            std::map<double, LevelInd>        roulette_wheel;
-            const unsigned int n_vertices_per_cell = GeometryInfo<dim>::vertices_per_cell;
-            Point<dim>            pt, max_bounds, min_bounds;
-            LevelInd              select_cell;
-
-            // Create the roulette wheel based on volumes of local cells
-            total_volume = 0;
-            for (typename parallel::distributed::Triangulation<dim>::active_cell_iterator
-                 it=this->get_triangulation().begin_active(); it!=this->get_triangulation().end(); ++it)
-              {
-                if (it->is_locally_owned())
-                  {
-                    // Assign an index to each active cell for selection purposes
-                    total_volume += it->measure();
-                    // Save the cell index and level for later access
-                    roulette_wheel.insert(std::make_pair(total_volume, std::make_pair(it->level(), it->index())));
-                  }
-              }
-
-            // Pick cells and assign particles at random points inside them
+            unsigned int cur_id;
             cur_id = start_id;
-            for (i=0; i<num_particles; ++i)
+            //[radiusMin, radiusMax, thetaMin, thetaMax, phiMin, phiMax]
+            //int shellCount = limits[0];
+
+            if (dim == 3)
               {
-                // Select a cell based on relative volume
-                roulette_spin = total_volume*uniform_distribution_01(random_number_generator);
-                select_cell = roulette_wheel.lower_bound(roulette_spin)->second;
-
-                const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
-                it (&(this->get_triangulation()), select_cell.first, select_cell.second);
-
-                // Get the bounds of the cell defined by the vertices
-                for (d=0; d<dim; ++d)
+                double thetaSeperation, phiSeperation;
+                for (int i = 0; i < shellCount; i++)
                   {
-                    min_bounds[d] = INFINITY;
-                    max_bounds[d] = -INFINITY;
-                  }
-                for (v=0; v<n_vertices_per_cell; ++v)
-                  {
-                    pt = it->vertex(v);
-                    for (d=0; d<dim; ++d)
-                      {
-                        min_bounds[d] = fmin(pt[d], min_bounds[d]);
-                        max_bounds[d] = fmax(pt[d], max_bounds[d]);
-                      }
-                  }
+                    int thetaParticles, phiParticles;
+                    thetaParticles = floor(sqrt(particlesPerRadius[i]));
+                    phiParticles = particlesPerRadius[i] / thetaParticles;
+                    //cout << "shell: " << i << "\nTheta Particles: " << thetaParticles << "\nPhi   Particles: " << phiParticles << "\n";
+                    //thetaSeperation = (limits[4] - limits[3]) / thetaParticles;
+                    phiSeperation = (limits[6] - limits[5]) / phiParticles;
+                    int *ppPh = new int[phiParticles];
+                    double phiTotalLength = 0;
+                    int j = 0;
 
-                // Generate random points in these bounds until one is within the cell
-                num_tries = 0;
-                while (num_tries < 100)
-                  {
-                    for (d=0; d<dim; ++d)
+                    for (double phi = limits[5]; phi < limits[6]; phi += phiSeperation, j++)
                       {
-                        pt[d] = uniform_distribution_01(random_number_generator) *
-                                (max_bounds[d]-min_bounds[d]) + min_bounds[d];
+                        //if (j > phiParticles)
+                        //{
+                        //  cout << "Error! j > thetaParticles!\n";
+                        //  break;
+                        //}
+                        //Average value of sin(n) from 0 to 180 degrees is (2/pi)
+                        ppPh[j] = (thetaParticles * sin(phi / 180 * M_PI) * (M_PI / 2)) + 1;
+                        //cout << "Test1: " << ppPh[j] << "\n";
                       }
-                    try
+
+                    j = 0;
+                    for (double phi = limits[5]; phi < limits[6]; phi += phiSeperation, j++)
                       {
-                        if (it->point_inside(pt)) break;
+                        //if (j > phiParticles)
+                        //{
+                        //  cout << "Error 2! j > thetaParticles!\n";
+                        //  break;
+                        //}
+                        thetaSeperation = (limits[4] - limits[3]) / ppPh[j];
+                        //cout << "Test Theta: " << thetaSeperation << "\n";
+                        for (double theta = limits[3]; theta < limits[4]; theta += thetaSeperation)
+                          {
+                            //cout << "test1\n";
+                            Point<dim> newPoint
+                            (
+                              shell[i] * sin(phi / 180 * M_PI) * cos(theta / 180 * M_PI),
+                              shell[i] * sin(phi / 180 * M_PI) * sin(theta / 180 * M_PI),
+                              shell[i] * cos(phi / 180 * M_PI)
+                            );
+                            //cout << "test2: " << newPoint << "\n";
+                            cur_id++;
+                            try
+                              {
+                                //std::cout << "Making a point: <" << newPoint << ">\n" << "Spherical coords: [" << shell[i] << ", " << theta << ", " << phi << "]\n";
+
+                                //Modify the find_active_cell_around_point to only search for nearest vertex  and adj. cells, instead of searching all cells in the simulation
+
+                                //cout << "test3.1\n";
+                                typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
+                                  (GridTools::find_active_cell_around_point<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
+                                  //(GridTools::find_active_cell_around_point_quick<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
+                                //std::cout << "Point successful!\n";
+                                //cout << "test3.2\n";
+
+                                if (it->is_locally_owned())
+                                  {
+                                    //Only try to add the point if the cell it is in, is on this processor
+                                    //cout << "test3.2.1\n";
+                                    T new_particle(newPoint, cur_id);
+                                    //cout << "test3.2.2\n";
+                                    world.add_particle(new_particle, std::make_pair(it->level(), it->index()));
+                                    //cout << "test3.2.3\n";
+                                  }
+                                //cout << "test3.3\n";
+                              }
+                            catch (...)
+                              {
+                                //cout << "test3.Catch\n";
+                                //A point wasn't in an available cell, this might be because it isn't local; we can ignore it
+
+                                //std::cout << "Point failed.\n";
+                                //Allow this loss for now
+                                //AssertThrow (false, ExcMessage ("Couldn't generate particle (Shell too close to boundary?)."));
+                              }
+                            //cout << "test4\n";
+                          }
                       }
-                    catch (...)
-                      {
-                        // Debugging output, remove when Q4 mapping 3D sphere problem is resolved
-                        //std::cerr << "Pt and cell " << pt << " " << select_cell.first << " " << select_cell.second << std::endl;
-                        //for (int z=0;z<8;++z) std::cerr << "V" << z <<": " << it->vertex(z) << ", ";
-                        //std::cerr << std::endl;
-                        //***** MPI_Abort(communicator, 1);
-                      }
-                    num_tries++;
+                    delete ppPh;
                   }
-                AssertThrow (num_tries < 100, ExcMessage ("Couldn't generate particle (unusual cell shape?)."));
-
-                // Add the generated particle to the set
-                BaseParticle<dim> new_particle(pt, cur_id);
-                world.add_particle(new_particle, select_cell);
-
-                cur_id++;
               }
-          }
+            else if (dim == 2)
+              {
+                double thetaSeperation, phiSeperation;
+                for (int i = 0; i < shellCount; i++)
+                  {
+                    int thetaParticles, phiParticles;
+                    thetaParticles = particlesPerRadius[i];
+                    thetaSeperation = (limits[4] - limits[3]) / thetaParticles;
+                    for (double theta = limits[3]; theta < limits[4]; theta += thetaSeperation)
+                      {
+                        Point<dim> newPoint
+                        (
+                          shell[i] * cos(theta / 180 * M_PI),
+                          shell[i] * sin(theta / 180 * M_PI)
+                        );
+                        cur_id++;
+                        try
+                          {
+                            //std::cout << "Making a point: <" << newPoint << ">\n" << "Spherical coords: [" << shell[i] << ", " << theta << ", " << phi << "]\n";
+
+                            //Modify the find_active_cell_around_point to only search for nearest vertex  and adj. cells, instead of searching all cells in the simulation
+
+                            typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
+                              (GridTools::find_active_cell_around_point<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
+                              //(GridTools::find_active_cell_around_point_quick<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
+                            //std::cout << "Point successful!\n";
+
+                            if (it->is_locally_owned())
+                              {
+                                //Only try to add the point if the cell it is in, is on this processor
+                                T new_particle(newPoint, cur_id);
+                                world.add_particle(new_particle, std::make_pair(it->level(), it->index()));
+                              }
+                          }
+                        catch (...)
+                          {
+                            //A point wasn't in an available cell, this might be because it isn't local; we can ignore it
+
+                            //std::cout << "Point failed.\n";
+                            //Allow this loss for now
+                            //AssertThrow (false, ExcMessage ("Couldn't generate particle (Shell too close to boundary?)."));
+                          }
+                      }
+                  }
+
     }
   }
 }
@@ -186,7 +243,7 @@ namespace aspect
 
 // explicit instantiations
 namespace aspect
-{
+{													  -
   namespace Particle
   {
     namespace Generator
