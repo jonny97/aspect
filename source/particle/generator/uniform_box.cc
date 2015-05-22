@@ -51,36 +51,7 @@ namespace aspect
         UniformBox<dim>::generate_particles(Particle::World<dim> &world,
                                             const double total_num_particles)
           {
-           int localParticleCount, startID;
-
-           localParticleCount = total_num_particles;
-
-           //Since we generate each particle on each processor, the above is irrelevant
-           startID = 0;
-
-           uniformly_distributed_particles_in_subdomain(world, total_num_particles, 0);
-          }
-
-
-          /**
-           * Generate a set of particles uniformly randomly distributed within the
-           * specified triangulation. This is done using "roulette wheel" style
-           * selection weighted by cell volume. We do cell-by-cell assignment of
-           * particles because the decomposition of the mesh may result in a highly
-           * non-rectangular local mesh which makes uniform particle distribution difficult.
-           *
-           * @param [in] world The particle world the particles will exist in
-           * @param [in] num_particles The number of particles to generate in this subdomain
-           * @param [in] start_id The starting ID to assign to generated particles
-           */
-        template <int dim>
-          void
-          UniformBox<dim>::uniformly_distributed_particles_in_subdomain (Particle::World<dim> &world,
-                                                      const unsigned int num_particles,
-                                                      const unsigned int start_id)
-                                                      {
-          unsigned int cur_id = start_id;
-
+          unsigned int cur_id = 0;
           const Tensor<1,dim> P_diff = P_max - P_min;
           const double totalDiff = P_diff[0] + P_diff[1] + P_diff[2];
           std_cxx11::array<double,dim> nParticles;
@@ -89,7 +60,7 @@ namespace aspect
           ///Amount of particles is the total amount of particles, divided by length of each axis
           for (unsigned int i = 0; i < dim; ++i)
             {
-              nParticles[i] = round(num_particles * P_diff[i] / totalDiff);
+              nParticles[i] = round(total_num_particles * P_diff[i] / totalDiff);
               Particle_separation[i] = P_diff[i] / nParticles[i];
             }
 
@@ -98,13 +69,14 @@ namespace aspect
               for (double y = P_min[1]; y < P_max[1]; y += Particle_separation[1])
                 {
                   if (dim == 2)
-                      generate_particle(world,Point<dim> (x,y),cur_id++);
+                    generate_particle(world,Point<dim> (x,y),cur_id++);
                   if (dim == 3)
                     for (double z = P_min[2]; z < P_max[2]; z += Particle_separation[2])
                       generate_particle(world,Point<dim> (x,y,z),cur_id++);
                 }
             }
-                                                      }
+          }
+
         template <int dim>
         void
         UniformBox<dim>::generate_particle(Particle::World<dim> &world,
@@ -133,26 +105,30 @@ namespace aspect
             {
               prm.enter_subsection("Generators");
               {
-                prm.declare_entry ("Minimal x", "0",
-                                   Patterns::Double (),
-                                   "Minimal x coordinate for the region of tracers.");
-                prm.declare_entry ("Maximal x", "1",
-                                   Patterns::Double (),
-                                   "Maximal x coordinate for the region of tracers.");
-                prm.declare_entry ("Minimal y", "0",
-                                   Patterns::Double (),
-                                   "Minimal y coordinate for the region of tracers.");
-                prm.declare_entry ("Maximal y", "1",
-                                   Patterns::Double (),
-                                   "Maximal y coordinate for the region of tracers.");
-                prm.declare_entry ("Minimal z", "0",
-                                   Patterns::Double (),
-                                   "Minimal z coordinate for the region of tracers.");
-                prm.declare_entry ("Maximal z", "1",
-                                   Patterns::Double (),
-                                   "Maximal z coordinate for the region of tracers.");
-
+                prm.enter_subsection("Uniform box");
+                {
+                  prm.declare_entry ("Minimal x", "0",
+                                     Patterns::Double (),
+                                     "Minimal x coordinate for the region of tracers.");
+                  prm.declare_entry ("Maximal x", "1",
+                                     Patterns::Double (),
+                                     "Maximal x coordinate for the region of tracers.");
+                  prm.declare_entry ("Minimal y", "0",
+                                     Patterns::Double (),
+                                     "Minimal y coordinate for the region of tracers.");
+                  prm.declare_entry ("Maximal y", "1",
+                                     Patterns::Double (),
+                                     "Maximal y coordinate for the region of tracers.");
+                  prm.declare_entry ("Minimal z", "0",
+                                     Patterns::Double (),
+                                     "Minimal z coordinate for the region of tracers.");
+                  prm.declare_entry ("Maximal z", "1",
+                                     Patterns::Double (),
+                                     "Maximal z coordinate for the region of tracers.");
+                }
+                prm.leave_subsection();
               }
+              prm.leave_subsection();
             }
             prm.leave_subsection();
           }
@@ -170,16 +146,20 @@ namespace aspect
             {
               prm.enter_subsection("Generators");
               {
-                P_min(0) = prm.get_double ("Minimal x");
-                P_max(0) = prm.get_double ("Maximal x");
-                P_min(1) = prm.get_double ("Minimal y");
-                P_max(1) = prm.get_double ("Maximal y");
+                prm.enter_subsection("Uniform box");
+                {
+                  P_min(0) = prm.get_double ("Minimal x");
+                  P_max(0) = prm.get_double ("Maximal x");
+                  P_min(1) = prm.get_double ("Minimal y");
+                  P_max(1) = prm.get_double ("Maximal y");
 
-                if (dim ==3)
-                  {
-                    P_min(2) = prm.get_double ("Minimal z");
-                    P_max(2) = prm.get_double ("Maximal z");
-                  }
+                  if (dim ==3)
+                    {
+                      P_min(2) = prm.get_double ("Minimal z");
+                      P_max(2) = prm.get_double ("Maximal z");
+                    }
+                }
+                prm.leave_subsection();
               }
               prm.leave_subsection();
             }
@@ -187,9 +167,9 @@ namespace aspect
           }
           prm.leave_subsection();
         }
-      }
     }
   }
+}
 
 
 // explicit instantiations
@@ -202,7 +182,7 @@ namespace aspect
       ASPECT_REGISTER_PARTICLE_GENERATOR(UniformBox,
                                          "uniform box",
                                          "Generate a uniform distribution of particles"
-                                         " over a rectangular domain in or or 3D.")
+                                         "over a rectangular domain in or or 3D.")
     }
   }
 }

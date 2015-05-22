@@ -24,7 +24,7 @@
 #include <aspect/particle/generator/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <boost/random.hpp>
+#include <deal.II/base/std_cxx11/array.h>
 
 namespace aspect
 {
@@ -56,18 +56,58 @@ namespace aspect
                              const double total_num_particles);
 
           /**
-           * Generate a set of particles uniformly distributed within the
-           * specified region. We do cell-by-cell assignment of
+           * Generate a set of particles uniformly randomly distributed within the
+           * specified triangulation. This is done using "roulette wheel" style
+           * selection weighted by cell volume. We do cell-by-cell assignment of
            * particles because the decomposition of the mesh may result in a highly
            * non-rectangular local mesh which makes uniform particle distribution difficult.
            *
-           * @param [in] world The particle world the particles will exist in
-           * @param [in] num_particles The number of particles to generate in this subdomain
-           * @param [in] start_id The starting ID to assign to generated particles
+           * @param[in] world The particle world the particles will exist in
+           * @param[in] start_id The starting ID to assign to generated particles
+           * @param[in] shell An array holding the shell at which to generate particles.
+           * @param[in] particlesPerRadius An array with the amount of particles per shell.
            */
-          void uniformly_distributed_particles_in_subdomain (Particle::World<dim> &world,
-                                                      const unsigned int num_particles,
-                                                      const unsigned int start_id);
+          void
+          uniform_radial_particles_in_subdomain (Particle::World<dim> &world,
+                                                      const unsigned int start_id,
+                                                      const std::vector<double> &shell,
+                                                      const std::vector<unsigned int> &particlesPerRadius);
+
+          void
+          generate_particle(Particle::World<dim> &world,
+                            const Point<dim> &position,
+                            const unsigned int id);
+
+          /**
+           * Declare the parameters this class takes through input files.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter file.
+           */
+          virtual
+          void
+          parse_parameters (ParameterHandler &prm);
+
+        private:
+
+          /**
+           * The minimum coordinates of the tracer region.
+           */
+          std_cxx11::array<double,dim> P_min;
+
+          /**
+           * The maximum coordinates of the tracer region.
+           */
+          std_cxx11::array<double,dim> P_max;
+
+          /**
+           * The number of radial layers of particles that will be generated.
+           */
+          unsigned int radial_layers;
 
       };
 

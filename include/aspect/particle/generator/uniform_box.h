@@ -24,8 +24,6 @@
 #include <aspect/particle/generator/interface.h>
 #include <aspect/simulator_access.h>
 
-#include <boost/random.hpp>
-
 namespace aspect
 {
   namespace Particle
