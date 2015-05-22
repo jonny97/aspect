@@ -169,7 +169,7 @@ namespace aspect
                                   {
                                     //Only try to add the point if the cell it is in, is on this processor
                                     //cout << "test3.2.1\n";
-                                    T new_particle(newPoint, cur_id);
+                                    BaseParticle<dim> new_particle(newPoint, cur_id);
                                     //cout << "test3.2.2\n";
                                     world.add_particle(new_particle, std::make_pair(it->level(), it->index()));
                                     //cout << "test3.2.3\n";

@@ -69,6 +69,28 @@ namespace aspect
                                                       const unsigned int num_particles,
                                                       const unsigned int start_id);
 
+          void
+          generate_particle(Particle::World<dim> &world,
+                            const Point<dim> &position,
+                            const unsigned int id);
+
+          /**
+           * Declare the parameters this class takes through input files.
+           */
+          static
+          void
+          declare_parameters (ParameterHandler &prm);
+
+          /**
+           * Read the parameters this class declares from the parameter file.
+           */
+          virtual
+          void
+          parse_parameters (ParameterHandler &prm);
+
+        private:
+          Point<dim> P_min;
+          Point<dim> P_max;
       };
 
 

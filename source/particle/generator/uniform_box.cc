@@ -21,6 +21,8 @@
 #include <aspect/particle/generator/uniform_box.h>
 
 #include <boost/random.hpp>
+#include <deal.II/base/std_cxx11/array.h>
+#include <deal.II/grid/grid_tools.h>
 
 
 namespace aspect
@@ -47,90 +49,17 @@ namespace aspect
         template <int dim>
         void
         UniformBox<dim>::generate_particles(Particle::World<dim> &world,
-                                                        const double total_num_particles)
+                                            const double total_num_particles)
           {
-            //double      subdomain_fraction, start_fraction, end_fraction;
-            int size, rank, shellCount, shellRemainder, shellStart, shellEnd, *ppr, localParticleCount, startID, endID, radiusTotal;
-            double *shellArray, shellSeperation;
-            int radialLevels = limits[0];
+           int localParticleCount, startID;
 
-            //Does wall clock keeping in seconds
-            struct timeval tp;
-            struct timezone tzp;
-            gettimeofday (&tp, &tzp);
-            double wall_seconds = ((double) tp.tv_sec + (double) tp.tv_usec * 1.e-6);
+           localParticleCount = total_num_particles;
 
-            //Does CPU clock keeping in seconds
-            double cpu_seconds = (double)clock() / CLOCKS_PER_SEC;
+           //Since we generate each particle on each processor, the above is irrelevant
+           startID = 0;
 
-
-            shellCount = radialLevels;
-
-
-            /* //Work by generating the particles on every processor
-               //Afterwards, generate a bounding box for every cell
-
-            // Find how many nodes there are, so that we may distribute shell, and the ID of this one.
-            size = MPI_Comm_size(world.mpi_comm(), &size);
-            rank = MPI_Comm_rank(world.mpi_comm(), &rank);
-            if (size == 0)
-              size = 1;
-            shellCount = radialLevels / size;
-            shellRemainder = radialLevels % size;
-
-            // If the ID is less than the remainder, this node gets one extra shell to deal with...
-            if (rank < shellRemainder)
-            {
-              shellCount++;
-            }
-
-            // Get the local starting shell
-            MPI_Scan(&shellCount, &shellEnd, 1, MPI_INT, MPI_SUM, world.mpi_comm());
-            shellStart = shellEnd - shellCount;*/
-
-            // Create the array of shell to deal with
-            shellArray = new double[shellCount];
-            shellSeperation = (limits[2] - limits[1]) / radialLevels;
-            shellStart = 0;
-            ppr = new int[shellCount];
-            localParticleCount = 0;
-            radiusTotal = 0;
-
-            for (int i = 0; i < shellCount; ++i)
-              {
-                // Calculate radius of each shell
-                radiusTotal += shellArray[i] = limits[1] + (shellSeperation * (shellStart + i));
-              }
-
-            for (int i = 0; i < shellCount; ++i)
-              {
-                // Calculate amount of particles per shell.
-                // Number of particles depend on the portion of the radius that this shell is in (i.e., more radius = more particles)
-                ppr[i] = round(total_num_particles * shellArray[i] / radiusTotal);
-                //cout << "Shell " << i << ": " << ppr[i] << " particles.\n";
-                localParticleCount += ppr[i];
-              }
-
-            //To give each particle a unique ID, add IDs throughout all nodes
-            //MPI_Scan(&localParticleCount, &endID, 1, MPI_INT, MPI_SUM, world.mpi_comm());
-            //startID = endID - localParticleCount;
-
-            //Since we generate each particle on each processor, the above is irrelevant
-            startID = 0;
-
-            uniform_radial_particles_in_subdomain(world, startID, shellArray, ppr, limits, shellCount);
-
-            delete ppr;
-            delete shellArray;
-
-            gettimeofday (&tp, &tzp);
-            wall_seconds = ((double) tp.tv_sec + (double) tp.tv_usec * 1.e-6) - wall_seconds;
-            cpu_seconds = ((double)clock() / CLOCKS_PER_SEC) - cpu_seconds;
-
-            std::cout << "Time taken (wall): " << wall_seconds << "\n";
-            std::cout << "Time taken (cpu) : " << cpu_seconds  << "\n";
-
-          };
+           uniformly_distributed_particles_in_subdomain(world, total_num_particles, 0);
+          }
 
 
           /**
@@ -146,144 +75,121 @@ namespace aspect
            */
         template <int dim>
           void
-          UniformBox<dim>::uniform_random_particles_in_subdomain (Particle::World<dim> &world,
+          UniformBox<dim>::uniformly_distributed_particles_in_subdomain (Particle::World<dim> &world,
                                                       const unsigned int num_particles,
                                                       const unsigned int start_id)
-												         {
-            unsigned int cur_id;
-            cur_id = start_id;
-            //std::cout << "Pre-Dim\n";
-            if (dim == 3)
+                                                      {
+          unsigned int cur_id = start_id;
+
+          const Tensor<1,dim> P_diff = P_max - P_min;
+          const double totalDiff = P_diff[0] + P_diff[1] + P_diff[2];
+          std_cxx11::array<double,dim> nParticles;
+          std_cxx11::array<double,dim> Particle_separation;
+
+          ///Amount of particles is the total amount of particles, divided by length of each axis
+          for (unsigned int i = 0; i < dim; ++i)
+            {
+              nParticles[i] = round(num_particles * P_diff[i] / totalDiff);
+              Particle_separation[i] = P_diff[i] / nParticles[i];
+            }
+
+          for (double x = P_min[0]; x < P_max[0]; x+= Particle_separation[0])
+            {
+              for (double y = P_min[1]; y < P_max[1]; y += Particle_separation[1])
+                {
+                  if (dim == 2)
+                      generate_particle(world,Point<dim> (x,y),cur_id++);
+                  if (dim == 3)
+                    for (double z = P_min[2]; z < P_max[2]; z += Particle_separation[2])
+                      generate_particle(world,Point<dim> (x,y,z),cur_id++);
+                }
+            }
+                                                      }
+        template <int dim>
+        void
+        UniformBox<dim>::generate_particle(Particle::World<dim> &world,
+                                           const Point<dim> &position,
+                                           const unsigned int id)
+            {
+              typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
+                  (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position)).first;;
+
+              if (it->is_locally_owned())
+                {
+                  //Only try to add the point if the cell it is in, is on this processor
+                  BaseParticle<dim> new_particle(position, id);
+                  world.add_particle(new_particle, std::make_pair(it->level(), it->index()));
+                }
+            }
+
+
+        template <int dim>
+        void
+        UniformBox<dim>::declare_parameters (ParameterHandler &prm)
+        {
+          prm.enter_subsection("Postprocess");
+          {
+            prm.enter_subsection("Tracers");
+            {
+              prm.enter_subsection("Generators");
               {
-                double xDiff = limits[2] - limits[1];
-                double yDiff = limits[4] - limits[3];
-                double zDiff = limits[6] - limits[5];
-                double totalDiff = xDiff + yDiff + zDiff;
-                int xParticles, yParticles, zParticles;
+                prm.declare_entry ("Minimal x", "0",
+                                   Patterns::Double (),
+                                   "Minimal x coordinate for the region of tracers.");
+                prm.declare_entry ("Maximal x", "1",
+                                   Patterns::Double (),
+                                   "Maximal x coordinate for the region of tracers.");
+                prm.declare_entry ("Minimal y", "0",
+                                   Patterns::Double (),
+                                   "Minimal y coordinate for the region of tracers.");
+                prm.declare_entry ("Maximal y", "1",
+                                   Patterns::Double (),
+                                   "Maximal y coordinate for the region of tracers.");
+                prm.declare_entry ("Minimal z", "0",
+                                   Patterns::Double (),
+                                   "Minimal z coordinate for the region of tracers.");
+                prm.declare_entry ("Maximal z", "1",
+                                   Patterns::Double (),
+                                   "Maximal z coordinate for the region of tracers.");
 
-                ///Amount of particles is the total amount of particles, divided by length of each axis
-                xParticles = round(localParticleCount * xDiff / totalDiff);
-                yParticles = round(localParticleCount * yDiff / totalDiff);
-                zParticles = round(localParticleCount * zDiff / totalDiff);
+              }
+            }
+            prm.leave_subsection();
+          }
+          prm.leave_subsection();
+        }
 
-                //xParticles = floor(pow(localParticleCount, (1/3)) * xDiff / totalDiff);
-                //yParticles = floor(pow(localParticleCount, (1/3)) * yDiff / totalDiff);
-                //zParticles = floor(pow(localParticleCount, (1/3)) * zDiff / totalDiff);
 
-                double xSeperation, ySeperation, zSeperation;
-                xSeperation = xDiff / xParticles;
-                ySeperation = yDiff / yParticles;
-                zSeperation = zDiff / zParticles;
+        template <int dim>
+        void
+        UniformBox<dim>::parse_parameters (ParameterHandler &prm)
+        {
+          prm.enter_subsection("Postprocess");
+          {
+            prm.enter_subsection("Tracers");
+            {
+              prm.enter_subsection("Generators");
+              {
+                P_min(0) = prm.get_double ("Minimal x");
+                P_max(0) = prm.get_double ("Maximal x");
+                P_min(1) = prm.get_double ("Minimal y");
+                P_max(1) = prm.get_double ("Maximal y");
 
-                for (double i = limits[1]; i < limits[2]; i+= xSeperation)
+                if (dim ==3)
                   {
-                    for (double j = limits[3]; j < limits[4]; j += ySeperation)
-                      {
-                        for (double k = limits[5]; k < limits[6]; k += zSeperation)
-                          {
-                            Point<dim> newPoint (i,j,k);
-                            cur_id++;
-                            try
-                              {
-                                //std::cout << "Making a point: <" << newPoint << ">\n" << "Spherical coords: [" << shell[i] << ", " << theta << ", " << phi << "]\n";
-
-                                //Modify the find_active_cell_around_point to only search for nearest vertex  and adj. cells, instead of searching all cells in the simulation
-
-                                typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
-                                  (GridTools::find_active_cell_around_point<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
-                                  //(GridTools::find_active_cell_around_point_quick<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
-                                //std::cout << "Point successful!\n";
-
-                                if (it->is_locally_owned())
-                                  {
-                                    //Only try to add the point if the cell it is in, is on this processor
-                                    BaseParticle<dim> new_particle(newPoint, cur_id);
-                                    world.add_particle(new_particle, std::make_pair(it->level(), it->index()));
-                                  }
-                              }
-                            catch (...)
-                              {
-                                //A point wasn't in an available cell, this might be because it isn't local; we can ignore it
-
-                                //std::cout << "Point failed.\n";
-                                //Allow this loss for now
-                                //AssertThrow (false, ExcMessage ("Couldn't generate particle (Shell too close to boundary?)."));
-                              }
-                          }
-                      }
+                    P_min(2) = prm.get_double ("Minimal z");
+                    P_max(2) = prm.get_double ("Maximal z");
                   }
               }
-            else if (dim == 2)
-              {
-                //std::cout << "Dim-2 Early\n";
-                double xDiff = limits[2] - limits[1];
-                double yDiff = limits[4] - limits[3];
-                double totalDiff = xDiff + yDiff;
-                int xParticles, yParticles;
-
-                ///Amount of particles is the total amount of particles, divided by length of each axis
-                xParticles = round(sqrt(localParticleCount));
-                yParticles = round(localParticleCount / xParticles);
-
-                //std::cout << "limits[2]: " << limits[2] << "\nlimits[1]: " << limits[1] << "\n";
-                //std::cout << "limits[4]: " << limits[4] << "\nlimits[3]: " << limits[3] << "\n";
-
-                //std::cout << "xParts: " << xParticles << "\nxDiff: " << xDiff << "\n";
-                //std::cout << "yParts: " << yParticles << "\nyDiff: " << yDiff << "\n";
-
-
-                //return;
-
-                double xSeperation, ySeperation;
-                xSeperation = xDiff / xParticles;
-                ySeperation = yDiff / yParticles;
-
-                //std::cout << "xSeperation: " << xSeperation << "\n";
-                //std::cout << "ySeperation: " << ySeperation << "\n";
-
-                //std::cout << "Dim-2 Pre-Loop\n";
-                for (double i = limits[1]; i < limits[2]; i+= xSeperation)
-                  {
-                    //std::cout << "Dim-2 Loop I:" << i << " | " << limits[2] << "\n";
-                    for (double j = limits[3]; j < limits[4]; j += ySeperation)
-                      {
-                        //std::cout << "  Dim-2 Loop J:" << j << " | " << limits[4] << "\n";
-                        Point<dim> newPoint (i,j);
-                        cur_id++;
-                        try
-                          {
-                            //std::cout << "Making a point: <" << newPoint << ">\n" << "Spherical coords: [" << shell[i] << ", " << theta << ", " << phi << "]\n";
-
-                            //Modify the find_active_cell_around_point to only search for nearest vertex  and adj. cells, instead of searching all cells in the simulation
-
-                            typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
-                              (GridTools::find_active_cell_around_point<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
-                            //(GridTools::find_active_cell_around_point_quick<> (*(world.get_mapping()), *(world.get_triangulation()), newPoint)).first;
-                            //std::cout << "Point successful!\n";
-
-                            if (it->is_locally_owned())
-                              {
-                                //Only try to add the point if the cell it is in, is on this processor
-                                T new_particle(newPoint, cur_id);
-                                world.add_particle(new_particle, std::make_pair(it->level(), it->index()));
-                              }
-                          }
-                        catch (...)
-                          {
-                            //A point wasn't in an available cell, this might be because it isn't local; we can ignore it
-
-                            std::cout << "Point failed.\n";
-                            //Allow this loss for now
-                            AssertThrow (false, ExcMessage ("Couldn't generate particle (Shell too close to boundary?)."));
-                          }
-                      }
-                  }
-              }
-          };
-      };
+              prm.leave_subsection();
+            }
+            prm.leave_subsection();
+          }
+          prm.leave_subsection();
+        }
+      }
     }
   }
-}
 
 
 // explicit instantiations
@@ -293,10 +199,10 @@ namespace aspect
   {
     namespace Generator
     {
-    ASPECT_REGISTER_PARTICLE_GENERATOR(UniformBox,
-                                               "uniform box",
-                                               "Generate a uniform distribution of particles"
-                                               " over a rectangular domain in or or 3D.")
+      ASPECT_REGISTER_PARTICLE_GENERATOR(UniformBox,
+                                         "uniform box",
+                                         "Generate a uniform distribution of particles"
+                                         " over a rectangular domain in or or 3D.")
     }
   }
 }
