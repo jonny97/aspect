@@ -53,7 +53,9 @@ namespace aspect
           {
           unsigned int cur_id = 0;
           const Tensor<1,dim> P_diff = P_max - P_min;
-          const double totalDiff = P_diff[0] + P_diff[1] + P_diff[2];
+          double totalDiff(0.0);
+          for (unsigned int i = 0; i < dim; ++i)
+            totalDiff += P_diff[i];
           std_cxx11::array<double,dim> nParticles;
           std_cxx11::array<double,dim> Particle_separation;
 
@@ -103,7 +105,7 @@ namespace aspect
           {
             prm.enter_subsection("Tracers");
             {
-              prm.enter_subsection("Generators");
+              prm.enter_subsection("Generator");
               {
                 prm.enter_subsection("Uniform box");
                 {
@@ -144,7 +146,7 @@ namespace aspect
           {
             prm.enter_subsection("Tracers");
             {
-              prm.enter_subsection("Generators");
+              prm.enter_subsection("Generator");
               {
                 prm.enter_subsection("Uniform box");
                 {

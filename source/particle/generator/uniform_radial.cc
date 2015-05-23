@@ -170,7 +170,7 @@ namespace aspect
           {
             prm.enter_subsection("Tracers");
             {
-              prm.enter_subsection("Generators");
+              prm.enter_subsection("Generator");
               {
                 prm.enter_subsection("Uniform radial");
                 {
@@ -214,7 +214,7 @@ namespace aspect
           {
             prm.enter_subsection("Tracers");
             {
-              prm.enter_subsection("Generators");
+              prm.enter_subsection("Generator");
               {
                 prm.enter_subsection("Uniform radial");
                 {
