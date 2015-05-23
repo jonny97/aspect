@@ -115,7 +115,7 @@ namespace aspect
                       for (double theta = P_min[2]; theta < P_max[2]; theta += thetaSeperation)
                         {
                           spherical_coordinates[2] = theta;
-                          const Point<dim> newPoint = Utilities::cartesian_coordinates<dim>(spherical_coordinates);
+                          const Point<dim> newPoint = Utilities::cartesian_coordinates<dim>(spherical_coordinates) + P_center;
 
                           cur_id++;
 
@@ -143,7 +143,7 @@ namespace aspect
                   for (double phi = P_min[1]; phi < P_max[1]; phi += phiSeperation)
                     {
                       spherical_coordinates[1] = phi;
-                      const Point<dim> newPoint = Utilities::cartesian_coordinates<dim>(spherical_coordinates);
+                      const Point<dim> newPoint = Utilities::cartesian_coordinates<dim>(spherical_coordinates) + P_center;
 
                       //Modify the find_active_cell_around_point to only search for nearest vertex  and adj. cells, instead of searching all cells in the simulation
                       typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
@@ -195,6 +195,15 @@ namespace aspect
                 prm.declare_entry ("Radial layers", "1",
                                    Patterns::Integer(1),
                                    "The number of radial layers of particles that will be generated.");
+                prm.declare_entry ("Center x", "0",
+                                   Patterns::Double (),
+                                   "x coordinate for the center of the region of tracers.");
+                prm.declare_entry ("Center y", "0",
+                                   Patterns::Double (),
+                                   "y coordinate for the center of the region of tracers.");
+                prm.declare_entry ("Center z", "0",
+                                   Patterns::Double (),
+                                   "z coordinate for the center of the region of tracers.");
                 }
                 prm.leave_subsection();
               }
@@ -223,10 +232,14 @@ namespace aspect
                   P_min[1] = prm.get_double ("Minimal longitude");
                   P_max[1] = prm.get_double ("Maximal longitude");
 
+                  P_center[0] = prm.get_double ("Center x");
+                  P_center[1] = prm.get_double ("Center y");
+
                   if (dim ==3)
                     {
                       P_min[2] = prm.get_double ("Minimal latitude");
                       P_max[2] = prm.get_double ("Maximal latitude");
+                      P_center[2] = prm.get_double ("Center z");
                     }
 
                   radial_layers = prm.get_integer("Radial layers");
