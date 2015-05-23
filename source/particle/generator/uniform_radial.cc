@@ -180,16 +180,16 @@ namespace aspect
                 prm.declare_entry ("Maximal radius", "1",
                                    Patterns::Double (),
                                    "Maximal radial coordinate for the region of tracers.");
-                prm.declare_entry ("Minimal phi", "0",
+                prm.declare_entry ("Minimal longitude", "0",
                                    Patterns::Double (),
                                    "Minimal longitude coordinate for the region of tracers.");
-                prm.declare_entry ("Maximal phi", "3.1415",
+                prm.declare_entry ("Maximal longitude", "3.1415",
                                    Patterns::Double (),
                                    "Maximal longitude coordinate for the region of tracers.");
-                prm.declare_entry ("Minimal theta", "0",
+                prm.declare_entry ("Minimal latitude", "0",
                                    Patterns::Double (),
                                    "Minimal latitude coordinate for the region of tracers.");
-                prm.declare_entry ("Maximal theta", "3.1415",
+                prm.declare_entry ("Maximal latitude", "3.1415",
                                    Patterns::Double (),
                                    "Maximal latitude coordinate for the region of tracers.");
                 prm.declare_entry ("Radial layers", "1",
