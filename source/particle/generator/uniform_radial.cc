@@ -52,7 +52,7 @@ namespace aspect
 		UniformRadial<dim>::generate_particles(Particle::World<dim> &world,
                                                         const double total_num_particles)
         {
-           int startID = 0;
+           unsigned int startID = 0;
            double radiusTotal;
 
            // Create the array of shell to deal with
@@ -61,13 +61,13 @@ namespace aspect
            std::vector<unsigned int> ppr(radial_layers);
            radiusTotal = 0;
 
-           for (int i = 0; i < radial_layers; ++i)
+           for (unsigned int i = 0; i < radial_layers; ++i)
              {
                // Calculate radius of each shell
                radiusTotal += shell_radius[i] = P_min[0] + (shell_seperation * i);
              }
 
-           for (int i = 0; i < radial_layers; ++i)
+           for (unsigned int i = 0; i < radial_layers; ++i)
              {
                // Calculate amount of particles per shell.
                // Number of particles depend on the portion of the radius that this shell is in (i.e., more radius = more particles)
@@ -91,7 +91,7 @@ namespace aspect
 
           if (dim == 3)
             {
-              for (int i = 0; i < radial_layers; i++)
+              for (unsigned int i = 0; i < radial_layers; i++)
                 {
                   spherical_coordinates[0] = shell_radius[i];
                   const int thetaParticles = floor(sqrt(particlesPerRadius[i]));
@@ -135,7 +135,7 @@ namespace aspect
             }
           else if (dim == 2)
             {
-              for (int i = 0; i < radial_layers; i++)
+              for (unsigned int i = 0; i < radial_layers; i++)
                 {
                   spherical_coordinates[0] = shell_radius[i];
                   const double phiSeperation = (P_max[1] - P_min[1]) / particlesPerRadius[i];

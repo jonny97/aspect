@@ -589,7 +589,8 @@ namespace aspect
           i=0;
           while (it != particles.end() && it->first == cur_cell)
             {
-              if (it->second.vel_check()) particle_points[i++] = it->second.get_location();
+              if (it->second.vel_check())
+                particle_points[i++] = it->second.get_location();
               it++;
             }
           result.resize(i, single_res);
