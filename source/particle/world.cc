@@ -308,21 +308,24 @@ namespace aspect
     void
     World<dim>::find_all_cells()
     {
-      typename std::multimap<LevelInd, BaseParticle<dim> >::iterator   it;
-      std::multimap<LevelInd, BaseParticle<dim> >                      tmp_map;
-      LevelInd                                        found_cell;
+      std::multimap<LevelInd, BaseParticle<dim> > tmp_map;
 
-      // Find the cells that the particles moved to
+      // Find the cells that the particles moved to.
+      // Note that the iterator in the following loop is increased in a
+      // very particular way, because it is changed, if elements
+      // get erased. A change can result in invalid memory access.
       tmp_map.clear();
+      typename std::multimap<LevelInd, BaseParticle<dim> >::iterator   it;
       for (it=particles.begin(); it!=particles.end();)
         {
-          found_cell = find_cell(it->second, it->first);
+          const LevelInd found_cell = find_cell(it->second, it->first);
           if (found_cell != it->first)
             {
               tmp_map.insert(std::make_pair(found_cell, it->second));
               particles.erase(it++);
             }
-          else ++it;
+          else
+            ++it;
         }
       particles.insert(tmp_map.begin(),tmp_map.end());
     }
