@@ -512,35 +512,30 @@ namespace aspect
     {
       Vector<double>                single_res(dim);
       std::vector<Vector<double> >  result(50,single_res);
-      Point<dim>                    velocity;
-      unsigned int                  i, num_cell_particles;
-      LevelInd                      cur_cell;
-      typename std::multimap<LevelInd, BaseParticle<dim> >::iterator  it, sit;
-      typename DoFHandler<dim>::active_cell_iterator  found_cell;
       std::vector<Point<dim> >      particle_points(50);
 
       const DoFHandler<dim> *dof_handler = &(this->get_dof_handler());
-      const Mapping<dim> *mapping = &(this->get_mapping());
       const typename parallel::distributed::Triangulation<dim> *triangulation = &(this->get_triangulation());
 
       // Prepare the field function
-      Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector> fe_value(*dof_handler, solution, *mapping);
+      Functions::FEFieldFunction<dim, DoFHandler<dim>, LinearAlgebra::BlockVector> fe_value(*dof_handler, solution, this->get_mapping());
 
       // Get the velocity for each cell at a time so we can take advantage of knowing the active cell
-      for (it=particles.begin(); it!=particles.end();)
+      for (typename std::multimap<LevelInd, BaseParticle<dim> >::iterator
+          it=particles.begin(); it!=particles.end();)
         {
           // Save a pointer to the first particle in this cell
-          sit = it;
+          const typename std::multimap<LevelInd, BaseParticle<dim> >::iterator sit = it;
 
           // Get the current cell
-          cur_cell = it->first;
+          const LevelInd cur_cell = it->first;
 
           // Resize the vectors to the number of particles in this cell
-          num_cell_particles = particles.count(cur_cell);
+          const unsigned int num_cell_particles = particles.count(cur_cell);
           particle_points.resize(num_cell_particles);
 
           // Get a vector of the particle locations in this cell
-          i=0;
+          unsigned int i = 0;
           while (it != particles.end() && it->first == cur_cell)
             {
               if (it->second.vel_check())
@@ -551,7 +546,7 @@ namespace aspect
           particle_points.resize(i);
 
           // Get the cell the particle is in
-          found_cell = typename DoFHandler<dim>::active_cell_iterator(triangulation, cur_cell.first, cur_cell.second, dof_handler);
+          const typename DoFHandler<dim>::active_cell_iterator found_cell (triangulation, cur_cell.first, cur_cell.second, dof_handler);
 
           // Interpolate the velocity field for each of the particles
           fe_value.set_active_cell(found_cell);
@@ -564,7 +559,9 @@ namespace aspect
             {
               if (it->second.vel_check())
                 {
-                  for (int d=0; d<dim; ++d) velocity(d) = result[i](d);
+                  Point<dim> velocity;
+                  for (int d=0; d<dim; ++d)
+                    velocity(d) = result[i](d);
                   it->second.set_velocity(velocity);
                   i++;
                 }
