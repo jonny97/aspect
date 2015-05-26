@@ -262,17 +262,9 @@ namespace aspect
     void
     World<dim>::init()
     {
-      int                                   *block_lens;
-      MPI_Aint                              *indices;
-      MPI_Datatype                          *old_types;
-      std::vector<MPIDataInfo>::iterator    it;
-      int                                   num_entries, res, i;
-
       // Assert that all necessary parameters have been set
       AssertThrow (integrator != NULL, ExcMessage ("Particle world integrator must be set before calling init()."));
       AssertThrow (property_manager != NULL, ExcMessage ("Particle world integrator must be set before calling init()."));
-
-      const typename std::multimap<LevelInd, BaseParticle<dim> >::iterator   pit (particles.begin());
 
       // Construct MPI data type for this particle
       property_manager->add_mpi_types(data_info);
@@ -283,11 +275,11 @@ namespace aspect
       this->get_triangulation().signals.post_refinement.connect(std_cxx11::bind(&World::mesh_changed, std_cxx1x::ref(*this)));
 
       // Set up the block lengths, indices and internal types
-      num_entries = data_info.size();
-      block_lens = new int[num_entries];
-      indices = new MPI_Aint[num_entries];
-      old_types = new MPI_Datatype[num_entries];
-      for (i=0; i<num_entries; ++i)
+      const unsigned int num_entries = data_info.size();
+      int *block_lens = new int[num_entries];
+      MPI_Aint *indices = new MPI_Aint[num_entries];
+      MPI_Datatype *old_types = new MPI_Datatype[num_entries];
+      for (unsigned int i=0; i<num_entries; ++i)
         {
           block_lens[i] = data_info[i].n_elements;
           indices[i] = (i == 0 ? 0 : indices[i-1]+sizeof(double)*data_info[i-1].n_elements);
@@ -295,7 +287,7 @@ namespace aspect
         }
 
       // Create and commit the MPI type
-      res = MPI_Type_struct(num_entries, block_lens, indices, old_types, &particle_type);
+      int res = MPI_Type_struct(num_entries, block_lens, indices, old_types, &particle_type);
       if (res != MPI_SUCCESS) exit(-1);
 
       res = MPI_Type_commit(&particle_type);
