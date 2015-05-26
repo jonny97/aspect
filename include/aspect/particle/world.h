@@ -66,15 +66,6 @@ namespace aspect
         unsigned int                    world_size;
         unsigned int                    self_rank;
 
-        /// Buffers indicating how many particles to send/recv to each process
-        int                             *num_send, *num_recv;
-        /// Total number of particles to send/recv
-        int                             total_send, total_recv;
-        /// Send/recv offset into data buffer for each process
-        int                             *send_offset, *recv_offset;
-        /// MPI_Request object buffers to allow for non-blocking communication
-        MPI_Request                     *send_reqs, *recv_reqs;
-
         /*
          * Information about the data of particles
          */

@@ -76,10 +76,7 @@ namespace aspect
     World<dim>::World()
     {
       triangulation_changed = true;
-      total_send = total_recv = 0;
       world_size = self_rank = 0;
-      num_send = num_recv = send_offset = recv_offset = NULL;
-      send_reqs = recv_reqs = NULL;
       integrator = NULL;
     }
 
@@ -87,13 +84,6 @@ namespace aspect
     World<dim>::~World()
     {
       if (world_size) MPI_Type_free(&particle_type);
-
-      if (num_send) delete [] num_send;
-      if (num_recv) delete [] num_recv;
-      if (send_offset) delete [] send_offset;
-      if (recv_offset) delete [] recv_offset;
-      if (send_reqs) delete [] send_reqs;
-      if (recv_reqs) delete [] recv_reqs;
     }
 
     template <int dim>
@@ -320,13 +310,6 @@ namespace aspect
       world_size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
       self_rank  = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
 
-      // Initialize send/recv structures appropriately
-      num_send = new int[world_size];
-      num_recv = new int[world_size];
-      send_offset = new int[world_size];
-      recv_offset = new int[world_size];
-      send_reqs = new MPI_Request[world_size];
-      recv_reqs = new MPI_Request[world_size];
     }
 
     template <int dim>
@@ -470,6 +453,14 @@ namespace aspect
       std::vector<BaseParticle<dim> >      send_particles;
       typename std::vector<BaseParticle<dim> >::const_iterator    sit;
 
+      // Initialize send/recv structures appropriately
+      int *num_send = new int[world_size];
+      int *num_recv = new int[world_size];
+      int *send_offset = new int[world_size];
+      int *recv_offset = new int[world_size];
+      MPI_Request *send_reqs = new MPI_Request[world_size];
+      MPI_Request *recv_reqs = new MPI_Request[world_size];
+
       // Go through the particles and take out those which need to be moved to another processor
       for (it=particles.begin(); it!=particles.end();)
         {
@@ -485,7 +476,7 @@ namespace aspect
         }
 
       // Determine the total number of particles we will send to other processors
-      total_send = send_particles.size();
+      const int total_send = send_particles.size();
       for (rank=0; rank<world_size; ++rank)
         {
           if (rank != self_rank) num_send[rank] = total_send;
@@ -496,7 +487,7 @@ namespace aspect
       // Notify other processors how many particles we will be sending
       MPI_Alltoall(num_send, 1, MPI_INT, num_recv, 1, MPI_INT, this->get_mpi_communicator());
 
-      total_recv = 0;
+      int total_recv = 0;
       for (rank=0; rank<world_size; ++rank)
         {
           recv_offset[rank] = total_recv;
@@ -543,6 +534,13 @@ namespace aspect
               particles.insert(std::make_pair(found_cell, recv_particle));
             }
         }
+
+      if (num_send) delete [] num_send;
+      if (num_recv) delete [] num_recv;
+      if (send_offset) delete [] send_offset;
+      if (recv_offset) delete [] recv_offset;
+      if (send_reqs) delete [] send_reqs;
+      if (recv_reqs) delete [] recv_reqs;
     }
 
     template <int dim>
