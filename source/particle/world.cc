@@ -29,13 +29,9 @@ namespace aspect
     LevelInd
     World<dim>::recursive_find_cell(BaseParticle<dim> &particle,
                                     const LevelInd cur_cell)
-        {
-      typename parallel::distributed::Triangulation<dim>::cell_iterator it, found_cell, child_cell;
-      unsigned int    child_num;
-      LevelInd        res, child_li;
-
+    {
       // If the particle is in the specified cell
-      found_cell = typename parallel::distributed::Triangulation<dim>::cell_iterator(&(this->get_triangulation()), cur_cell.first, cur_cell.second);
+      typename parallel::distributed::Triangulation<dim>::cell_iterator found_cell(&(this->get_triangulation()), cur_cell.first, cur_cell.second);
       if (found_cell != this->get_triangulation().end() && found_cell->point_inside(particle.get_location()))
         {
           // If the cell is active, we're at the finest level of refinement and can finish
@@ -47,11 +43,11 @@ namespace aspect
           else
             {
               // Otherwise we need to search deeper
-              for (child_num=0; child_num<found_cell->n_children(); ++child_num)
+              for (unsigned int child_num=0; child_num<found_cell->n_children(); ++child_num)
                 {
-                  child_cell = found_cell->child(child_num);
-                  child_li = LevelInd(child_cell->level(), child_cell->index());
-                  res = recursive_find_cell(particle, child_li);
+                  const typename parallel::distributed::Triangulation<dim>::cell_iterator child_cell = found_cell->child(child_num);
+                  const LevelInd child_li(child_cell->level(), child_cell->index());
+                  const LevelInd res = recursive_find_cell(particle, child_li);
                   if (res.first != -1 && res.second != -1) return res;
                 }
             }
@@ -59,7 +55,7 @@ namespace aspect
 
       // If we still can't find it, return false
       return LevelInd(-1, -1);
-        }
+   }
 
         /**
          * Called by listener functions to indicate that the mesh of this
