@@ -25,6 +25,7 @@
 #include <aspect/particle/world.h>
 #include <aspect/plugins.h>
 
+#include <deal.II/base/parameter_handler.h>
 
 namespace aspect
 {
