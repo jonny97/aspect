@@ -51,7 +51,7 @@ namespace aspect
 
         template <int dim>
           void
-          EulerIntegrator<dim>::add_mpi_types(std::vector<MPIDataInfo> &data_info)
+          EulerIntegrator<dim>::add_mpi_types(std::vector<MPIDataInfo> &)
           {}
 
         template <int dim>
@@ -62,13 +62,16 @@ namespace aspect
           }
         template <int dim>
           unsigned int
-          EulerIntegrator<dim>::read_data(const std::vector<double> &data, const unsigned int &pos, const double &id_num)
+          EulerIntegrator<dim>::read_data(const std::vector<double> &,
+                                          const unsigned int &pos,
+                                          const double &)
           {
             return pos;
           }
         template <int dim>
           void
-          EulerIntegrator<dim>::write_data(std::vector<double> &data, const double &id_num) const
+          EulerIntegrator<dim>::write_data(std::vector<double> &,
+                                           const double &) const
           {
           }
     }

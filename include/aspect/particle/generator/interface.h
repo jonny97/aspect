@@ -76,7 +76,7 @@ namespace aspect
            */
           static
           void
-          declare_parameters (ParameterHandler &prm);
+          declare_parameters (ParameterHandler &);
 
           /**
            * Read the parameters this class declares from the parameter file.
@@ -86,7 +86,7 @@ namespace aspect
            */
           virtual
           void
-          parse_parameters (ParameterHandler &prm);
+          parse_parameters (ParameterHandler &);
       };
 
 /**

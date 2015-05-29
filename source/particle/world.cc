@@ -342,7 +342,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::advance_timestep(const double timestep, const LinearAlgebra::BlockVector &solution)
+    World<dim>::advance_timestep(const double timestep)
     {
       bool        continue_integrator = true;
 

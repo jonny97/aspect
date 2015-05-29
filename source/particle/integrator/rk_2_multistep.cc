@@ -62,8 +62,6 @@ namespace aspect
 
         for (; it!=particles.end(), vel!=velocities.end(), old_vel!=old_velocities.end(); ++it,++vel,++old_vel)
           {
-            const double id_num = it->second.get_id();
-            const Point<dim> loc = it->second.get_location();
             const std::vector<double> data = it->second.get_properties();
 
             // TODO: this needs to work with arbitrary property numbers

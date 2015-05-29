@@ -182,7 +182,7 @@ namespace aspect
          * movement
          * @param [in] solution Current Aspect solution vector
          */
-        void advance_timestep(const double timestep, const LinearAlgebra::BlockVector &solution);
+        void advance_timestep(const double timestep);
 
         void move_particles_back_in_mesh();
 
