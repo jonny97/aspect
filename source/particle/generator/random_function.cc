@@ -40,7 +40,10 @@ namespace aspect
            * @param[in] The MPI communicator for synchronizing particle generation.
            */
         template <int dim>
-        RandomFunction<dim>::RandomFunction() {}
+        RandomFunction<dim>::RandomFunction()
+        :
+        random_number_generator(5432)
+        {}
 
           /**
            * Generate a uniformly randomly distributed set of particles in the current triangulation.
@@ -70,7 +73,7 @@ namespace aspect
           typename DoFHandler<dim>::active_cell_iterator
           cell = this->get_dof_handler().begin_active(),
           endc = this->get_dof_handler().end();
-          for (unsigned int i = 0; cell!=endc; ++cell,++i)
+          for (; cell!=endc; ++cell)
             if (cell->is_locally_owned())
               {
                 fe_values.reinit (cell);
@@ -81,13 +84,13 @@ namespace aspect
                 // negative number.
                 double next_cell_weight = 0.0;
                 if (accumulated_cell_weights.size() > 0)
-                  accumulated_cell_weights.back();
+                  next_cell_weight = accumulated_cell_weights.back();
 
                 for (unsigned int q = 0; q < n_quadrature_points; ++q)
-                  next_cell_weight += std::abs(function.value(position[q])) * fe_values.JxW(q);
+                  next_cell_weight += std::fabs(function.value(position[q]) * fe_values.JxW(q));
 
                 // Start from the weight of the previous cell
-                  accumulated_cell_weights.push_back(next_cell_weight);
+                accumulated_cell_weights.push_back(next_cell_weight);
               }
 
           double local_function_integral = accumulated_cell_weights.back();
@@ -106,13 +109,15 @@ namespace aspect
           for (unsigned int i = 1; i <= self_rank; ++i)
             start_weight += local_integrals[i-1];
 
+
           std::map<double, LevelInd> cells;
           // compute the integral weight by quadrature
           cell = this->get_dof_handler().begin_active();
-          for (unsigned int i = 0; cell!=endc; ++cell,++i)
+          for (unsigned int i = 0; cell!=endc; ++cell)
             if (cell->is_locally_owned())
               {
                 cells.insert(std::make_pair(accumulated_cell_weights[i]+start_weight,LevelInd(cell->level(),cell->index())));
+                i++;
               }
 
           // adjust the cell_weights to the local starting weight
@@ -127,7 +132,9 @@ namespace aspect
           const unsigned int end_id   = round(total_num_particles * accumulated_cell_weights.back()  / global_function_integral);
           const unsigned int subdomain_particles = end_id - start_id;
 
-          uniform_random_particles_in_subdomain(world,cells,global_function_integral,total_num_particles, 1.1 * start_id);
+        //  std::cout << "Rank: " << self_rank << ". To generate: " << subdomain_particles << std::endl;
+
+          uniform_random_particles_in_subdomain(world,cells,global_function_integral,start_weight,total_num_particles, 1.1 * start_id);
         }
 
           /**
@@ -146,26 +153,21 @@ namespace aspect
           RandomFunction<dim>::uniform_random_particles_in_subdomain (Particle::World<dim> &world,
                                                                       const std::map<double,LevelInd> &cells,
                                                                       const double global_weight,
+                                                                      const double start_weight,
                                                                       const unsigned int num_particles,
                                                                       const unsigned int start_id)
           {
-        //  std::cout                                  << ". Start_weight: " << cells.front()->first <<
-         //                                               ". End_weight: " << cells.back()first << std::endl;
-
-
             // Pick cells and assign particles at random points inside them
             unsigned int cur_id = start_id;
             for (unsigned int i=0; i<num_particles; ++i)
               {
                 // Select a cell based on relative volume
-                const double random_number =  global_weight * uniform_distribution_01(random_number_generator);
+                const double random_weight =  global_weight * uniform_distribution_01(random_number_generator);
 
-                if((random_number < cells.begin()->first) || (cells.lower_bound(random_number) == cells.end()))
+                if((random_weight < start_weight) || (cells.lower_bound(random_weight) == cells.end()))
                   continue;
 
-                LevelInd select_cell = cells.lower_bound(random_number)->second;
-
-
+                LevelInd select_cell = cells.lower_bound(random_weight)->second;
 
                 const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
                 it (&(this->get_triangulation()), select_cell.first, select_cell.second);

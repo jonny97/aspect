@@ -72,6 +72,7 @@ namespace aspect
            */
           void uniform_random_particles_in_subdomain (Particle::World<dim> &world,
                                                       const std::map<double,LevelInd> &cells,
+                                                      const double global_weight,
                                                       const double start_weight,
                                                       const unsigned int num_particles,
                                                       const unsigned int start_id);
