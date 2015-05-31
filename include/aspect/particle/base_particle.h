@@ -188,7 +188,7 @@ namespace aspect
          *
          * @return The properties of this particle.
          */
-        std::vector<double>&
+        std::vector<double> &
         get_properties ();
 
         /**

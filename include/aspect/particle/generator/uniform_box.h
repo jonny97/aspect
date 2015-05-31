@@ -64,8 +64,8 @@ namespace aspect
            * @param [in] start_id The starting ID to assign to generated particles
            */
           void uniformly_distributed_particles_in_subdomain (Particle::World<dim> &world,
-                                                      const unsigned int num_particles,
-                                                      const unsigned int start_id);
+                                                             const unsigned int num_particles,
+                                                             const unsigned int start_id);
 
           void
           generate_particle(Particle::World<dim> &world,

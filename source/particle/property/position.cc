@@ -40,10 +40,10 @@ namespace aspect
       template <int dim>
       void
       Position<dim>::update_particle(unsigned int data_position,
-                                   std::vector<double> &data,
-                                   const Point<dim> &position,
-                                   const Vector<double> &,
-                                   const std::vector<Tensor<1,dim> > &)
+                                     std::vector<double> &data,
+                                     const Point<dim> &position,
+                                     const Vector<double> &,
+                                     const std::vector<Tensor<1,dim> > &)
       {
         for (unsigned int i = 0; i < dim; ++i)
           data[data_position++] = position[i];

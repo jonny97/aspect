@@ -34,211 +34,209 @@ namespace aspect
     {
       // Generate random uniform distribution of particles over entire simulation domain
 
-          /**
-           * Constructor.
-           *
-           * @param[in] The MPI communicator for synchronizing particle generation.
-           */
-        template <int dim>
-        RandomFunction<dim>::RandomFunction()
+      /**
+       * Constructor.
+       *
+       * @param[in] The MPI communicator for synchronizing particle generation.
+       */
+      template <int dim>
+      RandomFunction<dim>::RandomFunction()
         :
         random_number_generator(5432)
-        {}
+      {}
 
-          /**
-           * Generate a uniformly randomly distributed set of particles in the current triangulation.
-           */
-          // TODO: fix the particle system so it works even with processors assigned 0 cells
-        template <int dim>
-        void
-        RandomFunction<dim>::generate_particles(Particle::World<dim> &world,
-                                                const double total_num_particles)
-        {
-          const unsigned int world_size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
-          const unsigned int self_rank  = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+      /**
+       * Generate a uniformly randomly distributed set of particles in the current triangulation.
+       */
+      // TODO: fix the particle system so it works even with processors assigned 0 cells
+      template <int dim>
+      void
+      RandomFunction<dim>::generate_particles(Particle::World<dim> &world,
+                                              const double total_num_particles)
+      {
+        const unsigned int world_size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+        const unsigned int self_rank  = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
 
-          //evaluate function at all cell midpoints, sort cells according to weight
-          const QMidpoint<dim> quadrature_formula;
-          const unsigned int n_quadrature_points = quadrature_formula.size();
+        //evaluate function at all cell midpoints, sort cells according to weight
+        const QMidpoint<dim> quadrature_formula;
+        const unsigned int n_quadrature_points = quadrature_formula.size();
 
-          FEValues<dim> fe_values (this->get_mapping(),
-                                   this->get_fe(),
-                                   quadrature_formula,
-                                   update_quadrature_points |
-                                   update_JxW_values);
+        FEValues<dim> fe_values (this->get_mapping(),
+                                 this->get_fe(),
+                                 quadrature_formula,
+                                 update_quadrature_points |
+                                 update_JxW_values);
 
-          std::vector<double> accumulated_cell_weights;
+        std::vector<double> accumulated_cell_weights;
 
-          // compute the integral weight by quadrature
-          typename DoFHandler<dim>::active_cell_iterator
-          cell = this->get_dof_handler().begin_active(),
-          endc = this->get_dof_handler().end();
-          for (; cell!=endc; ++cell)
-            if (cell->is_locally_owned())
-              {
-                fe_values.reinit (cell);
-                const std::vector<Point<dim> > position = fe_values.get_quadrature_points();
+        // compute the integral weight by quadrature
+        typename DoFHandler<dim>::active_cell_iterator
+        cell = this->get_dof_handler().begin_active(),
+        endc = this->get_dof_handler().end();
+        for (; cell!=endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              fe_values.reinit (cell);
+              const std::vector<Point<dim> > position = fe_values.get_quadrature_points();
 
-                // Then add the weight of the current cell. Weights are always
-                // interpreted positively, even if the function evaluates to a
-                // negative number.
-                double next_cell_weight = 0.0;
-                if (accumulated_cell_weights.size() > 0)
-                  next_cell_weight = accumulated_cell_weights.back();
+              // Then add the weight of the current cell. Weights are always
+              // interpreted positively, even if the function evaluates to a
+              // negative number.
+              double next_cell_weight = 0.0;
+              if (accumulated_cell_weights.size() > 0)
+                next_cell_weight = accumulated_cell_weights.back();
 
-                for (unsigned int q = 0; q < n_quadrature_points; ++q)
-                  next_cell_weight += std::fabs(function.value(position[q]) * fe_values.JxW(q));
+              for (unsigned int q = 0; q < n_quadrature_points; ++q)
+                next_cell_weight += std::fabs(function.value(position[q]) * fe_values.JxW(q));
 
-                // Start from the weight of the previous cell
-                accumulated_cell_weights.push_back(next_cell_weight);
-              }
+              // Start from the weight of the previous cell
+              accumulated_cell_weights.push_back(next_cell_weight);
+            }
 
-          double local_function_integral = accumulated_cell_weights.back();
-          double global_function_integral;
+        double local_function_integral = accumulated_cell_weights.back();
+        double global_function_integral;
 
-          // Sum the local integrals over all nodes
-          MPI_Allreduce(&local_function_integral, &global_function_integral, 1, MPI_DOUBLE, MPI_SUM, this->get_mpi_communicator());
+        // Sum the local integrals over all nodes
+        MPI_Allreduce(&local_function_integral, &global_function_integral, 1, MPI_DOUBLE, MPI_SUM, this->get_mpi_communicator());
 
-          // Get the local integrals of all processes
-          std::vector<double> local_integrals(world_size);
-          MPI_Allgather(&local_function_integral, 1, MPI_DOUBLE, &(local_integrals[0]), 1, MPI_DOUBLE, this->get_mpi_communicator());
+        // Get the local integrals of all processes
+        std::vector<double> local_integrals(world_size);
+        MPI_Allgather(&local_function_integral, 1, MPI_DOUBLE, &(local_integrals[0]), 1, MPI_DOUBLE, this->get_mpi_communicator());
 
-          // Determine the starting weight of this process, which is the sum of
-          // the weights of all processes with a lower rank
-          double start_weight=0.0;
-          for (unsigned int i = 1; i <= self_rank; ++i)
-            start_weight += local_integrals[i-1];
+        // Determine the starting weight of this process, which is the sum of
+        // the weights of all processes with a lower rank
+        double start_weight=0.0;
+        for (unsigned int i = 1; i <= self_rank; ++i)
+          start_weight += local_integrals[i-1];
 
 
-          std::map<double, LevelInd> cells;
-          // compute the integral weight by quadrature
-          cell = this->get_dof_handler().begin_active();
-          for (unsigned int i = 0; cell!=endc; ++cell)
-            if (cell->is_locally_owned())
-              {
-                cells.insert(std::make_pair(accumulated_cell_weights[i]+start_weight,LevelInd(cell->level(),cell->index())));
-                i++;
-              }
+        std::map<double, LevelInd> cells;
+        // compute the integral weight by quadrature
+        cell = this->get_dof_handler().begin_active();
+        for (unsigned int i = 0; cell!=endc; ++cell)
+          if (cell->is_locally_owned())
+            {
+              cells.insert(std::make_pair(accumulated_cell_weights[i]+start_weight,LevelInd(cell->level(),cell->index())));
+              i++;
+            }
 
-          // adjust the cell_weights to the local starting weight
-          for (unsigned int i = 0; i < accumulated_cell_weights.size(); ++i)
-            accumulated_cell_weights[i] += start_weight;
+        // adjust the cell_weights to the local starting weight
+        for (unsigned int i = 0; i < accumulated_cell_weights.size(); ++i)
+          accumulated_cell_weights[i] += start_weight;
 
-          // Assign this subdomain the appropriate fraction
-          const double subdomain_fraction = local_function_integral / global_function_integral;
+        // Assign this subdomain the appropriate fraction
+        const double subdomain_fraction = local_function_integral / global_function_integral;
 
-          // Calculate start and end IDs so there are no gaps
-          const unsigned int start_id = round(total_num_particles * start_weight / global_function_integral) + 1;
-          const unsigned int end_id   = round(total_num_particles * accumulated_cell_weights.back()  / global_function_integral);
-          const unsigned int subdomain_particles = end_id - start_id;
+        // Calculate start and end IDs so there are no gaps
+        const unsigned int start_id = round(total_num_particles * start_weight / global_function_integral) + 1;
+        const unsigned int end_id   = round(total_num_particles * accumulated_cell_weights.back()  / global_function_integral);
+        const unsigned int subdomain_particles = end_id - start_id;
 
         //  std::cout << "Rank: " << self_rank << ". To generate: " << subdomain_particles << std::endl;
 
-          uniform_random_particles_in_subdomain(world,cells,global_function_integral,start_weight,total_num_particles, 1.1 * start_id);
-        }
+        uniform_random_particles_in_subdomain(world,cells,global_function_integral,start_weight,total_num_particles, 1.1 * start_id);
+      }
 
-          /**
-           * Generate a set of particles uniformly randomly distributed within the
-           * specified triangulation. This is done using "roulette wheel" style
-           * selection weighted by cell volume. We do cell-by-cell assignment of
-           * particles because the decomposition of the mesh may result in a highly
-           * non-rectangular local mesh which makes uniform particle distribution difficult.
-           *
-           * @param [in] world The particle world the particles will exist in
-           * @param [in] num_particles The number of particles to generate in this subdomain
-           * @param [in] start_id The starting ID to assign to generated particles
-           */
-        template <int dim>
-          void
-          RandomFunction<dim>::uniform_random_particles_in_subdomain (Particle::World<dim> &world,
-                                                                      const std::map<double,LevelInd> &cells,
-                                                                      const double global_weight,
-                                                                      const double start_weight,
-                                                                      const unsigned int num_particles,
-                                                                      const unsigned int start_id)
+      /**
+       * Generate a set of particles uniformly randomly distributed within the
+       * specified triangulation. This is done using "roulette wheel" style
+       * selection weighted by cell volume. We do cell-by-cell assignment of
+       * particles because the decomposition of the mesh may result in a highly
+       * non-rectangular local mesh which makes uniform particle distribution difficult.
+       *
+       * @param [in] world The particle world the particles will exist in
+       * @param [in] num_particles The number of particles to generate in this subdomain
+       * @param [in] start_id The starting ID to assign to generated particles
+       */
+      template <int dim>
+      void
+      RandomFunction<dim>::uniform_random_particles_in_subdomain (Particle::World<dim> &world,
+                                                                  const std::map<double,LevelInd> &cells,
+                                                                  const double global_weight,
+                                                                  const double start_weight,
+                                                                  const unsigned int num_particles,
+                                                                  const unsigned int start_id)
+      {
+        // Pick cells and assign particles at random points inside them
+        unsigned int cur_id = start_id;
+        for (unsigned int i=0; i<num_particles; ++i)
           {
-            // Pick cells and assign particles at random points inside them
-            unsigned int cur_id = start_id;
-            for (unsigned int i=0; i<num_particles; ++i)
+            // Select a cell based on relative volume
+            const double random_weight =  global_weight * uniform_distribution_01(random_number_generator);
+
+            if ((random_weight < start_weight) || (cells.lower_bound(random_weight) == cells.end()))
+              continue;
+
+            LevelInd select_cell = cells.lower_bound(random_weight)->second;
+
+            const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
+            it (&(this->get_triangulation()), select_cell.first, select_cell.second);
+
+            Point<dim> max_bounds, min_bounds, pt;
+            // Get the bounds of the cell defined by the vertices
+            for (unsigned int d=0; d<dim; ++d)
               {
-                // Select a cell based on relative volume
-                const double random_weight =  global_weight * uniform_distribution_01(random_number_generator);
-
-                if((random_weight < start_weight) || (cells.lower_bound(random_weight) == cells.end()))
-                  continue;
-
-                LevelInd select_cell = cells.lower_bound(random_weight)->second;
-
-                const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
-                it (&(this->get_triangulation()), select_cell.first, select_cell.second);
-
-                Point<dim> max_bounds, min_bounds, pt;
-                // Get the bounds of the cell defined by the vertices
+                min_bounds[d] = INFINITY;
+                max_bounds[d] = -INFINITY;
+              }
+            for (unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell; ++v)
+              {
+                pt = it->vertex(v);
                 for (unsigned int d=0; d<dim; ++d)
                   {
-                    min_bounds[d] = INFINITY;
-                    max_bounds[d] = -INFINITY;
+                    min_bounds[d] = fmin(pt[d], min_bounds[d]);
+                    max_bounds[d] = fmax(pt[d], max_bounds[d]);
                   }
-                for (unsigned int v = 0; v < GeometryInfo<dim>::vertices_per_cell; ++v)
-                  {
-                    pt = it->vertex(v);
-                    for (unsigned int d=0; d<dim; ++d)
-                      {
-                        min_bounds[d] = fmin(pt[d], min_bounds[d]);
-                        max_bounds[d] = fmax(pt[d], max_bounds[d]);
-                      }
-                  }
-
-                // Generate random points in these bounds until one is within the cell
-                unsigned int num_tries = 0;
-                while (num_tries < 100)
-                  {
-                    for (unsigned int d=0; d<dim; ++d)
-                      {
-                        pt[d] = uniform_distribution_01(random_number_generator) *
-                                (max_bounds[d]-min_bounds[d]) + min_bounds[d];
-                      }
-                    try
-                      {
-                        if (it->point_inside(pt)) break;
-                      }
-                    catch (...)
-                      {
-                        // Debugging output, remove when Q4 mapping 3D sphere problem is resolved
-                        //std::cerr << "Pt and cell " << pt << " " << select_cell.first << " " << select_cell.second << std::endl;
-                        //for (int z=0;z<8;++z) std::cerr << "V" << z <<": " << it->vertex(z) << ", ";
-                        //std::cerr << std::endl;
-                        //***** MPI_Abort(communicator, 1);
-                      }
-                    num_tries++;
-                  }
-                AssertThrow (num_tries < 100, ExcMessage ("Couldn't generate particle (unusual cell shape?)."));
-
-                // Add the generated particle to the set
-                BaseParticle<dim> new_particle(pt, cur_id);
-                world.add_particle(new_particle, select_cell);
-
-                cur_id++;
               }
-          }
 
-
-
-        template <int dim>
-        void
-        RandomFunction<dim>::declare_parameters (ParameterHandler &prm)
-        {
-          prm.enter_subsection("Postprocess");
-          {
-            prm.enter_subsection("Tracers");
-            {
-              prm.enter_subsection("Generator");
+            // Generate random points in these bounds until one is within the cell
+            unsigned int num_tries = 0;
+            while (num_tries < 100)
               {
-                prm.enter_subsection("Random function");
-                {
-                  Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
-                }
-                prm.leave_subsection();
+                for (unsigned int d=0; d<dim; ++d)
+                  {
+                    pt[d] = uniform_distribution_01(random_number_generator) *
+                            (max_bounds[d]-min_bounds[d]) + min_bounds[d];
+                  }
+                try
+                  {
+                    if (it->point_inside(pt)) break;
+                  }
+                catch (...)
+                  {
+                    // Debugging output, remove when Q4 mapping 3D sphere problem is resolved
+                    //std::cerr << "Pt and cell " << pt << " " << select_cell.first << " " << select_cell.second << std::endl;
+                    //for (int z=0;z<8;++z) std::cerr << "V" << z <<": " << it->vertex(z) << ", ";
+                    //std::cerr << std::endl;
+                    //***** MPI_Abort(communicator, 1);
+                  }
+                num_tries++;
+              }
+            AssertThrow (num_tries < 100, ExcMessage ("Couldn't generate particle (unusual cell shape?)."));
+
+            // Add the generated particle to the set
+            BaseParticle<dim> new_particle(pt, cur_id);
+            world.add_particle(new_particle, select_cell);
+
+            cur_id++;
+          }
+      }
+
+
+
+      template <int dim>
+      void
+      RandomFunction<dim>::declare_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
+        {
+          prm.enter_subsection("Tracers");
+          {
+            prm.enter_subsection("Generator");
+            {
+              prm.enter_subsection("Random function");
+              {
+                Functions::ParsedFunction<dim>::declare_parameters (prm, 1);
               }
               prm.leave_subsection();
             }
@@ -246,34 +244,34 @@ namespace aspect
           }
           prm.leave_subsection();
         }
+        prm.leave_subsection();
+      }
 
 
-        template <int dim>
-        void
-        RandomFunction<dim>::parse_parameters (ParameterHandler &prm)
+      template <int dim>
+      void
+      RandomFunction<dim>::parse_parameters (ParameterHandler &prm)
+      {
+        prm.enter_subsection("Postprocess");
         {
-          prm.enter_subsection("Postprocess");
+          prm.enter_subsection("Tracers");
           {
-            prm.enter_subsection("Tracers");
+            prm.enter_subsection("Generator");
             {
-              prm.enter_subsection("Generator");
+              prm.enter_subsection("Random function");
               {
-                prm.enter_subsection("Random function");
-                {
-                  try
+                try
                   {
-                      function.parse_parameters (prm);
+                    function.parse_parameters (prm);
                   }
-                  catch (...)
+                catch (...)
                   {
-                      std::cerr << "ERROR: FunctionParser failed to parse\n"
-                          << "\t'Initial conditions.Function'\n"
-                          << "with expression\n"
-                          << "\t'" << prm.get("Function expression") << "'";
-                      throw;
+                    std::cerr << "ERROR: FunctionParser failed to parse\n"
+                              << "\t'Initial conditions.Function'\n"
+                              << "with expression\n"
+                              << "\t'" << prm.get("Function expression") << "'";
+                    throw;
                   }
-                }
-                prm.leave_subsection();
               }
               prm.leave_subsection();
             }
@@ -281,6 +279,8 @@ namespace aspect
           }
           prm.leave_subsection();
         }
+        prm.leave_subsection();
+      }
     }
   }
 }
@@ -293,17 +293,17 @@ namespace aspect
   {
     namespace Generator
     {
-    ASPECT_REGISTER_PARTICLE_GENERATOR(RandomFunction,
-                                       "random function",
-                                       "Generate random distribution of "
-                                       "particles over entire simulation domain. "
-                                       "The particle density is prescribed in the "
-                                       "form of a user-prescribed function. The "
-                                       "format of these functions follows the syntax "
-                                       "understood by the muparser library, see "
-                                       "Section~\\ref{sec:muparser-format}. The "
-                                       "return value of the function is always "
-                                       "interpreted positively.")
+      ASPECT_REGISTER_PARTICLE_GENERATOR(RandomFunction,
+                                         "random function",
+                                         "Generate random distribution of "
+                                         "particles over entire simulation domain. "
+                                         "The particle density is prescribed in the "
+                                         "form of a user-prescribed function. The "
+                                         "format of these functions follows the syntax "
+                                         "understood by the muparser library, see "
+                                         "Section~\\ref{sec:muparser-format}. The "
+                                         "return value of the function is always "
+                                         "interpreted positively.")
     }
   }
 }

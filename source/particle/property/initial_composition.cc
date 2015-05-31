@@ -29,12 +29,12 @@ namespace aspect
       template <int dim>
       void
       InitialComposition<dim>::initialize_particle(std::vector<double> &data,
-                                         const Point<dim> &,
-                                         const Vector<double> &solution,
-                                         const std::vector<Tensor<1,dim> > &)
+                                                   const Point<dim> &,
+                                                   const Vector<double> &solution,
+                                                   const std::vector<Tensor<1,dim> > &)
       {
         for (unsigned int i = 0; i < data_len(); i++)
-        data.push_back(solution[this->introspection().component_indices.compositional_fields[i]]);
+          data.push_back(solution[this->introspection().component_indices.compositional_fields[i]]);
       }
 
       template <int dim>

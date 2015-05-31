@@ -53,7 +53,7 @@ namespace aspect
     }
 
     template <int dim>
-    const Particle::World<dim>&
+    const Particle::World<dim> &
     PassiveTracers<dim>::get_particle_world() const
     {
       return world;
@@ -99,10 +99,10 @@ namespace aspect
           property_manager.add_mpi_types(data_info);
 
           const std::string data_file_name = output->output_particle_data(world.get_particles(),
-                                                        data_info,
-                                                        (this->convert_output_to_years() ?
-                                                         this->get_time() / year_in_seconds :
-                                                         this->get_time()));
+                                                                          data_info,
+                                                                          (this->convert_output_to_years() ?
+                                                                           this->get_time() / year_in_seconds :
+                                                                           this->get_time()));
           result_string << ". Writing particle graphical output " + data_file_name;
         }
 

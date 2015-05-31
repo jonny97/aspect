@@ -40,10 +40,10 @@ namespace aspect
       template <int dim>
       void
       Velocity<dim>::update_particle(unsigned int data_position,
-                                   std::vector<double> &data,
-                                   const Point<dim> &,
-                                   const Vector<double> &solution,
-                                   const std::vector<Tensor<1,dim> > &)
+                                     std::vector<double> &data,
+                                     const Point<dim> &,
+                                     const Vector<double> &solution,
+                                     const std::vector<Tensor<1,dim> > &)
       {
         for (unsigned int i = 0; i < dim; ++i)
           data[data_position++] = solution[this->introspection().component_indices.velocities[i]];

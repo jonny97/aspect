@@ -28,8 +28,8 @@ namespace aspect
     {
       template <int dim>
       Function<dim>::Function()
-      :
-      function (1)
+        :
+        function (1)
       {}
 
       template <int dim>
@@ -93,17 +93,17 @@ namespace aspect
           {
             prm.enter_subsection("Function");
             try
-            {
+              {
                 function.parse_parameters (prm);
-            }
+              }
             catch (...)
-            {
+              {
                 std::cerr << "ERROR: FunctionParser failed to parse\n"
-                    << "\t'Postprocess.Tracers.Function'\n"
-                    << "with expression\n"
-                    << "\t'" << prm.get("Function expression") << "'";
+                          << "\t'Postprocess.Tracers.Function'\n"
+                          << "with expression\n"
+                          << "\t'" << prm.get("Function expression") << "'";
                 throw;
-            }
+              }
             prm.leave_subsection();
           }
           prm.leave_subsection();

@@ -45,11 +45,11 @@ namespace aspect
         //Set a machine zero to cause particles which should not move, to not move; ensures particles are not lost in 2d case
         const double eps = .00000001;
 
-        const Postprocess::PassiveTracers<dim> * tracer_postprocess =
-                this->template find_postprocessor<const Postprocess::PassiveTracers<dim> >();
+        const Postprocess::PassiveTracers<dim> *tracer_postprocess =
+          this->template find_postprocessor<const Postprocess::PassiveTracers<dim> >();
         Assert(tracer_postprocess!=NULL,
                ExcMessage("The RK2IntegratorMultiStep queried the tracer postprocessor, "
-                   "but did not find it."));
+                          "but did not find it."));
 
         const Property::Manager<dim> manager = tracer_postprocess->get_particle_world().get_manager();
 
@@ -73,22 +73,22 @@ namespace aspect
               }
 
             Tensor<1,dim> velocity = ((*vel).norm() < eps)
-                    ?
-                        Tensor<1,dim>()
-            :
-                        *vel;
+                                     ?
+                                     Tensor<1,dim>()
+                                     :
+                                     *vel;
 
             Tensor<1,dim> last_velocity = ((*vel).norm() < eps)
-                    ?
-                        Tensor<1,dim>()
-            :
-                        *vel;
+                                          ?
+                                          Tensor<1,dim>()
+                                          :
+                                          *vel;
 
             Tensor<1,dim> old_velocity = ((*vel).norm() < eps)
-                    ?
-                        Tensor<1,dim>()
-            :
-                        *vel;
+                                         ?
+                                         Tensor<1,dim>()
+                                         :
+                                         *vel;
 
             if (step == 0)
               {
@@ -175,12 +175,12 @@ namespace aspect
   {
     namespace Integrator
     {
-    ASPECT_REGISTER_PARTICLE_INTEGRATOR(RK2IntegratorMultiStep,
-                                               "rk2 multistep",
-                                               "Runge Kutta second order integrator, where "
-                                               "y_{n+1} = y_n + dt*v(0.5*k_1), k_1 = dt*v(y_n). "
-                                               "This scheme requires storing the original location, "
-                                               "and the read/write_data functions reflect this.")
+      ASPECT_REGISTER_PARTICLE_INTEGRATOR(RK2IntegratorMultiStep,
+                                          "rk2 multistep",
+                                          "Runge Kutta second order integrator, where "
+                                          "y_{n+1} = y_n + dt*v(0.5*k_1), k_1 = dt*v(y_n). "
+                                          "This scheme requires storing the original location, "
+                                          "and the read/write_data functions reflect this.")
     }
   }
 }

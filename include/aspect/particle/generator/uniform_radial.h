@@ -69,9 +69,9 @@ namespace aspect
            */
           void
           uniform_radial_particles_in_subdomain (Particle::World<dim> &world,
-                                                      const unsigned int start_id,
-                                                      const std::vector<double> &shell,
-                                                      const std::vector<unsigned int> &particlesPerRadius);
+                                                 const unsigned int start_id,
+                                                 const std::vector<double> &shell,
+                                                 const std::vector<unsigned int> &particlesPerRadius);
 
           void
           generate_particle(Particle::World<dim> &world,

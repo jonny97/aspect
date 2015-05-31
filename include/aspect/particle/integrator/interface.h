@@ -170,9 +170,9 @@ namespace aspect
       template <int dim>
       void
       register_particle_integrator (const std::string &name,
-                                     const std::string &description,
-                                     void (*declare_parameters_function) (ParameterHandler &),
-                                     Interface<dim> *(*factory_function) ());
+                                    const std::string &description,
+                                    void (*declare_parameters_function) (ParameterHandler &),
+                                    Interface<dim> *(*factory_function) ());
 
       /**
        * A function that given the name of a model returns a pointer to an
@@ -198,27 +198,27 @@ namespace aspect
       void
       declare_parameters (ParameterHandler &prm);
 
-/**
- * Given a class name, a name, and a description for the parameter file
- * for a particle integrator, register it with the functions that
- * can declare their parameters and create these objects.
- *
- * @ingroup ParticleIntegrators
- */
+      /**
+       * Given a class name, a name, and a description for the parameter file
+       * for a particle integrator, register it with the functions that
+       * can declare their parameters and create these objects.
+       *
+       * @ingroup ParticleIntegrators
+       */
 #define ASPECT_REGISTER_PARTICLE_INTEGRATOR(classname, name, description) \
-template class classname<2>; \
-template class classname<3>; \
-namespace ASPECT_REGISTER_PARTICLE_INTEGRATOR_ ## classname \
-{ \
-aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<2>,classname<2> > \
-dummy_ ## classname ## _2d (&aspect::Particle::Integrator::register_particle_integrator<2>, \
-                            name, description); \
-aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<3>,classname<3> > \
-dummy_ ## classname ## _3d (&aspect::Particle::Integrator::register_particle_integrator<3>, \
-                            name, description); \
-}
-}
-}
+  template class classname<2>; \
+  template class classname<3>; \
+  namespace ASPECT_REGISTER_PARTICLE_INTEGRATOR_ ## classname \
+  { \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<2>,classname<2> > \
+    dummy_ ## classname ## _2d (&aspect::Particle::Integrator::register_particle_integrator<2>, \
+                                name, description); \
+    aspect::internal::Plugins::RegisterHelper<aspect::Particle::Integrator::Interface<3>,classname<3> > \
+    dummy_ ## classname ## _3d (&aspect::Particle::Integrator::register_particle_integrator<3>, \
+                                name, description); \
+  }
+    }
+  }
 }
 
 

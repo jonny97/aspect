@@ -39,7 +39,7 @@ namespace aspect
       class RK4Integrator : public Interface<dim>
       {
         public:
-        RK4Integrator();
+          RK4Integrator();
           virtual bool integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles,
                                       const std::vector<Tensor<1,dim> > &old_velocities,
                                       const std::vector<Tensor<1,dim> > &velocities,
