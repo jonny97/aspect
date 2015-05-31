@@ -425,7 +425,7 @@ namespace aspect
       // If we couldn't find it there, we need to check the active cells
       // since the particle could be on a curved boundary not included in the
       // coarse grid
-      for (typename parallel::distributed::Triangulation<dim>::cell_iterator
+      for (typename parallel::distributed::Triangulation<dim>::active_cell_iterator
           ait=triangulation->begin_active(); ait!=triangulation->end(); ++ait)
         {
           if (ait->point_inside(particle.get_location()))
