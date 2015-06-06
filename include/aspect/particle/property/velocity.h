@@ -52,7 +52,7 @@ namespace aspect
            * to update the particle properties.
            */
           void
-          update_particle (unsigned int data_position,
+          update_particle (unsigned int &data_position,
                            std::vector<double> &data,
                            const Point<dim> &,
                            const Vector<double> &solution,
@@ -65,14 +65,16 @@ namespace aspect
           bool
           need_update ();
 
-          unsigned int data_len() const;
+          void
+          data_length(std::vector<unsigned int> &length) const;
 
           /**
            * Set up the MPI data type information for the DataParticle type
            *
            * @param [in,out] data_info Vector to append MPIDataInfo objects to
            */
-          void add_mpi_types(std::vector<MPIDataInfo> &data_info) const;
+          void
+          data_names(std::vector<std::string> &names) const;
       };
     }
   }

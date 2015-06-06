@@ -31,25 +31,13 @@ namespace aspect
   {
     namespace Generator
     {
-      // Generate random uniform distribution of particles over entire simulation domain
-
-      /**
-       * Constructor.
-       *
-       * @param[in] The MPI communicator for synchronizing particle generation.
-       */
       template <int dim>
       UniformBox<dim>::UniformBox() {}
 
-      /**
-       * TODO: Update comments
-       * Generate a uniformly randomly distributed set of particles in the current triangulation.
-       */
-      // TODO: fix the particle system so it works even with processors assigned 0 cells
       template <int dim>
       void
-      UniformBox<dim>::generate_particles(Particle::World<dim> &world,
-                                          const double total_num_particles)
+      UniformBox<dim>::generate_particles(const double total_num_particles,
+                                          Particle::World<dim> &world)
       {
         unsigned int cur_id = 0;
         const Tensor<1,dim> P_diff = P_max - P_min;
@@ -79,19 +67,20 @@ namespace aspect
             for (double y = P_min[1]; y <= P_max[1]; y += Particle_separation[1])
               {
                 if (dim == 2)
-                  generate_particle(world,Point<dim> (x,y),cur_id++);
+                  generate_particle(Point<dim> (x,y),cur_id++,world);
                 if (dim == 3)
                   for (double z = P_min[2]; z <= P_max[2]; z += Particle_separation[2])
-                    generate_particle(world,Point<dim> (x,y,z),cur_id++);
+                    generate_particle(Point<dim> (x,y,z),cur_id++,world);
               }
           }
       }
 
+
       template <int dim>
       void
-      UniformBox<dim>::generate_particle(Particle::World<dim> &world,
-                                         const Point<dim> &position,
-                                         const unsigned int id)
+      UniformBox<dim>::generate_particle(const Point<dim> &position,
+                                         const unsigned int id,
+                                         Particle::World<dim> &world)
       {
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
           (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position)).first;;

@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -50,13 +50,8 @@ namespace aspect
       }
 
       template <int dim>
-      void
-      EulerIntegrator<dim>::add_mpi_types(std::vector<MPIDataInfo> &)
-      {}
-
-      template <int dim>
       unsigned int
-      EulerIntegrator<dim>::data_len() const
+      EulerIntegrator<dim>::data_length() const
       {
         return 0;
       }

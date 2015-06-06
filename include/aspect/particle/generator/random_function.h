@@ -53,30 +53,10 @@ namespace aspect
           /**
            * Generate a uniformly randomly distributed set of particles in the current triangulation.
            */
-          // TODO: fix the particle system so it works even with processors assigned 0 cells
           virtual
           void
-          generate_particles(Particle::World<dim> &world,
-                             const double total_num_particles);
-
-          /**
-           * Generate a set of particles uniformly randomly distributed within the
-           * specified triangulation. This is done using "roulette wheel" style
-           * selection weighted by cell volume. We do cell-by-cell assignment of
-           * particles because the decomposition of the mesh may result in a highly
-           * non-rectangular local mesh which makes uniform particle distribution difficult.
-           *
-           * @param [in] world The particle world the particles will exist in
-           * @param [in] num_particles The number of particles to generate in this subdomain
-           * @param [in] start_id The starting ID to assign to generated particles
-           */
-          void uniform_random_particles_in_subdomain (Particle::World<dim> &world,
-                                                      const std::map<double,LevelInd> &cells,
-                                                      const double global_weight,
-                                                      const double start_weight,
-                                                      const unsigned int num_particles,
-                                                      const unsigned int start_id);
-
+          generate_particles(const double total_num_particles,
+                             Particle::World<dim> &world);
 
           /**
            * Declare the parameters this class takes through input files.
@@ -105,8 +85,29 @@ namespace aspect
            * A function object representing the temperature.
            */
           Functions::ParsedFunction<dim> function;
-      };
 
+          /**
+           * Generate a set of particles uniformly randomly distributed within the
+           * specified triangulation. This is done using "roulette wheel" style
+           * selection weighted by cell volume. We do cell-by-cell assignment of
+           * particles because the decomposition of the mesh may result in a highly
+           * non-rectangular local mesh which makes uniform particle distribution difficult.
+           *
+           * @param [in] cells Map between accumulated cell weight and cell index
+           * @param [in] global_weight The integrated probability function
+           * @param [in] start_weight The starting weight of the first cell of the local process.
+           * @param [in] num_particles The total number of particles to generate.
+           * @param [in] start_id The starting ID to assign to generated particles of the local process.
+           * @param [inout] world The particle world the particles will exist in
+           *
+           */
+          void uniform_random_particles_in_subdomain (const std::map<double,LevelInd> &cells,
+                                                      const double global_weight,
+                                                      const double start_weight,
+                                                      const unsigned int num_particles,
+                                                      const unsigned int start_id,
+                                                      Particle::World<dim> &world);
+      };
 
     }
   }

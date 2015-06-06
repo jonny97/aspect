@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -72,15 +72,12 @@ namespace aspect
     World<dim>::World()
     {
       triangulation_changed = true;
-      world_size = self_rank = 0;
       integrator = NULL;
     }
 
     template <int dim>
     World<dim>::~World()
-    {
-      if (world_size) MPI_Type_free(&particle_type);
-    }
+    {}
 
     template <int dim>
     void
@@ -266,52 +263,18 @@ namespace aspect
     }
 
     template <int dim>
-    const std::vector<MPIDataInfo> &
-    World<dim>::get_mpi_datainfo() const
+    void
+    World<dim>::get_data_info(std::vector<std::string> &names,
+                              std::vector<unsigned int> &length) const
     {
-      return data_info;
+      property_manager->get_data_info(names,length);
     }
 
     template <int dim>
     void
     World<dim>::init()
     {
-      // Assert that all necessary parameters have been set
-      AssertThrow (integrator != NULL, ExcMessage ("Particle world integrator must be set before calling init()."));
-      AssertThrow (property_manager != NULL, ExcMessage ("Particle world property manager must be set before calling init()."));
-
-      // Construct MPI data type for this particle
-      property_manager->add_mpi_types(data_info);
-      property_manager->initialize_property_map(data_info);
-
-      // And data associated with the integration scheme
-      integrator->add_mpi_types(data_info);
-
       this->get_triangulation().signals.post_refinement.connect(std_cxx11::bind(&World::mesh_changed, std_cxx1x::ref(*this)));
-
-      // Set up the block lengths, indices and internal types
-      const int num_entries = data_info.size();
-      std::vector<int> block_lens         (num_entries);
-      std::vector<MPI_Aint> indices       (num_entries);
-      std::vector<MPI_Datatype> old_types (num_entries);
-
-      for (unsigned int i=0; i<num_entries; ++i)
-        {
-          block_lens[i] = data_info[i].n_elements;
-          indices[i] = (i == 0 ? 0 : indices[i-1]+sizeof(double)*data_info[i-1].n_elements);
-          old_types[i] = MPI_DOUBLE;
-        }
-
-      // Create and commit the MPI type
-      int res = MPI_Type_struct(num_entries, &block_lens[0], &indices[0], &old_types[0], &particle_type);
-      if (res != MPI_SUCCESS) exit(-1);
-
-      res = MPI_Type_commit(&particle_type);
-      if (res != MPI_SUCCESS) exit(-1);
-
-      // Determine the size of the MPI comm world
-      world_size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
-      self_rank  = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
     }
 
     template <int dim>
@@ -444,6 +407,10 @@ namespace aspect
     void
     World<dim>::send_recv_particles()
     {
+      // Determine the size of the MPI comm world
+      const unsigned int world_size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
+      const unsigned int self_rank  = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
+
       std::list<BaseParticle<dim> > send_particles;
 
       // Go through the particles and take out those which need to be moved to another processor
@@ -490,7 +457,7 @@ namespace aspect
       // Set up the space for the received particle data
       std::vector<double> recv_data(total_recv_data);
 
-      AssertThrow(send_data.size() == total_send_particles * (integrator->data_len()+property_manager->get_data_len()),
+      AssertThrow(send_data.size() == total_send_particles * (integrator->data_length()+property_manager->get_data_len()),
                   ExcMessage("The amount of data written into the array that is send to other processes "
                              "is inconsistent with the number and size of particles."));
 

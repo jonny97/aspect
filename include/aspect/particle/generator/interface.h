@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -56,16 +56,17 @@ namespace aspect
            * using the type of generation function implemented by this
            * Generator.
            *
-           * @param [in] world The particle world the particles will exist in
            * @param [in] total_num_particles Total number of particles to
            * generate. The actual number of generated particles may differ,
            * for example if the generator reads particles from a file this
-           * parameter may be ignored. @return
+           * parameter may be ignored.
+           * @param [inout] world The particle world the particles will exist in
+           *
            */
           virtual
           void
-          generate_particles(Particle::World<dim> &world,
-                             const double total_num_particles) = 0;
+          generate_particles(const double total_num_particles,
+                             Particle::World<dim> &world) = 0;
 
 
           /**
@@ -76,7 +77,7 @@ namespace aspect
            */
           static
           void
-          declare_parameters (ParameterHandler &);
+          declare_parameters (ParameterHandler &prm);
 
           /**
            * Read the parameters this class declares from the parameter file.
@@ -86,7 +87,7 @@ namespace aspect
            */
           virtual
           void
-          parse_parameters (ParameterHandler &);
+          parse_parameters (ParameterHandler &prm);
       };
 
       /**

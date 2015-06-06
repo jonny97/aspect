@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -98,19 +98,8 @@ namespace aspect
       }
 
       template <int dim>
-      void
-      RK4Integrator<dim>::add_mpi_types(std::vector<MPIDataInfo> &data_info)
-      {
-        // Add the loc0, k1, k2, and k3 data
-        data_info.push_back(MPIDataInfo("loc0", dim));
-        data_info.push_back(MPIDataInfo("k1", dim));
-        data_info.push_back(MPIDataInfo("k2", dim));
-        data_info.push_back(MPIDataInfo("k3", dim));
-      }
-
-      template <int dim>
       unsigned int
-      RK4Integrator<dim>::data_len() const
+      RK4Integrator<dim>::data_length() const
       {
         return 4*dim;
       }

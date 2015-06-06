@@ -51,8 +51,8 @@ namespace aspect
 
         for (; it!=particles.end(), vel!=velocities.end(), old_vel!=old_velocities.end(); ++it,++vel,++old_vel)
           {
-            double id_num = it->second.get_id();
-            Point<dim> loc = it->second.get_location();
+            const double id_num = it->second.get_id();
+            const Point<dim> loc = it->second.get_location();
             if (step == 0)
               {
                 loc0[id_num] = loc;
@@ -76,16 +76,8 @@ namespace aspect
       }
 
       template <int dim>
-      void
-      RK2Integrator<dim>::add_mpi_types(std::vector<aspect::Particle::MPIDataInfo> &data_info)
-      {
-        // Add the loc0 data
-        data_info.push_back(aspect::Particle::MPIDataInfo("loc0", dim));
-      }
-
-      template <int dim>
       unsigned int
-      RK2Integrator<dim>::data_len() const
+      RK2Integrator<dim>::data_length() const
       {
         return dim;
       }

@@ -29,25 +29,13 @@ namespace aspect
   {
     namespace Generator
     {
-      // Generate random uniform distribution of particles over entire simulation domain
-
-      /**
-       * Constructor.
-       *
-       * @param[in] The MPI communicator for synchronizing particle generation.
-       */
       template <int dim>
       AsciiFile<dim>::AsciiFile() {}
 
-      /**
-       * TODO: Update comments
-       * Generate a uniformly randomly distributed set of particles in the current triangulation.
-       */
-      // TODO: fix the particle system so it works even with processors assigned 0 cells
       template <int dim>
       void
-      AsciiFile<dim>::generate_particles(Particle::World<dim> &world,
-                                         const double )
+      AsciiFile<dim>::generate_particles(const double total_num_particles,
+                                         Particle::World<dim> &world)
       {
         const std::string filename = data_directory+data_filename;
         std::ifstream in(filename.c_str(), std::ios::in);
@@ -67,19 +55,19 @@ namespace aspect
 
         char sep;
         // Read data lines
-        unsigned int id = 0;
+        unsigned int id = Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) * total_num_particles;
         Point<dim> coordinates;
 
         if (dim == 2)
           while (in >> coordinates[0] >> sep >> coordinates[1])
             {
-              generate_particle(world,coordinates,id);
+              generate_particle(coordinates,id,world);
               id++;
             }
         else if (dim == 3)
           while (in >> coordinates[0] >> sep >> coordinates[1] >> sep >> coordinates[2])
             {
-              generate_particle(world,coordinates,id);
+              generate_particle(coordinates,id,world);
               id++;
             }
         else
@@ -90,9 +78,9 @@ namespace aspect
 
       template <int dim>
       void
-      AsciiFile<dim>::generate_particle(Particle::World<dim> &world,
-                                        const Point<dim> &position,
-                                        const unsigned int id)
+      AsciiFile<dim>::generate_particle(const Point<dim> &position,
+                                        const unsigned int id,
+                                        Particle::World<dim> &world)
       {
         typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
           (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position)).first;;

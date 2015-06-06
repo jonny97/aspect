@@ -24,6 +24,9 @@
 #include <aspect/particle/base_particle.h>
 #include <aspect/particle/definitions.h>
 #include <aspect/plugins.h>
+#include <aspect/global.h>
+
+#include <deal.II/base/parameter_handler.h>
 
 namespace aspect
 {
@@ -31,6 +34,8 @@ namespace aspect
   {
     namespace Integrator
     {
+      using namespace dealii;
+
       /**
        * An abstract class defining virtual methods for performing integration
        * of particle paths through the simulation velocity field.
@@ -42,7 +47,7 @@ namespace aspect
           /**
            * Constructor.
            */
-          Interface(void) {}
+          Interface() {}
 
           /**
            * Destructor. Made virtual so that derived classes can be created
@@ -74,26 +79,13 @@ namespace aspect
                                       const double dt) = 0;
 
           /**
-           * Specify the MPI types and data sizes involved in transferring
-           * integration related information between processes. If the
-           * integrator samples velocities at different locations and the
-           * particle moves between processes during the integration step, the
-           * sampled velocities must be transferred with the particle.
-           *
-           * @param [in,out] data_info Adds MPI data info to the specified
-           * vector indicating the quantity and type of values the integrator
-           * needs saved for this particle.
-           */
-          virtual void add_mpi_types(std::vector<aspect::Particle::MPIDataInfo> &data_info) = 0;
-
-          /**
            * Return data length of the integration related data required for
            * communication in terms of number of doubles.
            *
            * @return The number of doubles required to store the relevant
            * integrator data.
            */
-          virtual unsigned int data_len() const = 0;
+          virtual unsigned int data_length() const = 0;
 
           /**
            * Read integration related data for a particle specified by id_num

@@ -64,7 +64,6 @@ namespace aspect
           {
             const std::vector<double> data = it->second.get_properties();
 
-            // TODO: this needs to work with arbitrary property numbers
             Point<dim> lastLoc, lastVel;
             for (unsigned int i = 0; i < dim; ++i)
               {
@@ -72,19 +71,19 @@ namespace aspect
                 lastVel(i) = data[last_velocity_component + i];
               }
 
-            Tensor<1,dim> velocity = ((*vel).norm() < eps)
+            const Tensor<1,dim> velocity = ((*vel).norm() < eps)
                                      ?
                                      Tensor<1,dim>()
                                      :
                                      *vel;
 
-            Tensor<1,dim> last_velocity = ((*vel).norm() < eps)
+            const Tensor<1,dim> last_velocity = ((*vel).norm() < eps)
                                           ?
                                           Tensor<1,dim>()
                                           :
                                           *vel;
 
-            Tensor<1,dim> old_velocity = ((*vel).norm() < eps)
+            const Tensor<1,dim> old_velocity = ((*vel).norm() < eps)
                                          ?
                                          Tensor<1,dim>()
                                          :
@@ -100,10 +99,6 @@ namespace aspect
                 //lastLoc = oldPos, loc = pos + 1/2 vel
                 it->second.set_location(lastLoc + dt*((velocity + old_velocity) / 2));
               }
-            else if (step == 2)
-              {
-                //lastVel = midOldVel
-              }
             else
               {
                 // Error!
@@ -115,21 +110,12 @@ namespace aspect
         step = (step+1)%2;
 
         // Continue until we're at the last step
-        //return 0;
         return (step != 0);
       }
 
       template <int dim>
-      void
-      RK2IntegratorMultiStep<dim>::add_mpi_types(std::vector<MPIDataInfo> &data_info)
-      {
-        // Add the loc0 data
-        data_info.push_back(MPIDataInfo("loc0", dim));
-      }
-
-      template <int dim>
       unsigned int
-      RK2IntegratorMultiStep<dim>::data_len() const
+      RK2IntegratorMultiStep<dim>::data_length() const
       {
         return dim;
       }
@@ -138,10 +124,10 @@ namespace aspect
       unsigned int
       RK2IntegratorMultiStep<dim>::read_data(const std::vector<double> &data, const unsigned int &pos, const double &id_num)
       {
-        unsigned int    i, p = pos;
+        unsigned int p = pos;
 
         // Read location data
-        for (i=0; i<dim; ++i)
+        for (unsigned int i=0; i<dim; ++i)
           {
             loc0[id_num](i) = data[p++];
           }
@@ -153,12 +139,9 @@ namespace aspect
       void
       RK2IntegratorMultiStep<dim>::write_data(std::vector<double> &data, const double &id_num) const
       {
-        unsigned int    i;
-        typename std::map<double, Point<dim> >::const_iterator it;
-
         // Write location data
-        it = loc0.find(id_num);
-        for (i=0; i<dim; ++i)
+        const typename std::map<double, Point<dim> >::const_iterator it = loc0.find(id_num);
+        for (unsigned int i=0; i<dim; ++i)
           {
             data.push_back(it->second(i));
           }

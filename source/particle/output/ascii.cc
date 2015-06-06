@@ -57,13 +57,13 @@ namespace aspect
       template <int dim>
       std::string
       ASCIIOutput<dim>::output_particle_data(const std::multimap<LevelInd, BaseParticle<dim> > &particles,
-                                             std::vector<MPIDataInfo> &data_info,
+                                             const std::vector<std::string> &names,
+                                             const std::vector<unsigned int> &lengths,
                                              const double &)
       {
         typename std::multimap<LevelInd, BaseParticle<dim> >::const_iterator  it;
         unsigned int                            i;
         std::string                             output_file_prefix, output_path_prefix, full_filename;
-        std::vector<MPIDataInfo>::iterator      dit;
 
         output_file_prefix = "particle-" + Utilities::int_to_string (this->file_index, 5);
         output_path_prefix = this->output_dir + output_file_prefix;
@@ -74,16 +74,19 @@ namespace aspect
 
         // Print the header line
         output << "# ";
-        for (dit=data_info.begin(); dit!=data_info.end(); ++dit)
+        std::vector<std::string>::const_iterator  name;
+        std::vector<unsigned int>::const_iterator length;
+
+        for (name=names.begin(); name!=names.end(),length!=lengths.end(); ++name,++length)
           {
             // If it's a 1D element, print just the name, otherwise use []
-            if (dit->n_elements == 1)
+            if (*length == 1)
               {
-                output << dit->name << " ";
+                output << *name << " ";
               }
             else
               {
-                for (i=0; i<dit->n_elements; ++i) output << dit->name << "[" << i << "] ";
+                for (i=0; i<*length; ++i) output << *name << "[" << i << "] ";
               }
           }
         output << "\n";
@@ -94,9 +97,9 @@ namespace aspect
             std::vector<double>  particle_data;
             unsigned int p = 0;
             it->second.write_data(particle_data);
-            for (dit=data_info.begin(); dit!=data_info.end(); ++dit)
+            for (length=lengths.begin(); length!=lengths.end();++length)
               {
-                for (i=0; i<dit->n_elements; ++i)
+                for (i=0; i<*length; ++i)
                   {
                     output << particle_data[p++] << " ";
                   }

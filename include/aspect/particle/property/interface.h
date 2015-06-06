@@ -61,10 +61,10 @@ namespace aspect
            */
           virtual
           void
-          initialize_particle (std::vector<double> &/*data*/,
-                               const Point<dim> &/*position*/,
-                               const Vector<double> &/*solution*/,
-                               const std::vector<Tensor<1,dim> > &/*gradients*/);
+          initialize_particle (std::vector<double> &data,
+                               const Point<dim> &position,
+                               const Vector<double> &solution,
+                               const std::vector<Tensor<1,dim> > &gradients);
 
           /**
            * Update function. This function is called every timestep for
@@ -73,11 +73,11 @@ namespace aspect
            */
           virtual
           void
-          update_particle (unsigned int data_position,
-                           std::vector<double> &/*particle_properties*/,
-                           const Point<dim> &/*position*/,
-                           const Vector<double> &/*solution*/,
-                           const std::vector<Tensor<1,dim> > &/*gradients*/);
+          update_particle (unsigned int &data_position,
+                           std::vector<double> &particle_properties,
+                           const Point<dim> &position,
+                           const Vector<double> &solution,
+                           const std::vector<Tensor<1,dim> > &gradients);
 
           /**
            * Returns a bool, which is false in the default implementation,
@@ -90,7 +90,9 @@ namespace aspect
           bool
           need_update ();
 
-          virtual unsigned int data_len() const;
+          virtual
+          void
+          data_length(std::vector<unsigned int> &length) const = 0;
 
           /**
            * Set up the MPI data type information for the Interface type
@@ -98,7 +100,8 @@ namespace aspect
            * @param [in,out] data_info Vector to append MPIDataInfo objects to
            */
           virtual
-          void add_mpi_types(std::vector<MPIDataInfo> &data_info) const = 0;
+          void
+          data_names(std::vector<std::string> &names) const = 0;
 
 
           /**
@@ -154,6 +157,18 @@ namespace aspect
            * The number of doubles needed to represent a typical tracer
            */
           unsigned int data_len;
+
+          /**
+           * List of the names of the properties that are selected in this
+           * model.
+           */
+          std::vector<std::string> names;
+
+          /**
+           * List of the data length of the properties that are selected in
+           * this model.
+           */
+          std::vector<unsigned int> length;
 
 
         public:
@@ -219,19 +234,12 @@ namespace aspect
           /**
            * Add the MPI data description for this particle type to the vector.
            *
-           * @param[in,out] data_info Vector to which MPI data description is
-           * appended.
+           * @param return This function returns a vector of names of the
+           * particle properties.
            */
           void
-          add_mpi_types (std::vector<aspect::Particle::MPIDataInfo> &data_info) const;
-
-          /**
-           * Initialize the property map from the given vector of MPIDataInfo.
-           * This map will be used to query the position of a particular property
-           * in the property vector of each particle.
-           */
-          void
-          initialize_property_map (const std::vector<aspect::Particle::MPIDataInfo> &data_info);
+          get_data_info (std::vector<std::string> &names,
+                         std::vector<unsigned int> &length) const;
 
           /**
            * Get the position of the property specified by name in the property

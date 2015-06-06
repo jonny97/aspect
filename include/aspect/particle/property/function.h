@@ -56,14 +56,16 @@ namespace aspect
                                const Vector<double> &,
                                const std::vector<Tensor<1,dim> > &);
 
-          unsigned int data_len() const;
+          void
+          data_length(std::vector<unsigned int> &length) const;
 
           /**
            * Set up the MPI data type information for the DataParticle type
            *
            * @param [in,out] data_info Vector to append MPIDataInfo objects to
            */
-          void add_mpi_types(std::vector<MPIDataInfo> &data_info) const;
+          void
+          data_names(std::vector<std::string> &names) const;
 
 
           /**

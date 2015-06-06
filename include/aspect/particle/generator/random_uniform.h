@@ -32,41 +32,25 @@ namespace aspect
   {
     namespace Generator
     {
-      // Generate random uniform distribution of particles over entire simulation domain
+      /**
+       * Generate random uniform distribution of particles over entire simulation domain.
+       */
       template <int dim>
       class RandomUniform : public Interface<dim>, public SimulatorAccess<dim>
       {
         public:
           /**
            * Constructor.
-           *
-           * @param[in] The MPI communicator for synchronizing particle generation.
            */
           RandomUniform();
 
           /**
            * Generate a uniformly randomly distributed set of particles in the current triangulation.
            */
-          // TODO: fix the particle system so it works even with processors assigned 0 cells
           virtual
           void
-          generate_particles(Particle::World<dim> &world,
-                             const double total_num_particles);
-
-          /**
-           * Generate a set of particles uniformly randomly distributed within the
-           * specified triangulation. This is done using "roulette wheel" style
-           * selection weighted by cell volume. We do cell-by-cell assignment of
-           * particles because the decomposition of the mesh may result in a highly
-           * non-rectangular local mesh which makes uniform particle distribution difficult.
-           *
-           * @param [in] world The particle world the particles will exist in
-           * @param [in] num_particles The number of particles to generate in this subdomain
-           * @param [in] start_id The starting ID to assign to generated particles
-           */
-          void uniform_random_particles_in_subdomain (Particle::World<dim> &world,
-                                                      const unsigned int num_particles,
-                                                      const unsigned int start_id);
+          generate_particles(const double total_num_particles,
+                             Particle::World<dim> &world);
 
         private:
           /**
@@ -76,8 +60,24 @@ namespace aspect
            */
           boost::mt19937            random_number_generator;
           boost::uniform_01<double> uniform_distribution_01;
-      };
 
+
+          /**
+           * Generate a set of particles uniformly randomly distributed within the
+           * specified triangulation. This is done using "roulette wheel" style
+           * selection weighted by cell volume. We do cell-by-cell assignment of
+           * particles because the decomposition of the mesh may result in a highly
+           * non-rectangular local mesh which makes uniform particle distribution difficult.
+           *
+           * @param [in] num_particles The number of particles to generate in this subdomain
+           * @param [in] start_id The starting ID to assign to generated particles
+           * @param [inout] world The particle world the particles will exist in
+           *
+           */
+          void uniform_random_particles_in_subdomain (const unsigned int num_particles,
+                                                      const unsigned int start_id,
+                                                      Particle::World<dim> &world);
+      };
 
     }
   }

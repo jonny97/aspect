@@ -90,7 +90,7 @@ namespace aspect
 
     template <int dim>
     unsigned int
-    BaseParticle<dim>::read_data(const std::vector<double> &data, const unsigned int &pos)
+    BaseParticle<dim>::read_data(const std::vector<double> &data, const unsigned int pos)
     {
       unsigned int p = pos;
       // Read location data
@@ -118,7 +118,7 @@ namespace aspect
 
 
     template <int dim>
-    Point<dim>
+    const Point<dim> &
     BaseParticle<dim>::get_location () const
     {
       return location;
@@ -133,14 +133,13 @@ namespace aspect
 
     template <int dim>
     void
-    BaseParticle<dim>::set_properties (const std::vector<double> new_properties)
+    BaseParticle<dim>::set_properties (const std::vector<double> &new_properties)
     {
       val = new_properties;
     }
 
     template <int dim>
-    const
-    std::vector<double>
+    const std::vector<double> &
     BaseParticle<dim>::get_properties () const
     {
       return val;

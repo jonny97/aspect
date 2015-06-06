@@ -29,24 +29,13 @@ namespace aspect
   {
     namespace Generator
     {
-      // Generate random uniform distribution of particles over entire simulation domain
-
-      /**
-       * Constructor.
-       *
-       * @param[in] The MPI communicator for synchronizing particle generation.
-       */
       template <int dim>
       RandomUniform<dim>::RandomUniform() {}
 
-      /**
-       * Generate a uniformly randomly distributed set of particles in the current triangulation.
-       */
-      // TODO: fix the particle system so it works even with processors assigned 0 cells
       template <int dim>
       void
-      RandomUniform<dim>::generate_particles(Particle::World<dim> &world,
-                                             const double total_num_particles)
+      RandomUniform<dim>::generate_particles(const double total_num_particles,
+                                             Particle::World<dim> &world)
       {
         double      total_volume, local_volume, subdomain_fraction, start_fraction, end_fraction;
 
@@ -79,25 +68,14 @@ namespace aspect
         const unsigned int  end_id   = static_cast<unsigned int>(fmin(std::ceil(end_fraction*total_num_particles), total_num_particles));
         const unsigned int  subdomain_particles = end_id - start_id;
 
-        uniform_random_particles_in_subdomain(world, subdomain_particles, start_id);
+        uniform_random_particles_in_subdomain(subdomain_particles, start_id, world);
       }
 
-      /**
-       * Generate a set of particles uniformly randomly distributed within the
-       * specified triangulation. This is done using "roulette wheel" style
-       * selection weighted by cell volume. We do cell-by-cell assignment of
-       * particles because the decomposition of the mesh may result in a highly
-       * non-rectangular local mesh which makes uniform particle distribution difficult.
-       *
-       * @param [in] world The particle world the particles will exist in
-       * @param [in] num_particles The number of particles to generate in this subdomain
-       * @param [in] start_id The starting ID to assign to generated particles
-       */
       template <int dim>
       void
-      RandomUniform<dim>::uniform_random_particles_in_subdomain (Particle::World<dim> &world,
-                                                                 const unsigned int num_particles,
-                                                                 const unsigned int start_id)
+      RandomUniform<dim>::uniform_random_particles_in_subdomain (const unsigned int subdomain_particles,
+                                                                 const unsigned int start_id,
+                                                                 Particle::World<dim> &world)
       {
         unsigned int          i, d, v, num_tries, cur_id;
         double                total_volume, roulette_spin;
@@ -122,7 +100,7 @@ namespace aspect
 
         // Pick cells and assign particles at random points inside them
         cur_id = start_id;
-        for (i=0; i<num_particles; ++i)
+        for (i=0; i<subdomain_particles; ++i)
           {
             // Select a cell based on relative volume
             roulette_spin = total_volume*uniform_distribution_01(random_number_generator);

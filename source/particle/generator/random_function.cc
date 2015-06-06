@@ -32,27 +32,16 @@ namespace aspect
   {
     namespace Generator
     {
-      // Generate random uniform distribution of particles over entire simulation domain
-
-      /**
-       * Constructor.
-       *
-       * @param[in] The MPI communicator for synchronizing particle generation.
-       */
       template <int dim>
       RandomFunction<dim>::RandomFunction()
         :
         random_number_generator(5432)
       {}
 
-      /**
-       * Generate a uniformly randomly distributed set of particles in the current triangulation.
-       */
-      // TODO: fix the particle system so it works even with processors assigned 0 cells
       template <int dim>
       void
-      RandomFunction<dim>::generate_particles(Particle::World<dim> &world,
-                                              const double total_num_particles)
+      RandomFunction<dim>::generate_particles(const double total_num_particles,
+                                              Particle::World<dim> &world)
       {
         const unsigned int world_size = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
         const unsigned int self_rank  = Utilities::MPI::this_mpi_process(this->get_mpi_communicator());
@@ -132,30 +121,17 @@ namespace aspect
         const unsigned int end_id   = round(total_num_particles * accumulated_cell_weights.back()  / global_function_integral);
         const unsigned int subdomain_particles = end_id - start_id;
 
-        //  std::cout << "Rank: " << self_rank << ". To generate: " << subdomain_particles << std::endl;
-
-        uniform_random_particles_in_subdomain(world,cells,global_function_integral,start_weight,total_num_particles, 1.1 * start_id);
+        uniform_random_particles_in_subdomain(cells,global_function_integral,start_weight,total_num_particles, 1.1 * start_id,world);
       }
 
-      /**
-       * Generate a set of particles uniformly randomly distributed within the
-       * specified triangulation. This is done using "roulette wheel" style
-       * selection weighted by cell volume. We do cell-by-cell assignment of
-       * particles because the decomposition of the mesh may result in a highly
-       * non-rectangular local mesh which makes uniform particle distribution difficult.
-       *
-       * @param [in] world The particle world the particles will exist in
-       * @param [in] num_particles The number of particles to generate in this subdomain
-       * @param [in] start_id The starting ID to assign to generated particles
-       */
       template <int dim>
       void
-      RandomFunction<dim>::uniform_random_particles_in_subdomain (Particle::World<dim> &world,
-                                                                  const std::map<double,LevelInd> &cells,
+      RandomFunction<dim>::uniform_random_particles_in_subdomain (const std::map<double,LevelInd> &cells,
                                                                   const double global_weight,
                                                                   const double start_weight,
                                                                   const unsigned int num_particles,
-                                                                  const unsigned int start_id)
+                                                                  const unsigned int start_id,
+                                                                  Particle::World<dim> &world)
       {
         // Pick cells and assign particles at random points inside them
         unsigned int cur_id = start_id;

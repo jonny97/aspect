@@ -34,15 +34,15 @@ namespace aspect
                                                 const Vector<double> &,
                                                 const std::vector<Tensor<1,dim> > &)
       {
-        for (unsigned int i = 0; i < data_len(); i++)
+        for (unsigned int i = 0; i < dim; i++)
           data.push_back(position[i]);
       }
 
       template <int dim>
-      unsigned int
-      InitialPosition<dim>::data_len() const
+      void
+      InitialPosition<dim>::data_length(std::vector<unsigned int> &length) const
       {
-        return dim;
+        length.push_back(dim);
       }
 
       /**
@@ -52,9 +52,9 @@ namespace aspect
        */
       template <int dim>
       void
-      InitialPosition<dim>::add_mpi_types(std::vector<MPIDataInfo> &data_info) const
+      InitialPosition<dim>::data_names(std::vector<std::string> &names) const
       {
-        data_info.push_back(aspect::Particle::MPIDataInfo("initial position", data_len()));
+        names.push_back("initial position");
       }
     }
   }

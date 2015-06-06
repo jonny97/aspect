@@ -58,11 +58,10 @@ namespace aspect
       template <int dim>
       std::string
       VTUOutput<dim>::output_particle_data(const std::multimap<LevelInd, BaseParticle<dim> > &particles,
-                                           std::vector<MPIDataInfo> &data_info,
+                                           const std::vector<std::string> &names,
+                                           const std::vector<unsigned int> &lengths,
                                            const double &current_time)
       {
-        unsigned int                            data_offset;
-
         const std::string output_file_prefix = "particles-" + Utilities::int_to_string (this->file_index, 5);
         const std::string output_path_prefix = this->output_dir + output_file_prefix;
 
@@ -119,29 +118,37 @@ namespace aspect
         // Write data for each particle (id, velocity, etc)
         output << "      <PointData Scalars=\"scalars\">\n";
 
-        // Print the data associated with the particles, skipping the first entry (position)
+        output << "        <DataArray type=\"Float64\" Name=\"id\" NumberOfComponents=\"1\" Format=\"ascii\">\n";
+        for (typename std::multimap<LevelInd, BaseParticle<dim> >::const_iterator
+            it=particles.begin(); it!=particles.end(); ++it)
+          output << "          " << it->second.get_id() << "\n" ;
 
-        std::vector<MPIDataInfo>::iterator dit = data_info.begin();
-        data_offset = dit->n_elements;
-        dit++;
-        for (; dit!=data_info.end(); ++dit)
+        output << "        </DataArray>\n";
+
+        // Print the data associated with the particles, skipping the first entry (position)
+        std::vector<std::string>::const_iterator name = names.begin();
+        std::vector<unsigned int>::const_iterator length = lengths.begin();
+        unsigned int data_offset = dim + 1;
+
+        for (; name!=names.end(); ++name,++length)
           {
-            output << "        <DataArray type=\"Float64\" Name=\"" << dit->name << "\" NumberOfComponents=\"" << (dit->n_elements == 2 ? 3 : dit->n_elements) << "\" Format=\"ascii\">\n";
+
+            output << "        <DataArray type=\"Float64\" Name=\"" << *name << "\" NumberOfComponents=\"" << (*length == 2 ? 3 : *length) << "\" Format=\"ascii\">\n";
             for (typename std::multimap<LevelInd, BaseParticle<dim> >::const_iterator
                  it=particles.begin(); it!=particles.end(); ++it)
               {
                 std::vector<double> particle_data;
                 it->second.write_data(particle_data);
                 output << "          ";
-                for (unsigned int d=0; d<dit->n_elements; ++d)
+                for (unsigned int d=0; d<*length; ++d)
                   {
                     output << particle_data[data_offset+d] << " ";
                   }
-                if (dit->n_elements == 2)
+                if (*length == 2)
                   output << "0 ";
                 output << "\n";
               }
-            data_offset += dit->n_elements;
+            data_offset += *length;
             output << "        </DataArray>\n";
           }
         output << "      </PointData>\n";
@@ -170,9 +177,9 @@ namespace aspect
             pvtu_output << "    </PPoints>\n";
             pvtu_output << "    <PPointData Scalars=\"scalars\">\n";
 
-            for (dit=data_info.begin()+1; dit!=data_info.end(); ++dit)
+            for (name=names.begin(),length=lengths.begin(); name!=names.end(); ++name,++length)
               {
-                pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << dit->name << "\" NumberOfComponents=\"" << (dit->n_elements == 2 ? 3 : dit->n_elements) << "\" format=\"ascii\"/>\n";
+                pvtu_output << "      <PDataArray type=\"Float64\" Name=\"" << *name << "\" NumberOfComponents=\"" << (*length == 2 ? 3 : *length) << "\" format=\"ascii\"/>\n";
               }
             pvtu_output << "    </PPointData>\n";
             for (unsigned int i=0; i<Utilities::MPI::n_mpi_processes(this->communicator); ++i)

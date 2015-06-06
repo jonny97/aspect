@@ -21,7 +21,9 @@
 #include <aspect/particle/generator/uniform_radial.h>
 
 #include <aspect/utilities.h>
+
 #include <deal.II/grid/grid_tools.h>
+#include <deal.II/base/mpi.h>
 
 #include <boost/random.hpp>
 
@@ -32,32 +34,18 @@ namespace aspect
   {
     namespace Generator
     {
-      // Generate a uniform radial distribution of particles over the specified region
-      // in the computational domain
-
-      /**
-       * Constructor.
-       *
-       * @param[in] The MPI communicator for synchronizing particle generation.
-       */
       template <int dim>
       UniformRadial<dim>::UniformRadial() {}
 
-      /**
-       * Generate a uniformly randomly distributed set of particles in the current triangulation.
-       */
-      // TODO: fix the particle system so it works even with processors assigned 0 cells
       template <int dim>
       void
-      UniformRadial<dim>::generate_particles(Particle::World<dim> &world,
-                                             const double total_num_particles)
+      UniformRadial<dim>::generate_particles(const double total_num_particles,
+                                             Particle::World<dim> &world)
       {
-        unsigned int startID = 0;
-
         // Create the array of shell to deal with
         std::vector<double> shell_radius(radial_layers);
         const double shell_seperation = (P_max[0] - P_min[0]) / (radial_layers-1);
-        std::vector<unsigned int> ppr(radial_layers);
+        std::vector<unsigned int> particlesPerRadius(radial_layers);
         double radiusTotal = 0;
 
         for (unsigned int i = 0; i < radial_layers; ++i)
@@ -70,22 +58,10 @@ namespace aspect
           {
             // Calculate amount of particles per shell.
             // Number of particles depend on the portion of the radius that this shell is in (i.e., more radius = more particles)
-            ppr[i] = round(total_num_particles * shell_radius[i] / radiusTotal);
+            particlesPerRadius[i] = round(total_num_particles * shell_radius[i] / radiusTotal);
           }
 
-        uniform_radial_particles_in_subdomain(world, startID, shell_radius, ppr);
-
-      }
-
-      template <int dim>
-      void
-      UniformRadial<dim>::uniform_radial_particles_in_subdomain (Particle::World<dim> &world,
-                                                                 const unsigned int start_id,
-                                                                 const std::vector<double> &shell_radius,
-                                                                 const std::vector<unsigned int> &particlesPerRadius)
-      {
-        unsigned int cur_id;
-        cur_id = start_id;
+        unsigned int cur_id = dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) * total_num_particles;
         std_cxx11::array<double,dim> spherical_coordinates;
 
         if (dim == 3)

@@ -42,7 +42,7 @@ namespace aspect
 
       template <int dim>
       void
-      Interface<dim>::update_particle (unsigned int ,
+      Interface<dim>::update_particle (unsigned int &,
                                        std::vector<double> &,
                                        const Point<dim> &,
                                        const Vector<double> &,
@@ -54,13 +54,6 @@ namespace aspect
       Interface<dim>::need_update ()
       {
         return false;
-      }
-
-      template <int dim>
-      unsigned int
-      Interface<dim>::data_len() const
-      {
-        return 0;
       }
 
       template <int dim>
@@ -97,7 +90,14 @@ namespace aspect
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
             (*p)->initialize();
-            data_len += (*p)->data_len();
+            (*p)->data_names(names);
+            (*p)->data_length(length);
+          }
+
+        for (unsigned int i = 0; i < length.size(); ++i)
+          {
+            property_component_map.insert(std::make_pair(names[i],data_len));
+            data_len += length[i];
           }
       }
 
@@ -135,7 +135,6 @@ namespace aspect
                                   particle.get_location(),
                                   solution,
                                   gradients);
-            data_position += (*p)->data_len();
           }
       }
 
@@ -161,31 +160,11 @@ namespace aspect
 
       template <int dim>
       void
-      Manager<dim>::add_mpi_types (std::vector<aspect::Particle::MPIDataInfo> &data_info) const
+      Manager<dim>::get_data_info (std::vector<std::string>  &data_names,
+                                   std::vector<unsigned int> &data_length) const
       {
-        // Add the position, velocity, ID
-        data_info.push_back (
-          aspect::Particle::MPIDataInfo ("pos", dim));
-        data_info.push_back (aspect::Particle::MPIDataInfo ("id", 1));
-
-        for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
-             p = property_list.begin(); p!=property_list.end(); ++p)
-          {
-            (*p)->add_mpi_types(data_info);
-          }
-      }
-
-      template <int dim>
-      void
-      Manager<dim>::initialize_property_map (const std::vector<aspect::Particle::MPIDataInfo> &data_info)
-      {
-        unsigned int component = 0;
-        // Only store the data components in the property map, because we
-        for (unsigned int i = 3; i < data_info.size(); ++i)
-          {
-            property_component_map.insert(std::make_pair(data_info[i].name,component));
-            component += data_info[i].n_elements;
-          }
+        data_names = names;
+        data_length = length;
       }
 
       template <int dim>
