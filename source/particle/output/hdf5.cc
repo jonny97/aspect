@@ -61,7 +61,7 @@ namespace aspect
        */
       template <int dim>
       std::string
-      HDF5Output<dim>::output_particle_data(const std::multimap<LevelInd, BaseParticle<dim> > &particles,
+      HDF5Output<dim>::output_particle_data(const std::multimap<LevelInd, Particle<dim> > &particles,
                                             const std::vector<std::string>  &/*data_names*/,
                                             const std::vector<unsigned int> &/*data_components*/,
                                             const double &current_time)
@@ -164,13 +164,13 @@ namespace aspect
         vel_data = new double[3*particles.size()];
         id_data = new double[particles.size()];
 
-        typename std::multimap<LevelInd, BaseParticle<dim> >::const_iterator it;
+        typename std::multimap<LevelInd, Particle<dim> >::const_iterator it;
         for (i=0,it=particles.begin(); it!=particles.end(); ++i,++it)
           {
             for (d=0; d<dim; ++d)
               {
                 pos_data[i*3+d] = it->second.get_location()(d);
-                vel_data[i*3+d] = it->second.get_velocity()(d);
+                vel_data[i*3+d] = 0; //it->second.get_velocity()(d);
               }
             if (dim < 3)
               {

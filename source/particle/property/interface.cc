@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -103,7 +103,7 @@ namespace aspect
 
       template <int dim>
       void
-      Manager<dim>::initialize_particle (BaseParticle<dim> &particle,
+      Manager<dim>::initialize_particle (Particle<dim> &particle,
                                          const Vector<double> &solution,
                                          const std::vector<Tensor<1,dim> > &gradients)
       {
@@ -122,7 +122,7 @@ namespace aspect
 
       template <int dim>
       void
-      Manager<dim>::update_particle (BaseParticle<dim> &particle,
+      Manager<dim>::update_particle (Particle<dim> &particle,
                                      const Vector<double> &solution,
                                      const std::vector<Tensor<1,dim> > &gradients)
       {
@@ -247,7 +247,7 @@ namespace aspect
                            "all") != prop_names.end())
               {
                 prop_names.clear();
-                for (typename std::list<typename aspect::internal::Plugins::PluginList<Particle::Property::Interface<dim> >::PluginInfo>::const_iterator
+                for (typename std::list<typename aspect::internal::Plugins::PluginList<aspect::Particle::Property::Interface<dim> >::PluginInfo>::const_iterator
                      p = std_cxx1x::get<dim>(registered_plugins).plugins->begin();
                      p != std_cxx1x::get<dim>(registered_plugins).plugins->end(); ++p)
                   prop_names.push_back (std_cxx1x::get<0>(*p));
@@ -261,7 +261,7 @@ namespace aspect
         // their own parameters
         for (unsigned int name=0; name<prop_names.size(); ++name)
           {
-            Particle::Property::Interface<dim> *
+            aspect::Particle::Property::Interface<dim> *
             particle_property = std_cxx1x::get<dim>(registered_plugins)
                                 .create_plugin (prop_names[name],
                                                 "Particle property plugins");

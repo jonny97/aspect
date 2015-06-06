@@ -37,7 +37,7 @@ namespace aspect
 
       template <int dim>
       bool
-      RK2IntegratorMultiStep<dim>::integrate_step(typename std::multimap<LevelInd, BaseParticle<dim> > &particles,
+      RK2IntegratorMultiStep<dim>::integrate_step(typename std::multimap<LevelInd, Particle<dim> > &particles,
                                                   const std::vector<Tensor<1,dim> > &old_velocities,
                                                   const std::vector<Tensor<1,dim> > &velocities,
                                                   const double dt)
@@ -56,7 +56,7 @@ namespace aspect
         const unsigned int last_velocity_component = manager.get_property_component_by_name("velocity_0");
         const unsigned int last_position_component = manager.get_property_component_by_name("position_0");
 
-        typename std::multimap<LevelInd, BaseParticle<dim> >::iterator it=particles.begin();
+        typename std::multimap<LevelInd, Particle<dim> >::iterator it=particles.begin();
         typename std::vector<Tensor<1,dim> >::const_iterator old_vel = old_velocities.begin();
         typename std::vector<Tensor<1,dim> >::const_iterator vel = velocities.begin();
 

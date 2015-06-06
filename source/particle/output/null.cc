@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -59,7 +59,7 @@ namespace aspect
        */
       template <int dim>
       std::string
-      NullOutput<dim>::output_particle_data(const std::multimap<LevelInd, BaseParticle<dim> > &/*particles*/,
+      NullOutput<dim>::output_particle_data(const std::multimap<LevelInd, Particle<dim> > &/*particles*/,
                                             const std::vector<std::string>  &/*data_names*/,
                                             const std::vector<unsigned int> &/*data_components*/,
                                             const double &/*current_time*/)

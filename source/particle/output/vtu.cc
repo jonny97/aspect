@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -57,7 +57,7 @@ namespace aspect
        */
       template <int dim>
       std::string
-      VTUOutput<dim>::output_particle_data(const std::multimap<LevelInd, BaseParticle<dim> > &particles,
+      VTUOutput<dim>::output_particle_data(const std::multimap<LevelInd, Particle<dim> > &particles,
                                            const std::vector<std::string> &names,
                                            const std::vector<unsigned int> &lengths,
                                            const double &current_time)
@@ -85,7 +85,7 @@ namespace aspect
         // Go through the particles on this domain and print the position of each one
         output << "      <Points>\n";
         output << "        <DataArray name=\"Position\" type=\"Float64\" NumberOfComponents=\"3\" Format=\"ascii\">\n";
-        for (typename std::multimap<LevelInd, BaseParticle<dim> >::const_iterator
+        for (typename std::multimap<LevelInd, Particle<dim> >::const_iterator
              it=particles.begin(); it!=particles.end(); ++it)
           {
             output << "          " << it->second.get_location();
@@ -119,7 +119,7 @@ namespace aspect
         output << "      <PointData Scalars=\"scalars\">\n";
 
         output << "        <DataArray type=\"Float64\" Name=\"id\" NumberOfComponents=\"1\" Format=\"ascii\">\n";
-        for (typename std::multimap<LevelInd, BaseParticle<dim> >::const_iterator
+        for (typename std::multimap<LevelInd, Particle<dim> >::const_iterator
             it=particles.begin(); it!=particles.end(); ++it)
           output << "          " << it->second.get_id() << "\n" ;
 
@@ -134,7 +134,7 @@ namespace aspect
           {
 
             output << "        <DataArray type=\"Float64\" Name=\"" << *name << "\" NumberOfComponents=\"" << (*length == 2 ? 3 : *length) << "\" Format=\"ascii\">\n";
-            for (typename std::multimap<LevelInd, BaseParticle<dim> >::const_iterator
+            for (typename std::multimap<LevelInd, Particle<dim> >::const_iterator
                  it=particles.begin(); it!=particles.end(); ++it)
               {
                 std::vector<double> particle_data;

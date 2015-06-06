@@ -21,13 +21,12 @@
 #ifndef __aspect__particle_property_interface_h
 #define __aspect__particle_property_interface_h
 
-#include <aspect/particle/base_particle.h>
+#include <aspect/particle/particle.h>
 #include <aspect/particle/definitions.h>
-
 #include <aspect/simulator_access.h>
 #include <aspect/plugins.h>
-#include <deal.II/base/std_cxx1x/shared_ptr.h>
 
+#include <deal.II/base/std_cxx1x/shared_ptr.h>
 
 namespace aspect
 {
@@ -37,7 +36,7 @@ namespace aspect
     {
 
       /**
-        * Interface provides an example of how to extend the BaseParticle
+        * Interface provides an example of how to extend the Particle
         * class to include related particle data. This allows users to attach
         * scalars/vectors/tensors/etc to particles and ensure they are
         * transmitted correctly over MPI and written to output files.
@@ -197,7 +196,7 @@ namespace aspect
            */
           virtual
           void
-          initialize_particle (BaseParticle<dim> &particle,
+          initialize_particle (Particle<dim> &particle,
                                const Vector<double> &solution,
                                const std::vector<Tensor<1,dim> > &gradients);
 
@@ -207,7 +206,7 @@ namespace aspect
            */
           virtual
           void
-          update_particle (BaseParticle<dim> &particle,
+          update_particle (Particle<dim> &particle,
                            const Vector<double> &solution,
                            const std::vector<Tensor<1,dim> > &gradients);
 

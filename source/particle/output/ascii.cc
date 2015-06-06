@@ -56,12 +56,12 @@ namespace aspect
        */
       template <int dim>
       std::string
-      ASCIIOutput<dim>::output_particle_data(const std::multimap<LevelInd, BaseParticle<dim> > &particles,
+      ASCIIOutput<dim>::output_particle_data(const std::multimap<LevelInd, Particle<dim> > &particles,
                                              const std::vector<std::string> &names,
                                              const std::vector<unsigned int> &lengths,
                                              const double &)
       {
-        typename std::multimap<LevelInd, BaseParticle<dim> >::const_iterator  it;
+        typename std::multimap<LevelInd, Particle<dim> >::const_iterator  it;
         unsigned int                            i;
         std::string                             output_file_prefix, output_path_prefix, full_filename;
 
