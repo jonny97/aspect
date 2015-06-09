@@ -29,7 +29,7 @@ namespace aspect
     template <int dim>
     inline
     Particle<dim>::Particle (const Point<dim> &new_loc,
-                                     const double &new_id)
+                             const double &new_id)
       :
       location (new_loc),
       id (new_id),

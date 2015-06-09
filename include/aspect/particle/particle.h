@@ -81,7 +81,7 @@ namespace aspect
          * @param[in] new_id Globally unique ID number of particle.
          */
         Particle (const Point<dim> &new_loc,
-                      const double &new_id);
+                  const double &new_id);
 
         /**
          * Destructor for Particle

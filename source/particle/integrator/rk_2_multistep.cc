@@ -72,22 +72,22 @@ namespace aspect
               }
 
             const Tensor<1,dim> velocity = ((*vel).norm() < eps)
-                                     ?
-                                     Tensor<1,dim>()
-                                     :
-                                     *vel;
+                                           ?
+                                           Tensor<1,dim>()
+                                           :
+                                           *vel;
 
             const Tensor<1,dim> last_velocity = ((*vel).norm() < eps)
-                                          ?
-                                          Tensor<1,dim>()
-                                          :
-                                          *vel;
+                                                ?
+                                                Tensor<1,dim>()
+                                                :
+                                                *vel;
 
             const Tensor<1,dim> old_velocity = ((*vel).norm() < eps)
-                                         ?
-                                         Tensor<1,dim>()
-                                         :
-                                         *vel;
+                                               ?
+                                               Tensor<1,dim>()
+                                               :
+                                               *vel;
 
             if (step == 0)
               {

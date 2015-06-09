@@ -65,7 +65,7 @@ namespace aspect
             else
               {
                 Assert(false,
-                    ExcMessage("The RK2 integrator should never continue after two integration steps."));
+                       ExcMessage("The RK2 integrator should never continue after two integration steps."));
               }
           }
 

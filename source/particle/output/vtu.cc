@@ -99,7 +99,7 @@ namespace aspect
 
         output << "        <DataArray type=\"Float64\" Name=\"id\" NumberOfComponents=\"1\" Format=\"ascii\">\n";
         for (typename std::multimap<LevelInd, Particle<dim> >::const_iterator
-            it=particles.begin(); it!=particles.end(); ++it)
+             it=particles.begin(); it!=particles.end(); ++it)
           output << "          " << it->second.get_id() << "\n" ;
 
         output << "        </DataArray>\n";
