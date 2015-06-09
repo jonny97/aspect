@@ -61,9 +61,6 @@ namespace aspect
         public:
           /**
            * Constructor.
-           *
-           * @param[in] The directory into which output files shall be placed.
-           * @param[in] The MPI communicator that describes this simulation.
            */
           Interface() {}
 

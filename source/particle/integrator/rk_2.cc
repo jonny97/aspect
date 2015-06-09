@@ -56,15 +56,16 @@ namespace aspect
             if (step == 0)
               {
                 loc0[id_num] = loc;
-                it->second.set_location(loc + 0.5*dt*(*old_vel));
+                it->second.set_location(loc + 0.5 * dt * (*old_vel));
               }
             else if (step == 1)
               {
-                it->second.set_location(loc0[id_num] + dt*(*old_vel + *vel)/2.0);
+                it->second.set_location(loc0[id_num] + dt * (*old_vel + *vel)/2.0);
               }
             else
               {
-                // Error!
+                Assert(false,
+                    ExcMessage("The RK2 integrator should never continue after two integration steps."));
               }
           }
 

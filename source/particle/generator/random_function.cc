@@ -275,11 +275,12 @@ namespace aspect
                                          "particles over entire simulation domain. "
                                          "The particle density is prescribed in the "
                                          "form of a user-prescribed function. The "
-                                         "format of these functions follows the syntax "
+                                         "format of this function follows the syntax "
                                          "understood by the muparser library, see "
                                          "Section~\\ref{sec:muparser-format}. The "
                                          "return value of the function is always "
-                                         "interpreted positively.")
+                                         "interpreted as a positive probability "
+                                         "density.")
     }
   }
 }

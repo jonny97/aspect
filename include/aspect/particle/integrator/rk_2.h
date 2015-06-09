@@ -23,6 +23,9 @@
 
 #include <aspect/particle/integrator/interface.h>
 
+#include <aspect/simulator_access.h>
+
+
 namespace aspect
 {
   namespace Particle
@@ -34,7 +37,7 @@ namespace aspect
        * This scheme requires storing the original location, and the read/write_data functions reflect this.
        */
       template <int dim>
-      class RK2Integrator : public Interface<dim>
+      class RK2Integrator : public Interface<dim>, public SimulatorAccess<dim>
       {
         public:
           RK2Integrator();

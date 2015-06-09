@@ -185,7 +185,8 @@ namespace aspect
                                          "except that it only needs to contain as many columns as "
                                          "dimensions to specify the position of each tracer. Note "
                                          "that this plugin does ignore the number of tracers set in "
-                                         "the input file.")
+                                         "the input file and instead generates as many particles "
+                                         "as there are readable lines in the ascii file.")
     }
   }
 }

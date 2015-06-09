@@ -534,22 +534,22 @@ namespace aspect
 
           // Interpolate the velocity field for each of the particles
           old_fe_value.set_active_cell(found_cell);
-          old_fe_value.vector_value_list(particle_points, result);
+          old_fe_value.vector_value_list(particle_points, old_result);
 
           fe_value.set_active_cell(found_cell);
-          fe_value.vector_value_list(particle_points, old_result);
+          fe_value.vector_value_list(particle_points, result);
 
-          // Copy the resulting velocities to the appropriate vector
-          for (typename std::vector<Vector<double> >::iterator particle = result.begin(); particle != result.end(); ++particle)
+          // Copy the resulting velocities to the appropriate vector#
+          for (unsigned int id = 0; id < n_particles_in_cell; ++id)
             {
-              Tensor<1,dim> velocity;
-              for (int d=0; d<dim; ++d)
-                velocity[d] = (*particle)[d];
+              Tensor<1,dim> velocity, old_velocity;
+              for (unsigned int d=0; d<dim; ++d)
+                {
+                  velocity[d] = result[id][d];
+                  old_velocity[d] = old_result[id][d];
+                }
               velocities[particle_idx] = velocity;
-
-              for (int d=0; d<dim; ++d)
-                velocity[d] = (*particle)[d];
-              old_velocities[particle_idx] = velocity;
+              old_velocities[particle_idx] = old_velocity;
               particle_idx++;
             }
         }

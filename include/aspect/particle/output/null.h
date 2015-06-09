@@ -18,8 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __aspect__particle_output_ascii_h
-#define __aspect__particle_output_ascii_h
+#ifndef __aspect__particle_output_null_h
+#define __aspect__particle_output_null_h
 
 #include <aspect/particle/output/interface.h>
 
@@ -30,6 +30,10 @@ namespace aspect
   {
     namespace Output
     {
+      /**
+       * Blank class to avoid output of data, for example, if particles are used to represent
+       * other physical phenomenon that influences the simulation and we don't care about their positions
+       */
       template <int dim>
       class NullOutput : public Interface<dim>
       {

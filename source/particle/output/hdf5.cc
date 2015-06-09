@@ -32,33 +32,12 @@ namespace aspect
   {
     namespace Output
     {
-      /**
-       * Constructor.
-       *
-       * @param[in] The directory into which output files shall be placed.
-       * @param[in] The MPI communicator that describes this simulation.
-       */
       template <int dim>
       HDF5Output<dim>::HDF5Output()
         :
         Interface<dim> ()
       {}
 
-      /**
-       * Write data about the particles specified in the first argument
-       * to a file. If possible, encode the current simulation time
-       * into this file using the data provided in the second argument.
-       *
-       * @param[in] particles The set of particles to generate a graphical
-       *   representation for
-       * @param[in] current_time Current time of the simulation, given as either
-       *   years or seconds, as selected in the input file. In other words,
-       *   output writers do not need to know the units in which time is
-       *   described.
-       * @return The name of the file that was written, or any other
-       *   information that describes what output was produced if for example
-       *   multiple files were created.
-       */
       template <int dim>
       std::string
       HDF5Output<dim>::output_particle_data(const std::multimap<LevelInd, Particle<dim> > &particles,
@@ -242,7 +221,8 @@ namespace aspect
     {
       ASPECT_REGISTER_PARTICLE_OUTPUT(HDF5Output,
                                       "hdf5",
-                                      "")
+                                      "This particle output plugin writes particle "
+                                      "positions and properties into hdf5 files.")
     }
   }
 }
