@@ -63,11 +63,6 @@ namespace aspect
         length.push_back(dim);
       }
 
-      /**
-       * Set up the MPI data type information for the Velocity type
-       *
-       * @param [in,out] data_info Vector to append MPIDataInfo objects to
-       */
       template <int dim>
       void
       Velocity<dim>::data_names(std::vector<std::string> &names) const

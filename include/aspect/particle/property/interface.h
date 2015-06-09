@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 - 2014 by the authors of the ASPECT code.
+ Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
 
  This file is part of ASPECT.
 
@@ -94,9 +94,9 @@ namespace aspect
           data_length(std::vector<unsigned int> &length) const = 0;
 
           /**
-           * Set up the MPI data type information for the Interface type
+           * Set up the name information for the particle property
            *
-           * @param [in,out] data_info Vector to append MPIDataInfo objects to
+           * @param [in,out] names Vector that contains the property name
            */
           virtual
           void
