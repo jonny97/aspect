@@ -42,9 +42,6 @@ namespace aspect
                                                   const std::vector<Tensor<1,dim> > &velocities,
                                                   const double dt)
       {
-        //Set a machine zero to cause particles which should not move, to not move; ensures particles are not lost in 2d case
-        const double eps = .00000001;
-
         const Postprocess::PassiveTracers<dim> *tracer_postprocess =
           this->template find_postprocessor<const Postprocess::PassiveTracers<dim> >();
         Assert(tracer_postprocess!=NULL,
@@ -64,40 +61,23 @@ namespace aspect
           {
             const std::vector<double> data = it->second.get_properties();
 
-            Point<dim> lastLoc, lastVel;
+            Point<dim> lastLoc;
+            Tensor<1,dim> lastVel;
             for (unsigned int i = 0; i < dim; ++i)
               {
                 lastLoc(i) = data[last_position_component + i];
-                lastVel(i) = data[last_velocity_component + i];
+                lastVel[i] = data[last_velocity_component + i];
               }
-
-            const Tensor<1,dim> velocity = ((*vel).norm() < eps)
-                                           ?
-                                           Tensor<1,dim>()
-                                           :
-                                           *vel;
-
-            const Tensor<1,dim> last_velocity = ((*vel).norm() < eps)
-                                                ?
-                                                Tensor<1,dim>()
-                                                :
-                                                *vel;
-
-            const Tensor<1,dim> old_velocity = ((*vel).norm() < eps)
-                                               ?
-                                               Tensor<1,dim>()
-                                               :
-                                               *vel;
 
             if (step == 0)
               {
                 //vel = midNewVel; loc = lastLoc + dt * (midOldVel + midNewVel)/2
-                it->second.set_location(lastLoc + 0.5 * dt * last_velocity);
+                it->second.set_location(lastLoc + 0.5 * dt * lastVel);
               }
             else if (step == 1)
               {
                 //lastLoc = oldPos, loc = pos + 1/2 vel
-                it->second.set_location(lastLoc + dt*((velocity + old_velocity) / 2));
+                it->second.set_location(lastLoc + dt*(*vel + *old_vel) / 2.0);
               }
             else
               {
