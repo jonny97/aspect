@@ -46,7 +46,7 @@ namespace aspect
                                      const std::vector<Tensor<1,dim> > &)
       {
         for (unsigned int i = 0; i < dim; ++i)
-          data[data_position++] = solution[this->introspection().component_indices.velocities[i]];
+          data[data_position+i] = solution[this->introspection().component_indices.velocities[i]];
       }
 
       template <int dim>

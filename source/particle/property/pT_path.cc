@@ -45,8 +45,8 @@ namespace aspect
                                    const Vector<double> &solution,
                                    const std::vector<Tensor<1,dim> > &)
       {
-        data[data_position++] = solution[this->introspection().component_indices.pressure];
-        data[data_position++] = solution[this->introspection().component_indices.temperature];
+        data[data_position] = solution[this->introspection().component_indices.pressure];
+        data[data_position+1] = solution[this->introspection().component_indices.temperature];
       }
 
       template <int dim>

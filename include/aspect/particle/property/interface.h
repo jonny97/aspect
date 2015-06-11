@@ -158,17 +158,26 @@ namespace aspect
           unsigned int data_len;
 
           /**
-           * List of the names of the properties that are selected in this
-           * model.
+           * Vector of the names of the properties that are selected in this
+           * model. This vector has as many components as individually named
+           * fields in the properties.
            */
           std::vector<std::string> names;
 
           /**
-           * List of the data length of the properties that are selected in
-           * this model.
+           * Vector of the data length of the properties that are selected in
+           * this model. This vector has as many components as individually named
+           * fields in the properties.
            */
           std::vector<unsigned int> length;
 
+          /**
+           * Vector of the data positions of individual property plugins.
+           * This vector has as many components as property plugins selected.
+           * It can be different from length of names or length, because
+           * single plugins can define multiple data fields.
+           */
+          std::vector<unsigned int> positions;
 
         public:
           /**

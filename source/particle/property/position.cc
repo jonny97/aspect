@@ -46,7 +46,7 @@ namespace aspect
                                      const std::vector<Tensor<1,dim> > &)
       {
         for (unsigned int i = 0; i < dim; ++i)
-          data[data_position++] = position[i];
+          data[data_position+i] = position[i];
       }
 
       template <int dim>

@@ -31,7 +31,7 @@ namespace aspect
       template <int dim>
       RK2IntegratorMultiStep<dim>::RK2IntegratorMultiStep()
       {
-        step = 1; //0 completes the last timestep's movement
+        step = 0;
         loc0.clear();
       }
 
@@ -53,8 +53,8 @@ namespace aspect
 
         const Property::Manager<dim> manager = tracer_postprocess->get_particle_world().get_manager();
 
-        const unsigned int last_velocity_component = manager.get_property_component_by_name("velocity_0");
-        const unsigned int last_position_component = manager.get_property_component_by_name("position_0");
+        const unsigned int last_velocity_component = manager.get_property_component_by_name("velocity");
+        const unsigned int last_position_component = manager.get_property_component_by_name("position");
 
         typename std::multimap<LevelInd, Particle<dim> >::iterator it=particles.begin();
         typename std::vector<Tensor<1,dim> >::const_iterator old_vel = old_velocities.begin();

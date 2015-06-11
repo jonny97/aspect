@@ -84,21 +84,30 @@ namespace aspect
       void
       Manager<dim>::initialize ()
       {
-        data_len = dim + 1;
+        unsigned int old_size = 0;
+        data_len = 0;
 
+        // Save the names, lengths and positions of the selected properties
         for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
              p = property_list.begin(); p!=property_list.end(); ++p)
           {
+            positions.push_back(data_len);
+
             (*p)->initialize();
             (*p)->data_names(names);
             (*p)->data_length(length);
+
+            for (unsigned int i = old_size; i < length.size(); ++i)
+              {
+                property_component_map.insert(std::make_pair(names[i],data_len));
+                data_len += length[i];
+              }
+            old_size = length.size();
           }
 
-        for (unsigned int i = 0; i < length.size(); ++i)
-          {
-            property_component_map.insert(std::make_pair(names[i],data_len));
-            data_len += length[i];
-          }
+        // The total length is the selected properties plus the basic properties
+        // position and id.
+        data_len += dim + 1;
       }
 
       template <int dim>
@@ -126,11 +135,11 @@ namespace aspect
                                      const Vector<double> &solution,
                                      const std::vector<Tensor<1,dim> > &gradients)
       {
-        unsigned int data_position = 0;
+        unsigned int property = 0;
         for (typename std::list<std_cxx1x::shared_ptr<Interface<dim> > >::const_iterator
-             p = property_list.begin(); p!=property_list.end(); ++p)
+             p = property_list.begin(); p!=property_list.end(); ++p,++property)
           {
-            (*p)->update_particle(data_position,
+            (*p)->update_particle(positions[property],
                                   particle.get_properties(),
                                   particle.get_location(),
                                   solution,
