@@ -45,24 +45,27 @@ namespace aspect
         for (unsigned int i = 0; i < dim; ++i)
           volume *= P_diff[i];
 
-        std_cxx11::array<double,dim> Particle_separation;
+        std_cxx11::array<double,dim> nParticles;
+        std_cxx11::array<double,dim> spacing;
 
         // Calculate separation of particles
         for (unsigned int i = 0; i < dim; ++i)
           {
-            const unsigned int nParticles = round(std::pow(n_tracers * std::pow(P_diff[i],dim) / volume, 1./dim));
-            Particle_separation[i] = P_diff[i] / fmax(nParticles - 1,1);
+            nParticles[i] = round(std::pow(n_tracers * std::pow(P_diff[i],dim) / volume, 1./dim));
+            spacing[i] = P_diff[i] / fmax(nParticles[i] - 1,1);
           }
 
-        for (double x = P_min[0]; x <= P_max[0]; x+= Particle_separation[0])
+        for (unsigned int i = 0; i < nParticles[0]; ++i)
           {
-            for (double y = P_min[1]; y <= P_max[1]; y += Particle_separation[1])
+            for (unsigned int j = 0; j < nParticles[1]; ++j)
               {
                 if (dim == 2)
-                  generate_particle(Point<dim> (x,y),cur_id++,world);
-                if (dim == 3)
-                  for (double z = P_min[2]; z <= P_max[2]; z += Particle_separation[2])
-                    generate_particle(Point<dim> (x,y,z),cur_id++,world);
+                  generate_particle(Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1]),cur_id++,world);
+                else if (dim == 3)
+                  for (unsigned int k = 0; k < nParticles[2]; ++k)
+                    generate_particle(Point<dim> (P_min[0]+i*spacing[0],P_min[1]+j*spacing[1],P_min[2]+k*spacing[2]),cur_id++,world);
+                else
+                  ExcNotImplemented();
               }
           }
       }
