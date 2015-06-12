@@ -179,21 +179,19 @@ namespace aspect
         void find_all_cells();
 
         /**
-         * Advance particles by the specified timestep using the current
-         * integration scheme.
-         *
-         * @param [in] timestep Length of timestep to integrate particle
-         * movement
+         * Advance particles by the old timestep using the current
+         * integration scheme. This accounts for the fact that the tracers
+         * are actually still at their old positions and the current timestep
+         * length is already updated for the next step at the time this
+         * function is called.
          */
-        void advance_timestep(const double timestep);
-
-        void move_particles_back_in_mesh();
+        void advance_timestep();
 
         /**
-         * Mark all particles to be checked for velocity at their current
-         * position
+         * TODO: This needs to be implemented in case some particles fall out of the
+         * domain. In particular for periodic boundary conditions.
          */
-        void mark_particles_for_check();
+        void move_particles_back_in_mesh();
 
         /**
          * Finds the cell the particle is contained in and returns the

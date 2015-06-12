@@ -52,8 +52,7 @@ namespace aspect
            */
           virtual
           void
-          generate_particles(const double total_num_particles,
-                             World<dim> &world);
+          generate_particles(World<dim> &world);
 
           /**
            * Declare the parameters this class takes through input files.
@@ -90,6 +89,11 @@ namespace aspect
            * The number of radial layers of particles that will be generated.
            */
           unsigned int radial_layers;
+
+          /**
+           * Number of particles to create
+           */
+          unsigned int n_tracers;
       };
 
     }

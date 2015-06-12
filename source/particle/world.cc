@@ -305,7 +305,7 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::advance_timestep(const double timestep)
+    World<dim>::advance_timestep()
     {
       bool        continue_integrator = true;
 
@@ -332,7 +332,7 @@ namespace aspect
           continue_integrator = integrator->integrate_step(particles,
                                                            old_velocities,
                                                            velocities,
-                                                           timestep);
+                                                           this->get_old_timestep());
 
           // Find the cells that the particles moved to
           find_all_cells();

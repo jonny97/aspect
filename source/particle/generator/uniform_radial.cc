@@ -39,8 +39,7 @@ namespace aspect
 
       template <int dim>
       void
-      UniformRadial<dim>::generate_particles(const double total_num_particles,
-                                             World<dim> &world)
+      UniformRadial<dim>::generate_particles(World<dim> &world)
       {
         // Create the array of shell to deal with
         std::vector<double> shell_radius(radial_layers);
@@ -58,10 +57,10 @@ namespace aspect
           {
             // Calculate amount of particles per shell.
             // Number of particles depend on the portion of the radius that this shell is in (i.e., more radius = more particles)
-            particlesPerRadius[i] = round(total_num_particles * shell_radius[i] / radiusTotal);
+            particlesPerRadius[i] = round(n_tracers * shell_radius[i] / radiusTotal);
           }
 
-        unsigned int cur_id = dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) * total_num_particles;
+        unsigned int cur_id = dealii::Utilities::MPI::this_mpi_process(this->get_mpi_communicator()) * n_tracers;
         std_cxx11::array<double,dim> spherical_coordinates;
 
         if (dim == 3)
@@ -146,6 +145,13 @@ namespace aspect
         {
           prm.enter_subsection("Tracers");
           {
+            prm.declare_entry ("Number of tracers", "1000",
+                               Patterns::Double (0),
+                               "Total number of tracers to create (not per processor or per element). "
+                               "The number is parsed as a floating point number (so that one can "
+                               "specify, for example, '1e4' particles) but it is interpreted as "
+                               "an integer, of course.");
+
             prm.enter_subsection("Generator");
             {
               prm.enter_subsection("Uniform radial");
@@ -199,6 +205,8 @@ namespace aspect
         {
           prm.enter_subsection("Tracers");
           {
+            n_tracers    = static_cast<unsigned int>(prm.get_double ("Number of tracers"));
+
             prm.enter_subsection("Generator");
             {
               prm.enter_subsection("Uniform radial");

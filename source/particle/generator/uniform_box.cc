@@ -36,8 +36,7 @@ namespace aspect
 
       template <int dim>
       void
-      UniformBox<dim>::generate_particles(const double total_num_particles,
-                                          World<dim> &world)
+      UniformBox<dim>::generate_particles(World<dim> &world)
       {
         unsigned int cur_id = 0;
         const Tensor<1,dim> P_diff = P_max - P_min;
@@ -49,14 +48,14 @@ namespace aspect
 
         if (dim == 2)
           {
-            nParticles[1] = round(sqrt(total_num_particles*P_diff[1]/P_diff[0]));
-            nParticles[0] = round(total_num_particles / nParticles[1]);
+            nParticles[1] = round(sqrt(n_tracers*P_diff[1]/P_diff[0]));
+            nParticles[0] = round(n_tracers / nParticles[1]);
           }
         else
           {
             ///Amount of particles is the total amount of particles, divided by length of each axis
             for (unsigned int i = 0; i < dim; ++i)
-              nParticles[i] = round(total_num_particles * P_diff[i] / totalDiff);
+              nParticles[i] = round(n_tracers * P_diff[i] / totalDiff);
           }
         ///Amount of particles is the total amount of particles, divided by length of each axis
         for (unsigned int i = 0; i < dim; ++i)
@@ -102,6 +101,13 @@ namespace aspect
         {
           prm.enter_subsection("Tracers");
           {
+            prm.declare_entry ("Number of tracers", "1000",
+                               Patterns::Double (0),
+                               "Total number of tracers to create (not per processor or per element). "
+                               "The number is parsed as a floating point number (so that one can "
+                               "specify, for example, '1e4' particles) but it is interpreted as "
+                               "an integer, of course.");
+
             prm.enter_subsection("Generator");
             {
               prm.enter_subsection("Uniform box");
@@ -143,6 +149,8 @@ namespace aspect
         {
           prm.enter_subsection("Tracers");
           {
+            n_tracers    = static_cast<unsigned int>(prm.get_double ("Number of tracers"));
+
             prm.enter_subsection("Generator");
             {
               prm.enter_subsection("Uniform box");
