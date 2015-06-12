@@ -102,12 +102,9 @@ namespace aspect
       void
       RK2Integrator<dim>::write_data(std::vector<double> &data, const double &id_num) const
       {
-        unsigned int    i;
-        typename std::map<double, Point<dim> >::const_iterator it;
-
         // Write location data
-        it = loc0.find(id_num);
-        for (i=0; i<dim; ++i)
+        const typename std::map<double, Point<dim> >::const_iterator it = loc0.find(id_num);
+        for (unsigned int i=0; i<dim; ++i)
           {
             data.push_back(it->second(i));
           }

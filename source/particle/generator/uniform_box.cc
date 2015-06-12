@@ -40,26 +40,19 @@ namespace aspect
       {
         unsigned int cur_id = 0;
         const Tensor<1,dim> P_diff = P_max - P_min;
-        double totalDiff(0.0);
+
+        double volume(1.0);
         for (unsigned int i = 0; i < dim; ++i)
-          totalDiff += P_diff[i];
-        std_cxx11::array<unsigned int ,dim> nParticles;
+          volume *= P_diff[i];
+
         std_cxx11::array<double,dim> Particle_separation;
 
-        if (dim == 2)
-          {
-            nParticles[1] = round(sqrt(n_tracers*P_diff[1]/P_diff[0]));
-            nParticles[0] = round(n_tracers / nParticles[1]);
-          }
-        else
-          {
-            ///Amount of particles is the total amount of particles, divided by length of each axis
-            for (unsigned int i = 0; i < dim; ++i)
-              nParticles[i] = round(n_tracers * P_diff[i] / totalDiff);
-          }
-        ///Amount of particles is the total amount of particles, divided by length of each axis
+        // Calculate separation of particles
         for (unsigned int i = 0; i < dim; ++i)
-          Particle_separation[i] = P_diff[i] / (nParticles[i]-1);
+          {
+            const unsigned int nParticles = round(std::pow(n_tracers * std::pow(P_diff[i],dim) / volume, 1./dim));
+            Particle_separation[i] = P_diff[i] / fmax(nParticles - 1,1);
+          }
 
         for (double x = P_min[0]; x <= P_max[0]; x+= Particle_separation[0])
           {
@@ -160,7 +153,7 @@ namespace aspect
                 P_min(1) = prm.get_double ("Minimal y");
                 P_max(1) = prm.get_double ("Maximal y");
 
-                if (dim ==3)
+                if (dim == 3)
                   {
                     P_min(2) = prm.get_double ("Minimal z");
                     P_max(2) = prm.get_double ("Maximal z");
