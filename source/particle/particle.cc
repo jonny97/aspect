@@ -51,9 +51,9 @@ namespace aspect
     inline
     Particle<dim>::Particle (std::vector<double>::const_iterator &begin_data,
                              const unsigned int data_len)
-                             :
-                             val(data_len-dim-1)
-     {
+      :
+      val(data_len-dim-1)
+    {
       for (unsigned int i = 0; i < dim; ++i)
         location(i) = *begin_data++;
 

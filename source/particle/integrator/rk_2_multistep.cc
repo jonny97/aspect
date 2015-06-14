@@ -103,7 +103,7 @@ namespace aspect
       template <int dim>
       void
       RK2IntegratorMultiStep<dim>::read_data(std::vector<double>::const_iterator &data,
-          const double &id_num)
+                                             const double &id_num)
       {
         // Read location data
         for (unsigned int i=0; i<dim; ++i,++data)

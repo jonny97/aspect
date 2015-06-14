@@ -117,8 +117,8 @@ namespace aspect
       template <int dim>
       void
       UniformRadial<dim>::generate_particle(const Point<dim> &position,
-                                         const unsigned int id,
-                                         World<dim> &world)
+                                            const unsigned int id,
+                                            World<dim> &world)
       {
         const typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
           (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position)).first;;
