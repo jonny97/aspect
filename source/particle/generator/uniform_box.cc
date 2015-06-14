@@ -77,7 +77,7 @@ namespace aspect
                                          const unsigned int id,
                                          World<dim> &world)
       {
-        typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
+        const typename parallel::distributed::Triangulation<dim>::active_cell_iterator it =
           (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), position)).first;;
 
         if (it->is_locally_owned())

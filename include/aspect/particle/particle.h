@@ -125,13 +125,26 @@ namespace aspect
         virtual unsigned int read_data(const std::vector<double> &data, const unsigned int pos);
 
         /**
-         * Write particle data to a vector of doubles.
+         * Write particle data to a vector of doubles. The vector is extended
+         * by the data written by this particle via push_back().
          *
          * @param [in,out] data The vector of doubles to write integrator data
          * into.
          */
-        virtual void write_data(std::vector<double>::iterator &data) const;
         virtual void write_data(std::vector<double> &data) const;
+
+        /**
+         * Write particle data to a vector of doubles. The vector is expected
+         * to be large enough to take the data, and the input iterator should
+         * point to the first element in which the data should be written. This
+         * function avoids the resizing of the previous write_data function.
+         *
+         * @param [in,out] data The vector of doubles to write integrator data
+         * into. This iterator points to the first element, in which the data
+         * should be written.
+         */
+        virtual void write_data(std::vector<double>::iterator &data) const;
+
 
         /**
          * Set the location of this particle. Note that this does not check
@@ -167,7 +180,7 @@ namespace aspect
         set_properties (const std::vector<double> &new_properties);
 
         /**
-         * Get the properties of this particle.
+         * Get write-access to properties of this particle.
          *
          * @return The properties of this particle.
          */
@@ -175,7 +188,7 @@ namespace aspect
         get_properties ();
 
         /**
-         * Get write-access to properties of this particle.
+         * Get the properties of this particle.
          *
          * @return The properties of this particle.
          */

@@ -94,6 +94,15 @@ namespace aspect
            * Number of particles to create
            */
           unsigned int n_tracers;
+
+          /**
+           * Generate a particle at the specified position and with the
+           * specified id.
+           */
+          void
+          generate_particle(const Point<dim> &position,
+                            const unsigned int id,
+                            World<dim> &world);
       };
 
     }
