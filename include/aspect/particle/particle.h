@@ -52,13 +52,6 @@ namespace aspect
         double          id;
 
         /**
-         * Whether this particle is in the local subdomain or not. This variable
-         * is only needed during that part of the algorithm that transfers
-         * particles between processors.
-         */
-        bool            is_local;
-
-        /**
          * The serialized vector of all tracer properties
          */
         std::vector<double>      val;
@@ -82,6 +75,18 @@ namespace aspect
          */
         Particle (const Point<dim> &new_loc,
                   const double &new_id);
+
+        /**
+         * Constructor for Particle, creates a particle from a data vector.
+         * This constructor is usually called after sending a particle to a
+         * different process.
+         *
+         * @param[in,out] begin_data First data component.
+         * @param[in] data_len Number of components of the begin_data vector
+         * that will be read in by this particle.
+         */
+        Particle (std::vector<double>::const_iterator &begin_data,
+                  const unsigned int data_len);
 
         /**
          * Destructor for Particle
@@ -125,6 +130,7 @@ namespace aspect
          * @param [in,out] data The vector of doubles to write integrator data
          * into.
          */
+        virtual void write_data(std::vector<double>::iterator &data) const;
         virtual void write_data(std::vector<double> &data) const;
 
         /**
@@ -175,25 +181,6 @@ namespace aspect
          */
         const std::vector<double> &
         get_properties () const;
-
-        /**
-         * Check whether the particle is marked as being local to this
-         * subdomain. Note that this function does not actually perform the
-         * check for locality.
-         *
-         * @return Whether the particle is marked as local.
-         */
-        bool
-        local () const;
-
-        /**
-         * Mark the particle as being local of not. Note that this function
-         * does not perform the check for locality.
-         *
-         * @param[in] new_local Whether to mark the particle as local.
-         */
-        void
-        set_local (bool new_local);
     };
 
   }

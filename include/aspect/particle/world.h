@@ -167,16 +167,18 @@ namespace aspect
                       std::vector<unsigned int> &length) const;
 
         /**
-         * Initialize the particle world by creating appropriate MPI data
-         * types for transferring particles, and allocating memory for MPI
-         * related functions.
+         * Initialize the particle world by connecting to be informed when
+         * the triangulation changes.
          */
         void init();
 
         /**
          * Calculate the cells containing each particle for all particles.
+         *
+         * @param [in,out] lost_particles All particles that have left the
+         * local domain are saved in this vector.
          */
-        void find_all_cells();
+        void find_all_cells(std::vector<Particle<dim> > &lost_particles);
 
         /**
          * Advance particles by the old timestep using the current
@@ -220,8 +222,11 @@ namespace aspect
          * others - TODO: handle particles outside any domain - TODO: if we
          * know the domain of a particle (e.g. bordering domains), send it
          * only to that domain
+         *
+         * @param [in,out] send_particles All particles that should be send
+         * are in this vector.
          */
-        void send_recv_particles();
+        void send_recv_particles(const std::vector<Particle <dim> > &send_particles);
 
         /**
          * Calculates the velocities for each particle at its location given
