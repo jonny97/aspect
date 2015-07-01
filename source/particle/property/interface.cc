@@ -306,18 +306,6 @@ namespace aspect
 // explicit instantiations
 namespace aspect
 {
-  namespace Particle
-  {
-    namespace Property
-    {
-#define INSTANTIATE(dim) \
-  template class Interface<dim>; \
-  template class Manager<dim>;
-
-      ASPECT_INSTANTIATE(INSTANTIATE)
-    }
-  }
-
   namespace internal
   {
     namespace Plugins
@@ -328,6 +316,18 @@ namespace aspect
       template <>
       std::list<internal::Plugins::PluginList<Particle::Property::Interface<3> >::PluginInfo> *
       internal::Plugins::PluginList<Particle::Property::Interface<3> >::plugins = 0;
+    }
+  }
+
+  namespace Particle
+  {
+    namespace Property
+    {
+#define INSTANTIATE(dim) \
+  template class Interface<dim>; \
+  template class Manager<dim>;
+
+      ASPECT_INSTANTIATE(INSTANTIATE)
     }
   }
 }
