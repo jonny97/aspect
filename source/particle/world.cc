@@ -322,6 +322,7 @@ namespace aspect
           std::vector<Particle<dim> > lost_particles;
           find_all_cells(lost_particles);
           send_recv_particles(lost_particles);
+          triangulation_changed = false;
         }
 
       // If particles fell out of the mesh, put them back in at the closest point in the mesh
