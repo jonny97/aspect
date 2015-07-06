@@ -142,7 +142,7 @@ namespace aspect
             if ((random_weight < start_weight) || (cells.lower_bound(random_weight) == cells.end()))
               continue;
 
-            LevelInd select_cell = cells.lower_bound(random_weight)->second;
+            const LevelInd select_cell = cells.lower_bound(random_weight)->second;
 
             const typename parallel::distributed::Triangulation<dim>::active_cell_iterator
             it (&(this->get_triangulation()), select_cell.first, select_cell.second);
