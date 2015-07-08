@@ -22,6 +22,7 @@
 
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/fe/fe_values.h>
+#include <deal.II/base/geometry_info.h>
 
 #include <boost/random.hpp>
 
@@ -175,7 +176,8 @@ namespace aspect
                   }
                 try
                   {
-                    if (it->point_inside(pt)) break;
+                    const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(it, pt);
+                    if (GeometryInfo<dim>::is_inside_unit_cell(p_unit)) break;
                   }
                 catch (...)
                   {
