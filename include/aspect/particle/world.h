@@ -63,11 +63,6 @@ namespace aspect
         std::multimap<LevelInd, Particle<dim> >      particles;
 
         /**
-         * Total number of particles in simulation
-         */
-        unsigned int                    global_num_particles;
-
-        /**
          * Called by listener functions to indicate that the mesh of this
          * subdomain has changed.
          */
@@ -111,13 +106,6 @@ namespace aspect
         get_manager() const;
 
         /**
-         * All processes must call this function when finished adding
-         * particles to the world. This function will determine the total
-         * number of particles.
-         */
-        void finished_adding_particles();
-
-        /**
          * Add a particle to this world. If the specified cell does not exist
          * in the local subdomain an exception will be thrown.
          */
@@ -157,12 +145,13 @@ namespace aspect
         void init();
 
         /**
-         * Calculate the cells containing each particle for all particles.
-         *
-         * @param [in,out] lost_particles All particles that have left the
-         * local domain are saved in this vector.
+         * Calculate the cells containing each particle for all particles. If
+         * particles moved out of the domain of this process they will be send
+         * to their new process and inserted there. After this function call
+         * every particle is either on its current process and in its current
+         * cell, or deleted (if it could not find its new process or cell).
          */
-        void find_all_cells(std::vector<Particle<dim> > &lost_particles);
+        void find_all_cells();
 
         /**
          * Advance particles by the old timestep using the current
@@ -213,19 +202,12 @@ namespace aspect
 
         /**
          * Calculates the global sum of particles over all processes. This is
-         * done to ensure no particles have fallen out of the simulation
+         * done to monitor the number of particles that have fallen out of the
          * domain.
          *
          * @return Total number of particles in simulation.
          */
         unsigned int get_global_particle_count() const;
-
-        /**
-         * Checks that the number of particles in the simulation has not
-         * unexpectedly changed. If the particle count changes then the
-         * simulation will be aborted.
-         */
-        void check_particle_count();
 
         /**
          * Read or write the data of this object for serialization

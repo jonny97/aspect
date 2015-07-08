@@ -71,15 +71,6 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::finished_adding_particles()
-    {
-      unsigned int local_num_particles = particles.size();
-
-      MPI_Allreduce(&local_num_particles, &global_num_particles, 1, MPI_UNSIGNED, MPI_SUM, this->get_mpi_communicator());
-    }
-
-    template <int dim>
-    void
     World<dim>::add_particle(const Particle<dim> &particle, const LevelInd &cell)
     {
       const typename parallel::distributed::Triangulation<dim>::active_cell_iterator it
@@ -248,8 +239,9 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::find_all_cells(std::vector<Particle<dim> > &lost_particles)
+    World<dim>::find_all_cells()
     {
+      std::vector<Particle<dim> > lost_particles;
       std::multimap<LevelInd, Particle<dim> > moved_particles;
 
       // Find the cells that the particles moved to.
@@ -293,6 +285,14 @@ namespace aspect
           particles.erase(it++);
         }
       particles.insert(moved_particles.begin(),moved_particles.end());
+
+
+      // If particles fell out of the mesh, put them back in at the closest point in the mesh
+      move_particles_back_in_mesh();
+
+      // Swap particles between processors if needed
+      if (lost_particles.size() > 0)
+        send_recv_particles(lost_particles);
     }
 
     template <int dim>
@@ -306,8 +306,7 @@ namespace aspect
         {
           // Find the cells that the particles moved to
           std::vector<Particle<dim> > lost_particles;
-          find_all_cells(lost_particles);
-          send_recv_particles(lost_particles);
+          find_all_cells();
           triangulation_changed = false;
         }
 
@@ -330,23 +329,13 @@ namespace aspect
                                                            velocities,
                                                            this->get_old_timestep());
 
-          std::vector<Particle<dim> > lost_particles;
           // Find the cells that the particles moved to
-          find_all_cells(lost_particles);
-
-          // If particles fell out of the mesh, put them back in at the closest point in the mesh
-          move_particles_back_in_mesh();
-
-          // Swap particles between processors if needed
-          send_recv_particles(lost_particles);
+          find_all_cells();
         }
 
       // Update particle properties
       if (property_manager->need_update())
         update_particles();
-
-      // Ensure we didn't lose any particles
-      check_particle_count();
     }
 
     template <int dim>
@@ -504,21 +493,11 @@ namespace aspect
     }
 
     template <int dim>
-    void
-    World<dim>::check_particle_count()
-    {
-      const unsigned int global_particles = get_global_particle_count();
-
-      global_num_particles = global_particles;
-    }
-
-    template <int dim>
     template <class Archive>
     void
     World<dim>::serialize(Archive &ar, const unsigned int version)
     {
       ar &particles
-      &global_num_particles
       ;
     }
   }
