@@ -258,20 +258,20 @@ namespace aspect
               old_cell (&(this->get_triangulation()), it->first.first, it->first.second);
 
               try
-              {
+                {
                   const Point<dim> p_unit = this->get_mapping().transform_real_to_unit_cell(old_cell, it->second.get_location());
                   if (GeometryInfo<dim>::is_inside_unit_cell(p_unit))
                     {
                       ++it;
                       continue;
                     }
-              }
-              catch(...)
-              {}
+                }
+              catch (...)
+                {}
             }
 
           typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell =
-              (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), it->second.get_location())).first;
+            (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), it->second.get_location())).first;
 
           const LevelInd found_cell = std::make_pair(cell->level(),cell->index());
 
