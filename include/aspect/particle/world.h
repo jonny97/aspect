@@ -37,37 +37,6 @@ namespace aspect
     template <int dim>
     class World : public SimulatorAccess<dim>
     {
-      private:
-        /**
-         * Integration scheme for moving particles in this world
-         */
-        Integrator::Interface<dim>     *integrator;
-
-        /**
-         * The property manager stores information about the additional
-         * particle properties and handles the initialization and update of
-         * these properties.
-         */
-        Property::Manager<dim>         *property_manager;
-
-        /**
-         * Whether the triangulation was changed (e.g. through refinement), in which
-         * case we must treat all recorded particle level/index values as invalid
-         */
-        bool                            triangulation_changed;
-
-        /**
-         * Set of particles currently in the local domain, organized by
-         * the level/index of the cell they are in
-         */
-        std::multimap<LevelInd, Particle<dim> >      particles;
-
-        /**
-         * Called by listener functions to indicate that the mesh of this
-         * subdomain has changed.
-         */
-        void mesh_changed();
-
       public:
         /**
          * Default World constructor.
@@ -79,6 +48,12 @@ namespace aspect
          * structures.
          */
         ~World();
+
+        /**
+         * Initialize the particle world by connecting to be informed when
+         * the triangulation changes.
+         */
+        void init();
 
         /**
          * Set the particle Integrator scheme for this particle world.
@@ -132,17 +107,15 @@ namespace aspect
         const std::multimap<LevelInd, Particle<dim> > &get_particles() const;
 
         /**
-         * Const access to particles in this world.
+         * Get the names and number of particle properties from the
+         * property_manager.
+         *
+         * @param [inout] names Vector of property names attached to particles
+         * @param [inout] length Number of doubles needed to represent properties
          */
         void
         get_data_info(std::vector<std::string> &names,
                       std::vector<unsigned int> &length) const;
-
-        /**
-         * Initialize the particle world by connecting to be informed when
-         * the triangulation changes.
-         */
-        void init();
 
         /**
          * Calculate the cells containing each particle for all particles. If
@@ -214,6 +187,37 @@ namespace aspect
          */
         template <class Archive>
         void serialize(Archive &ar, const unsigned int version);
+
+      private:
+        /**
+         * Integration scheme for moving particles in this world
+         */
+        Integrator::Interface<dim>     *integrator;
+
+        /**
+         * The property manager stores information about the additional
+         * particle properties and handles the initialization and update of
+         * these properties.
+         */
+        Property::Manager<dim>         *property_manager;
+
+        /**
+         * Whether the triangulation was changed (e.g. through refinement), in which
+         * case we must treat all recorded particle level/index values as invalid
+         */
+        bool                            triangulation_changed;
+
+        /**
+         * Set of particles currently in the local domain, organized by
+         * the level/index of the cell they are in
+         */
+        std::multimap<LevelInd, Particle<dim> >      particles;
+
+        /**
+         * Called by listener functions to indicate that the mesh of this
+         * subdomain has changed.
+         */
+        void mesh_changed();
     };
   }
 }

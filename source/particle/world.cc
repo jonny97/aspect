@@ -26,17 +26,6 @@ namespace aspect
 {
   namespace Particle
   {
-    /**
-     * Called by listener functions to indicate that the mesh of this
-     * subdomain has changed.
-     */
-    template <int dim>
-    void
-    World<dim>::mesh_changed()
-    {
-      triangulation_changed = true;
-    }
-
     template <int dim>
     World<dim>::World()
     {
@@ -47,6 +36,20 @@ namespace aspect
     template <int dim>
     World<dim>::~World()
     {}
+
+    template <int dim>
+    void
+    World<dim>::init()
+    {
+      this->get_triangulation().signals.post_refinement.connect(std_cxx11::bind(&World::mesh_changed, std_cxx1x::ref(*this)));
+    }
+
+    template <int dim>
+    void
+    World<dim>::mesh_changed()
+    {
+      triangulation_changed = true;
+    }
 
     template <int dim>
     void
@@ -228,13 +231,6 @@ namespace aspect
                               std::vector<unsigned int> &length) const
     {
       property_manager->get_data_info(names,length);
-    }
-
-    template <int dim>
-    void
-    World<dim>::init()
-    {
-      this->get_triangulation().signals.post_refinement.connect(std_cxx11::bind(&World::mesh_changed, std_cxx1x::ref(*this)));
     }
 
     template <int dim>
