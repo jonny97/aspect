@@ -19,8 +19,13 @@
  */
 
 #include <aspect/particle/world.h>
+#include <aspect/global.h>
+
 #include <deal.II/numerics/fe_field_function.h>
 #include <deal.II/grid/grid_tools.h>
+#include <boost/serialization/map.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 namespace aspect
 {
@@ -486,15 +491,6 @@ namespace aspect
     World<dim>::get_global_particle_count() const
     {
       return Utilities::MPI::sum (particles.size(), this->get_mpi_communicator());
-    }
-
-    template <int dim>
-    template <class Archive>
-    void
-    World<dim>::serialize(Archive &ar, const unsigned int version)
-    {
-      ar &particles
-      ;
     }
   }
 }

@@ -20,6 +20,13 @@
 
 #include <aspect/global.h>
 #include <aspect/postprocess/tracer.h>
+#include <aspect/simulator_access.h>
+
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+
+#include <stdio.h>
+#include <unistd.h>
 
 namespace aspect
 {
@@ -65,8 +72,6 @@ namespace aspect
     {
       if (!initialized)
         {
-          next_data_output_time = this->get_time();
-
           // Set up the particle world with the appropriate simulation objects
           world.set_integrator(integrator);
           world.set_manager(&property_manager);
@@ -74,13 +79,16 @@ namespace aspect
           // And initialize the world
           world.init();
 
-          next_data_output_time = this->get_time();
-
-          // Add the specified number of particles
-          generator->generate_particles(world);
-          world.initialize_particles();
+          // Let the generator add the specified number of particles if we are
+          // not resuming from a snapshot (in that case we have stored particles)
+          if (world.get_global_particle_count() == 0)
+            {
+              generator->generate_particles(world);
+              world.initialize_particles();
+            }
 
           initialized = true;
+          next_data_output_time = this->get_time();
         }
 
       // Advance the particles in the world to the current time
@@ -139,6 +147,52 @@ namespace aspect
         }
     }
 
+
+    template <int dim>
+    template <class Archive>
+    void PassiveTracers<dim>::serialize (Archive &ar, const unsigned int)
+    {
+      ar &next_data_output_time
+      & world
+      ;
+
+      // We do not serialize mesh_changed but use the default (true) from our
+      // constructor. This will result in a new mesh file the first time we
+      // create visualization output after resuming from a snapshot. Otherwise
+      // we might get corrupted graphical output, because the ordering of
+      // vertices can be different after resuming.
+    }
+
+
+    template <int dim>
+    void
+    PassiveTracers<dim>::save (std::map<std::string, std::string> &status_strings) const
+    {
+      std::ostringstream os;
+      aspect::oarchive oa (os);
+      oa << (*this);
+      output->save(os);
+
+      status_strings["Tracers"] = os.str();
+
+    }
+
+
+    template <int dim>
+    void
+    PassiveTracers<dim>::load (const std::map<std::string, std::string> &status_strings)
+    {
+      // see if something was saved
+      if (status_strings.find("Tracers") != status_strings.end())
+        {
+          std::istringstream is (status_strings.find("Tracers")->second);
+          aspect::iarchive ia (is);
+          ia >> (*this);
+          output->load(is);
+        }
+    }
+
+
     template <int dim>
     void
     PassiveTracers<dim>::declare_parameters (ParameterHandler &prm)
@@ -195,8 +249,7 @@ namespace aspect
                (prm);
       if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(output))
         sim->initialize (this->get_simulator());
-      output->initialize(this->get_output_directory(),
-                         this->get_mpi_communicator());
+      output->initialize();
 
       // Create an integrator object depending on the specified parameter
       integrator = Particle::Integrator::create_particle_integrator<dim>
