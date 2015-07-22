@@ -291,8 +291,10 @@ namespace aspect
       // If particles fell out of the mesh, put them back in at the closest point in the mesh
       move_particles_back_in_mesh();
 
-      // Swap particles between processors if needed
-      if (lost_particles.size() > 0)
+      // Swap lost particles between processors if any process lost some
+      const unsigned int global_lost_particles = Utilities::MPI::sum(lost_particles.size(),
+                                                                     this->get_mpi_communicator());
+      if (global_lost_particles > 0)
         send_recv_particles(lost_particles);
     }
 
@@ -306,7 +308,6 @@ namespace aspect
       if (triangulation_changed)
         {
           // Find the cells that the particles moved to
-          std::vector<Particle<dim> > lost_particles;
           find_all_cells();
           triangulation_changed = false;
         }
