@@ -271,8 +271,19 @@ namespace aspect
                 {}
             }
 
-          typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell =
-            (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), it->second.get_location())).first;
+          typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell;
+          try
+          {
+              cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), it->second.get_location())).first;
+          }
+          catch(GridTools::ExcPointNotFound<dim> &)
+          {
+              // If we can find no cell for this particle it has left the domain due
+              // to an integration error or an open boundary. Simply remove the
+              // tracer in this case.
+              particles.erase(it++);
+              continue;
+          }
 
           const LevelInd found_cell = std::make_pair(cell->level(),cell->index());
 
@@ -405,8 +416,19 @@ namespace aspect
           Particle<dim> recv_particle(recv_data_it,property_manager->get_data_len());
           integrator->read_data(recv_data_it, recv_particle.get_id());
 
-          typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell =
-            (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), recv_particle.get_location())).first;
+          typename parallel::distributed::Triangulation<dim>::active_cell_iterator cell;
+          try
+          {
+              cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), recv_particle.get_location())).first;
+          }
+          catch(GridTools::ExcPointNotFound<dim> &)
+          {
+              // If we can find no cell for this particle it has left the domain due
+              // to an integration error or open boundary. Simply ignore the
+              // tracer in this case.
+              continue;
+          }
+
 
           if (cell->is_locally_owned())
             {
