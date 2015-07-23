@@ -154,12 +154,6 @@ namespace aspect
     {
       ar &next_data_output_time
       ;
-
-      // We do not serialize mesh_changed but use the default (true) from our
-      // constructor. This will result in a new mesh file the first time we
-      // create visualization output after resuming from a snapshot. Otherwise
-      // we might get corrupted graphical output, because the ordering of
-      // vertices can be different after resuming.
     }
 
 
