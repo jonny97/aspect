@@ -444,8 +444,8 @@ namespace aspect
 
     template <int dim>
     void
-    World<dim>::get_particle_velocities(std::vector<Tensor<1,dim> > &velocities,
-                                        std::vector<Tensor<1,dim> > &old_velocities)
+    World<dim>::get_particle_velocities(std::vector<Tensor<1,dim> > &old_velocities,
+                                        std::vector<Tensor<1,dim> > &velocities)
     {
       Vector<double>                single_res(dim);
       std::vector<Vector<double> >  result(50,single_res);
