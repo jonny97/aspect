@@ -78,7 +78,7 @@ namespace aspect
         catch (...)
         {
           std::cerr << "ERROR: FunctionParser failed to parse\n"
-                    << "\t'Prescribed velocities.Indicator function'\n"
+                    << "\t'Prescribed velocities. Indicator function'\n"
                     << "with expression\n"
                     << "\t'" << prm.get("Function expression") << "'";
           throw;
