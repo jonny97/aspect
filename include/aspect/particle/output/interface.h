@@ -177,13 +177,13 @@ namespace aspect
       void
       declare_parameters (ParameterHandler &prm);
 
-    /**
-    * Return a list of names of all implemented boundary velocity models,
-    * separated by '|' so that it can be used in an object of type
-    * Patterns::Selection.
-    */
-    template <int dim>
-    std::string get_names ();
+      /**
+      * Return a list of names of all implemented boundary velocity models,
+      * separated by '|' so that it can be used in an object of type
+      * Patterns::Selection.
+      */
+      template <int dim>
+      std::string get_names ();
 
       /**
        * Given a class name, a name, and a description for the parameter file

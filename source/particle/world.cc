@@ -99,11 +99,12 @@ namespace aspect
 
       std::string filename;
 
-      for ( typename std::vector<std_cxx11::shared_ptr<Output::Interface<dim> > >::const_iterator itr= output.begin(); itr != output.end(); itr++) {
-        filename = (itr->get()->output_particle_data(particles,
-                                         property_manager->get_data_info(),
-                                         output_time));
-      }
+      for ( typename std::vector<std_cxx11::shared_ptr<Output::Interface<dim> > >::const_iterator itr= output.begin(); itr != output.end(); itr++)
+        {
+          filename = (itr->get()->output_particle_data(particles,
+                                                       property_manager->get_data_info(),
+                                                       output_time));
+        }
 
       return filename;
     }
@@ -1147,9 +1148,10 @@ namespace aspect
       aspect::oarchive oa (os);
       oa << (*this);
 
-      for ( typename std::vector<std_cxx11::shared_ptr<Output::Interface<dim> > >::const_iterator itr= output.begin(); itr != output.end(); itr++) {
-        itr->get()->save(os);
-      }
+      for ( typename std::vector<std_cxx11::shared_ptr<Output::Interface<dim> > >::const_iterator itr= output.begin(); itr != output.end(); itr++)
+        {
+          itr->get()->save(os);
+        }
     }
 
     template <int dim>
@@ -1159,9 +1161,10 @@ namespace aspect
       aspect::iarchive ia (is);
       ia >> (*this);
 
-      for ( typename std::vector<std_cxx11::shared_ptr<Output::Interface<dim> > >::const_iterator itr= output.begin(); itr != output.end(); itr++) {
-        itr->get()->load(is);
-      }
+      for ( typename std::vector<std_cxx11::shared_ptr<Output::Interface<dim> > >::const_iterator itr= output.begin(); itr != output.end(); itr++)
+        {
+          itr->get()->load(is);
+        }
     }
 
     template <int dim>
@@ -1238,7 +1241,7 @@ namespace aspect
       // the particle data will be outputted as.
       std::vector<std::string> output_format_names;
 
-       AssertThrow((n_processes == 1) || (CFL_number <= 1.0),
+      AssertThrow((n_processes == 1) || (CFL_number <= 1.0),
                   ExcMessage("The current tracer algorithm does not work in "
                              "parallel if the CFL number is larger than 1.0, because "
                              "in this case tracers can move more than one cell's "
@@ -1290,19 +1293,22 @@ namespace aspect
       // Create an output object depending on what the parameters specify
       if (std::find (output_format_names.begin(),
                      output_format_names.end(),
-                     "none") == output_format_names.end()) {
-        for (std::vector<std::string>::const_iterator itr = output_format_names.begin();
-             itr != output_format_names.end(); itr++) {
-          output.push_back(std_cxx11::shared_ptr<Output::Interface<dim>>
-                                   (Output::create_particle_output<dim>(*itr)));
+                     "none") == output_format_names.end())
+        {
+          for (std::vector<std::string>::const_iterator itr = output_format_names.begin();
+               itr != output_format_names.end(); itr++)
+            {
+              output.push_back(std_cxx11::shared_ptr<Output::Interface<dim>>
+                               (Output::create_particle_output<dim>(*itr)));
+            }
+          for ( typename std::vector<std_cxx11::shared_ptr<Output::Interface<dim> > >::iterator itr = output.begin(); itr != output.end(); itr++)
+            {
+              if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim> *>(itr->get()))
+                sim->initialize_simulator(this->get_simulator());
+              itr->get()->parse_parameters(prm);
+              itr->get()->initialize();
+            }
         }
-        for ( typename std::vector<std_cxx11::shared_ptr<Output::Interface<dim> > >::iterator itr = output.begin(); itr != output.end(); itr++) {
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim> *>(itr->get()))
-            sim->initialize_simulator(this->get_simulator());
-          itr->get()->parse_parameters(prm);
-          itr->get()->initialize();
-        }
-      }
 
       // Create an integrator object depending on the specified parameter
       integrator.reset(Integrator::create_particle_integrator<dim> (prm));

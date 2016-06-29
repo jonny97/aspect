@@ -97,12 +97,12 @@ namespace aspect
       create_particle_output (const std::string &name)
       {
 
-          Interface<dim> *output
-                  = std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
-                                  "Particle::Output name");
+        Interface<dim> *output
+          = std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
+                                                                   "Particle::Output name");
 
         return output;
-      }  
+      }
 
       template <int dim>
       std::string
