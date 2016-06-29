@@ -126,9 +126,10 @@ namespace aspect
             prm.declare_entry ("Data output format", "vtu",
                                Patterns::List (Patterns::Selection(pattern_of_names + "|none")),
                                "File format to output raw particle data in. "
+                               "Multiple formats can be specified sperated by a comma (,)"
                                "If you select 'none' no output will be "
                                "written."
-                               "Select one of the following models:\n\n"
+                               "Select one or multiple of the following models:\n\n"
                                +
                                std_cxx1x::get<dim>(registered_plugins).get_description_string());
           }

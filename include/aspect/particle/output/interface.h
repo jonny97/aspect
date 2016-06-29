@@ -178,7 +178,7 @@ namespace aspect
       declare_parameters (ParameterHandler &prm);
 
       /**
-      * Return a list of names of all implemented boundary velocity models,
+      * Return a list of names of all implemented output format models,
       * separated by '|' so that it can be used in an object of type
       * Patterns::Selection.
       */
