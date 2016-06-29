@@ -85,9 +85,11 @@ namespace aspect
     std::string
     World<dim>::generate_output() const
     {
+      std::vector<std::string> filenames;
+
       // If we do not write output
       // return early with the number of particles that were advected
-      if (!output)
+      if (output.empty())
         return "";
 
       TimerOutput::Scope timer_section(this->get_computing_timer(), "Particles: Output");
@@ -95,9 +97,13 @@ namespace aspect
                                   this->get_time() / year_in_seconds :
                                   this->get_time());
 
-      const std::string filename = output->output_particle_data(particles,
-                                                                property_manager->get_data_info(),
-                                                                output_time);
+      std::string filename;
+
+      for ( typename std::vector<std_cxx11::shared_ptr<Output::Interface<dim> > >::const_iterator itr= output.begin(); itr != output.end(); itr++) {
+        filename = (itr->get()->output_particle_data(particles,
+                                         property_manager->get_data_info(),
+                                         output_time));
+      }
 
       return filename;
     }
@@ -1140,7 +1146,10 @@ namespace aspect
     {
       aspect::oarchive oa (os);
       oa << (*this);
-      output->save(os);
+
+      for ( typename std::vector<std_cxx11::shared_ptr<Output::Interface<dim> > >::const_iterator itr= output.begin(); itr != output.end(); itr++) {
+        itr->get()->save(os);
+      }
     }
 
     template <int dim>
@@ -1149,7 +1158,10 @@ namespace aspect
     {
       aspect::iarchive ia (is);
       ia >> (*this);
-      output->load(is);
+
+      for ( typename std::vector<std_cxx11::shared_ptr<Output::Interface<dim> > >::const_iterator itr= output.begin(); itr != output.end(); itr++) {
+        itr->get()->load(is);
+      }
     }
 
     template <int dim>
@@ -1222,7 +1234,11 @@ namespace aspect
       const double CFL_number = prm.get_double ("CFL number");
       const unsigned int n_processes = Utilities::MPI::n_mpi_processes(this->get_mpi_communicator());
 
-      AssertThrow((n_processes == 1) || (CFL_number <= 1.0),
+      // The variable will contain the user specified output formats that
+      // the particle data will be outputted as.
+      std::vector<std::string> output_format_names;
+
+       AssertThrow((n_processes == 1) || (CFL_number <= 1.0),
                   ExcMessage("The current tracer algorithm does not work in "
                              "parallel if the CFL number is larger than 1.0, because "
                              "in this case tracers can move more than one cell's "
@@ -1252,6 +1268,8 @@ namespace aspect
             particle_load_balancing = repartition;
           else
             AssertThrow (false, ExcNotImplemented());
+
+          output_format_names = Utilities::split_string_list(prm.get ("Data output format"));
         }
         prm.leave_subsection ();
       }
@@ -1265,19 +1283,26 @@ namespace aspect
         sim->initialize_simulator (this->get_simulator());
       generator->parse_parameters(prm);
 
-      // Create an output object depending on what the parameters specify
-      output.reset(Output::create_particle_output<dim>
-                   (prm));
+      // Remove duplicate output formats specified in the parameter file.
+      auto last = std::unique(output_format_names.begin(), output_format_names.end());
+      output_format_names.erase(last, output_format_names.end());
 
-      // We allow to not generate any output plugin, in which case output is
-      // a null pointer. Only initialize output if it was created.
-      if (output)
-        {
-          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim>*>(output.get()))
-            sim->initialize_simulator (this->get_simulator());
-          output->parse_parameters(prm);
-          output->initialize();
+      // Create an output object depending on what the parameters specify
+      if (std::find (output_format_names.begin(),
+                     output_format_names.end(),
+                     "none") == output_format_names.end()) {
+        for (std::vector<std::string>::const_iterator itr = output_format_names.begin();
+             itr != output_format_names.end(); itr++) {
+          output.push_back(std_cxx11::shared_ptr<Output::Interface<dim>>
+                                   (Output::create_particle_output<dim>(*itr)));
         }
+        for ( typename std::vector<std_cxx11::shared_ptr<Output::Interface<dim> > >::iterator itr = output.begin(); itr != output.end(); itr++) {
+          if (SimulatorAccess<dim> *sim = dynamic_cast<SimulatorAccess<dim> *>(itr->get()))
+            sim->initialize_simulator(this->get_simulator());
+          itr->get()->parse_parameters(prm);
+          itr->get()->initialize();
+        }
+      }
 
       // Create an integrator object depending on the specified parameter
       integrator.reset(Integrator::create_particle_integrator<dim> (prm));

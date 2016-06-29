@@ -18,6 +18,8 @@
  <http://www.gnu.org/licenses/>.
  */
 
+
+
 #include <aspect/particle/output/interface.h>
 
 
@@ -92,27 +94,22 @@ namespace aspect
 
       template <int dim>
       Interface<dim> *
-      create_particle_output (ParameterHandler &prm)
+      create_particle_output (const std::string &name)
       {
-        std::string name;
-        prm.enter_subsection ("Postprocess");
-        {
-          prm.enter_subsection ("Tracers");
-          {
-            name = prm.get ("Data output format");
-          }
-          prm.leave_subsection ();
-        }
-        prm.leave_subsection ();
 
-        if (name != "none")
-          return std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
-                                                                        "Particle::Output name");
-        else
-          return NULL;
+          Interface<dim> *output
+                  = std_cxx1x::get<dim>(registered_plugins).create_plugin (name,
+                                  "Particle::Output name");
+
+        return output;
+      }  
+
+      template <int dim>
+      std::string
+      get_names()
+      {
+        return std_cxx11::get<dim>(registered_plugins).get_pattern_of_names ();
       }
-
-
 
       template <int dim>
       void
@@ -127,7 +124,7 @@ namespace aspect
               = std_cxx1x::get<dim>(registered_plugins).get_pattern_of_names ();
 
             prm.declare_entry ("Data output format", "vtu",
-                               Patterns::Selection (pattern_of_names + "|none"),
+                               Patterns::List (Patterns::Selection(pattern_of_names + "|none")),
                                "File format to output raw particle data in. "
                                "If you select 'none' no output will be "
                                "written."
@@ -181,7 +178,7 @@ namespace aspect
   \
   template \
   Interface<dim> * \
-  create_particle_output<dim> (ParameterHandler &prm);
+  create_particle_output<dim> (const std::string &name);
 
       ASPECT_INSTANTIATE(INSTANTIATE)
     }
