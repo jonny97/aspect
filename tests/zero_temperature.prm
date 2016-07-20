@@ -1,7 +1,7 @@
 # derived from diffusion.prm. we have no velocity here, and the temperature
 # boundary values are all zero as well, so there is nothing really to do.
 # check that this works.
-# test
+
 set Dimension = 2
 
 
