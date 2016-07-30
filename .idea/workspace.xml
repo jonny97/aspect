@@ -1,0 +1,918 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" assignedExecutableTargets="true" buildAllGenerated="true">
+    <generated>
+      <config projectName="aspect" targetName="aspect" />
+      <config projectName="aspect" targetName="distclean" />
+      <config projectName="aspect" targetName="run" />
+      <config projectName="aspect" targetName="indent" />
+      <config projectName="aspect" targetName="runclean" />
+      <config projectName="aspect" targetName="tests" />
+      <config projectName="aspect" targetName="generate_reference_output" />
+      <config projectName="aspect" targetName="info" />
+      <config projectName="aspect" targetName="quick_mpi.screen-output.diff" />
+      <config projectName="aspect" targetName="strip_comments" />
+      <config projectName="aspect" targetName="tests.quick_mpi" />
+      <config projectName="aspect" targetName="setup_tests" />
+      <config projectName="aspect" targetName="release" />
+      <config projectName="aspect" targetName="quick_mpi" />
+      <config projectName="aspect" targetName="debug" />
+    </generated>
+  </component>
+  <component name="CMakeSettings" AUTO_RELOAD="false" GENERATION_PASS_SYSTEM_ENVIRONMENT="true">
+    <ADDITIONAL_GENERATION_ENVIRONMENT>
+      <envs>
+        <env name="DEAL_II_DIR" value="/home/egpuckett/local/deal.II-8.4.1/deal.II-v8.4.1/" />
+      </envs>
+    </ADDITIONAL_GENERATION_ENVIRONMENT>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a5308137-e3f4-488e-abe1-a0411ee69028" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/benchmark/solcx_compositional_field/CMakeLists.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/benchmark/solcx_compositional_field/solcx.cc" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/benchmark/solcx_compositional_field/solcx.prm" />
+    </list>
+    <ignored path="aspect.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="aspect" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$USER_HOME$/.CLion2016.1/clion64.vmoptions" />
+        <option value="$PROJECT_DIR$/source/particle/generator/uniform_box.cc" />
+        <option value="$PROJECT_DIR$/source/main.cc" />
+        <option value="$PROJECT_DIR$/source/particle/world.cc" />
+        <option value="$PROJECT_DIR$/benchmark/solkz/solkz.prm" />
+        <option value="$USER_HOME$/local/deal.II-8.4.1/deal.II-v8.4.1/include/deal.II/bundled/boost/signals2/detail/variadic_slot_invoker.hpp" />
+        <option value="$USER_HOME$/Computations/2016_Summer_REU/SolKz/Run_00/solkz.prm" />
+        <option value="$USER_HOME$/Computations/2016_Summer_REU/SolKz/SolKz_Library/solkz.cc" />
+        <option value="$PROJECT_DIR$/benchmark/solkz/solkz.cc" />
+        <option value="$PROJECT_DIR$/tests/depth_dependent_box_function_simple.prm" />
+        <option value="$PROJECT_DIR$/source/material_model/depth_dependent.cc" />
+        <option value="$PROJECT_DIR$/tests/material_model_dependencies_simple.prm" />
+        <option value="$PROJECT_DIR$/benchmark/inclusion/inclusion.cc" />
+        <option value="$PROJECT_DIR$/develop/Depth_Dependent_Density.prm" />
+        <option value="$USER_HOME$/ClionProjects/Rayleigh/main.cpp" />
+        <option value="$PROJECT_DIR$/source/material_model/simple.cc" />
+        <option value="$PROJECT_DIR$/benchmark/solcx-particles/solcx-particles.cc" />
+        <option value="$PROJECT_DIR$/source/particle/interpolator/cell_average.cc" />
+        <option value="$PROJECT_DIR$/benchmark/solcx/solcx.cc" />
+        <option value="$PROJECT_DIR$/benchmark/solcx_compositional_field/solcx.cc" />
+        <option value="$USER_HOME$/local/Computations/2016_Summer_REU/SolCX/Benchmarks/Compositional_Field/SolCX_Library/solcx.cc" />
+        <option value="$PROJECT_DIR$/benchmark/solcx_compositional_field/solcx.prm" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="992" />
+    <option name="y" value="52" />
+    <option name="width" value="928" />
+    <option name="height" value="1028" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="aspect" />
+              <option name="myItemType" value="com.jetbrains.cidr.projectView.CidrFilesViewHelper$MyProjectTreeStructure$1" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
+    <property name="settings.editor.splitter.proportion" value="0.2" />
+    <property name="ToolWindowFind.ShowToolbar" value="false" />
+    <property name="SearchEverywhereHistoryKey" value="FunctionS&#9;null&#9;null&#10;background_den&#9;null&#9;null&#10;Vector&#9;FILE&#9;file:///home/egpuckett/local/deal.II-8.4.1/deal.II-v8.4.1/include/deal.II/numerics/vector_tools.h&#10;integrate_difference&#9;null&#9;null&#10;simple*.prm&#9;FILE&#9;file:///home/egpuckett/CLion_Projects/aspect/doc/manual/cookbooks/overview/simple.prm&#10;evaluate&#9;null&#9;null&#10;solve_ti&#9;null&#9;null&#10;core&#9;FILE&#9;file:///home/egpuckett/CLion_Projects/aspect/source/simulator/core.cc&#10;FP_E&#9;null&#9;null&#10;least&#9;FILE&#9;file:///home/egpuckett/CLion_Projects/aspect/source/particle/interpolator/least_squares.cc&#10;co&#9;FILE&#9;file:///home/egpuckett/CLion_Projects/aspect/source/simulator/core.cc&#10;sol&#9;FILE&#9;file:///home/egpuckett/CLion_Projects/aspect/benchmark/solkz/solkz.cc&#10;main.cc&#9;FILE&#9;file:///home/egpuckett/CLion_Projects/aspect/source/main.cc&#10;simple.cc&#9;FILE&#9;file:///home/egpuckett/CLion_Projects/aspect/source/material_model/simple.cc&#10;setti&#9;null&#9;null&#10;particle_inter&#9;FILE&#9;file:///home/egpuckett/CLion_Projects/aspect/tests/particle_interpolator_cell_average.prm" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/develop/Depth_Dependent_Density.prm" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/benchmark/" />
+      <recent name="$PROJECT_DIR$/benchmark/solcx" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.SolCx Compositional Field Benchmark">
+    <configuration default="true" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="aspect" CONFIG_NAME="Debug" TEST_MODE="SUITE_TEST">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="aspect" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
+      <method />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="aspect" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="aspect" />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="js.build_tools.npm" factoryName="npm">
+      <command value="run-script" />
+      <scripts />
+      <node-interpreter value="project" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Attests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="aspect" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="aspect" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Nosetests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="aspect" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="aspect" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="py.test">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="aspect" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="testToRun" value="" />
+      <option name="keywords" value="" />
+      <option name="params" value="" />
+      <option name="USE_PARAM" value="false" />
+      <option name="USE_KEYWORD" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Active Tracers" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="$USER_HOME$/Computations/Particles/Active/Run_00/compositional_particle_fields.prm" WORKING_DIR="file://$USER_HOME$/Computations/Particles/Active/Run_00" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="aspect" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="aspect" RUN_TARGET_NAME="aspect">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="SolCX" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="$USER_HOME$/Computations/2016_Summer_REU/SolCX/Run_00/solcx.prm" WORKING_DIR="file://$USER_HOME$/Computations/2016_Summer_REU/SolCX/Run_00" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="aspect" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="aspect" RUN_TARGET_NAME="aspect">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="SolKz Active Tracer Benchmark" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="$USER_HOME$/Computations/2016_Summer_REU/SolKz/Run_02/SolKz_active_particles_02.prm" WORKING_DIR="file://$USER_HOME$/Computations/2016_Summer_REU/SolKz/Run_02/" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="aspect" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="aspect" RUN_TARGET_NAME="aspect">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="Depth Dependent Density Model" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="$USER_HOME$/Computations/Depth_Dependent_Density/Run_00/Depth_Dependent_Density.prm" WORKING_DIR="file://$USER_HOME$/Computations/Depth_Dependent_Density/Run_00" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="aspect" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="aspect" RUN_TARGET_NAME="aspect">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="SolCx Particle Benchmark" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="$USER_HOME$/local/Computations/2016_Summer_REU/SolCX/Benchmarks/Particles/SolCX_Computations/32x32/CFL_eq_1e-1/solcx_particles_32x32_CFL_1e-1.prm" WORKING_DIR="file://$USER_HOME$/local/Computations/2016_Summer_REU/SolCX/Benchmarks/Particles/SolCX_Computations/32x32/CFL_eq_1e-1/" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="aspect" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="aspect" RUN_TARGET_NAME="aspect">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="SolCx Compositional Field Benchmark" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="$USER_HOME$/local/Computations/2016_Summer_REU/SolCX/Benchmarks/Compositional_Field/Computations/64x64/solcx.prm" WORKING_DIR="file://$USER_HOME$/local/Computations/2016_Summer_REU/SolCX/Benchmarks/Compositional_Field/Computations/64x64" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="aspect" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="aspect" RUN_TARGET_NAME="aspect">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="aspect" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="aspect" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="aspect" RUN_TARGET_NAME="aspect">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="debug" type="CMakeRunConfiguration" factoryName="Application" WORKING_DIR="" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="debug" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="Scalable Uniform Box" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="$USER_HOME$/local/ASPECT_Computations/2016_ASPECT_Hackathon/Scalable_Uniform_Box/Run_00/particle_generator_box_3d.prm" WORKING_DIR="file://$USER_HOME$/local/ASPECT_Computations/2016_ASPECT_Hackathon/Scalable_Uniform_Box/Run_00" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="aspect" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="aspect" RUN_TARGET_NAME="aspect">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="SolKz" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="$USER_HOME$/local/ASPECT_Computations/2016_ASPECT_Hackathon/SolKz/solkz.prm" WORKING_DIR="file://$USER_HOME$/local/ASPECT_Computations/2016_ASPECT_Hackathon/SolKz" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="aspect" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="Discontinuous-van-Keken" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="$USER_HOME$/Computations/2016_Summer_REU/van_Keken/DG/Run_00/van-Keken_Smooth-DGBP_AMR_V-00.prm" WORKING_DIR="file://$USER_HOME$/Computations/2016_Summer_REU/van_Keken/DG/Run_00/" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="aspect" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="aspect" RUN_TARGET_NAME="aspect">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="distclean" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="distclean" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="generate_reference_output" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="generate_reference_output" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="indent" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="indent" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="info" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="info" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="release" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="release" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="run" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="run" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="runclean" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="runclean" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="setup_tests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="setup_tests" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="strip_comments" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="strip_comments" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="quick_mpi" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="quick_mpi" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="quick_mpi.screen-output.diff" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="quick_mpi.screen-output.diff" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="tests" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="tests" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="tests.quick_mpi" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="aspect" TARGET_NAME="tests.quick_mpi" CONFIG_NAME="Debug">
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="Build All" type="CMakeRunConfiguration" factoryName="Application" WORKING_DIR="" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="aspect" RUN_TARGET_NAME="aspect" EXPLICIT_BUILD_TARGET_NAME="all">
+      <envs />
+      <method />
+    </configuration>
+    <list size="25">
+      <item index="0" class="java.lang.String" itemvalue="Application.Active Tracers" />
+      <item index="1" class="java.lang.String" itemvalue="Application.SolCX" />
+      <item index="2" class="java.lang.String" itemvalue="Application.SolKz Active Tracer Benchmark" />
+      <item index="3" class="java.lang.String" itemvalue="Application.Depth Dependent Density Model" />
+      <item index="4" class="java.lang.String" itemvalue="Application.SolCx Particle Benchmark" />
+      <item index="5" class="java.lang.String" itemvalue="Application.SolCx Compositional Field Benchmark" />
+      <item index="6" class="java.lang.String" itemvalue="Application.aspect" />
+      <item index="7" class="java.lang.String" itemvalue="Application.debug" />
+      <item index="8" class="java.lang.String" itemvalue="Application.Scalable Uniform Box" />
+      <item index="9" class="java.lang.String" itemvalue="Application.SolKz" />
+      <item index="10" class="java.lang.String" itemvalue="Application.Discontinuous-van-Keken" />
+      <item index="11" class="java.lang.String" itemvalue="Application.distclean" />
+      <item index="12" class="java.lang.String" itemvalue="Application.generate_reference_output" />
+      <item index="13" class="java.lang.String" itemvalue="Application.indent" />
+      <item index="14" class="java.lang.String" itemvalue="Application.info" />
+      <item index="15" class="java.lang.String" itemvalue="Application.release" />
+      <item index="16" class="java.lang.String" itemvalue="Application.run" />
+      <item index="17" class="java.lang.String" itemvalue="Application.runclean" />
+      <item index="18" class="java.lang.String" itemvalue="Application.setup_tests" />
+      <item index="19" class="java.lang.String" itemvalue="Application.strip_comments" />
+      <item index="20" class="java.lang.String" itemvalue="Application.quick_mpi" />
+      <item index="21" class="java.lang.String" itemvalue="Application.quick_mpi.screen-output.diff" />
+      <item index="22" class="java.lang.String" itemvalue="Application.tests" />
+      <item index="23" class="java.lang.String" itemvalue="Application.tests.quick_mpi" />
+      <item index="24" class="java.lang.String" itemvalue="Application.Build All" />
+    </list>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="StructureViewFactory">
+    <option name="AUTOSCROLL_FROM_SOURCE" value="true" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a5308137-e3f4-488e-abe1-a0411ee69028" name="Default" comment="" />
+      <created>1467064272565</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1467064272565</updated>
+      <workItem from="1469470503824" duration="649000" />
+      <workItem from="1469481393097" duration="302000" />
+      <workItem from="1469503416425" duration="33000" />
+      <workItem from="1469503667384" duration="209000" />
+      <workItem from="1469504051162" duration="5851000" />
+      <workItem from="1469546100008" duration="1392000" />
+      <workItem from="1469547554422" duration="827000" />
+      <workItem from="1469548730643" duration="15000" />
+      <workItem from="1469550023326" duration="184000" />
+      <workItem from="1469550504301" duration="247000" />
+      <workItem from="1469567708716" duration="1224000" />
+      <workItem from="1469639787627" duration="642000" />
+      <workItem from="1469676363666" duration="1612000" />
+      <workItem from="1469722478720" duration="9089000" />
+      <workItem from="1469764973588" duration="10143000" />
+      <workItem from="1469826095709" duration="8476000" />
+      <workItem from="1469835001426" duration="556000" />
+      <workItem from="1469835626755" duration="2507000" />
+      <workItem from="1469846113411" duration="747000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="44705000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="992" y="52" width="928" height="1028" extended-state="5" />
+    <editor active="false" />
+    <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39909297" sideWeight="0.4937888" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30555555" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21" sideWeight="0.52957433" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3375" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.11111111" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.46989247" sideWeight="0.47042564" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19347706" sideWeight="0.50621116" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29139784" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.95666665" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.56666666" sideWeight="0.49585405" order="3" side_tool="false" content_ui="tabs" />
+    </layout>
+    <layout-to-restore>
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2933194" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30555555" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21" sideWeight="0.52957433" order="9" side_tool="true" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3375" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.95666665" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.151357" sideWeight="0.47042564" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19347706" sideWeight="0.4937888" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.11111111" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19347706" sideWeight="0.50621116" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.80167013" sideWeight="0.49585405" order="3" side_tool="false" content_ui="tabs" />
+    </layout-to-restore>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/benchmark/solkz/solkz.cc</url>
+          <line>843</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$USER_HOME$/Computations/2016_Summer_REU/SolKz/SolKz_Library/solkz.cc</url>
+          <line>848</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/source/simulator/core.cc</url>
+          <line>2104</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/source/simulator/core.cc</url>
+          <line>1788</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/benchmark/solcx-particles/solcx-particles.cc</url>
+          <line>2626</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint suspend="NONE" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/source/simulator/initial_conditions.cc</url>
+          <line>266</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/source/simulator/initial_conditions.cc</url>
+          <line>257</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+      </breakpoints>
+      <breakpoints-dialog>
+        <breakpoints-dialog />
+      </breakpoints-dialog>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+      <option name="time" value="27" />
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="CMakeRunConfiguration">
+        <watch expression="n_components" language="ObjectiveC" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/source/simulator/assembly.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="970" column="0" selection-start-line="970" selection-start-column="0" selection-end-line="970" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Computations/2016_Summer_REU/SolKz/Run_00/SolKz_PRM_DIFF.txt" />
+    <entry file="file://$USER_HOME$/Computations/2016_Summer_REU/SolKz/Run_00/solkz.prm" />
+    <entry file="file://$PROJECT_DIR$/source/main.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="178">
+          <caret line="475" column="0" selection-start-line="475" selection-start-column="0" selection-end-line="475" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/particle/generator/uniform_box.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="855">
+          <caret line="57" column="0" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/aspect/simulator.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5940">
+          <caret line="396" column="11" selection-start-line="396" selection-start-column="11" selection-end-line="396" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Computations/2016_Summer_REU/SolKz/SolKz_Library/solkz.cc" />
+    <entry file="file://$PROJECT_DIR$/benchmark/solkz/solkz.prm">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/particle/property/function.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/benchmark/solkz/solkz.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="845" column="72" selection-start-line="845" selection-start-column="72" selection-end-line="845" selection-end-column="72" />
+          <folding>
+            <element signature="e#21063#21072#0" expanded="true" />
+            <element signature="e#25095#25104#0" expanded="true" />
+            <marker date="1469829520914" expanded="true" signature="32500:32719" ph="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/material_model/averaging.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-6421">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/include/Zoltan2_EvaluatePartition.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="310">
+          <caret line="65" column="8" selection-start-line="65" selection-start-column="8" selection-end-line="65" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/doc/manual/cookbooks/overview/simple.prm">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="2" selection-start-line="11" selection-start-column="2" selection-end-line="11" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/material_model_dependencies_simple.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/material_model_dependencies_simple.prm">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/material_model_dependencies_simpler.prm">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cookbooks/composition-passive.prm">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cookbooks/composition-passive-tracers.prm">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/depth_dependent_box_function_simple.prm">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2085">
+          <caret line="139" column="45" selection-start-line="139" selection-start-column="45" selection-end-line="139" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/benchmark/inclusion/inclusion.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-476">
+          <caret line="496" column="49" selection-start-line="496" selection-start-column="49" selection-end-line="496" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Computations/Annotated_Parameter_File/Buoyancy_Ra.prm" />
+    <entry file="file://$PROJECT_DIR$/source/termination_criteria/end_step.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="810">
+          <caret line="54" column="6" selection-start-line="54" selection-start-column="6" selection-end-line="54" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/material_model/depth_dependent.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="140" column="0" selection-start-line="140" selection-start-column="0" selection-end-line="140" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/material_model/simpler.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-881">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/ClionProjects/Rayleigh/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="28" column="40" selection-start-line="28" selection-start-column="40" selection-end-line="28" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/develop/Depth_Dependent_Density.prm" />
+    <entry file="file://$PROJECT_DIR$/source/material_model/simple.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="28" column="2" selection-start-line="28" selection-start-column="2" selection-end-line="28" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/particle/world.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-8227">
+          <caret line="18" column="1" selection-start-line="18" selection-start-column="1" selection-end-line="18" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/simulator/core.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="167">
+          <caret line="1807" column="0" selection-start-line="1807" selection-start-column="0" selection-end-line="1807" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/local/deal.II-8.4.1/deal.II-v8.4.1/include/deal.II/numerics/vector_tools.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="1924" column="7" selection-start-line="1924" selection-start-column="7" selection-end-line="1924" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/aspect/material_model/interface.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2625">
+          <caret line="175" column="0" selection-start-line="175" selection-start-column="0" selection-end-line="175" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/adiabatic_conditions/initial_profile.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1560">
+          <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/c++/5/bits/stl_vector.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="11685">
+          <caret line="779" column="0" selection-start-line="779" selection-start-column="0" selection-end-line="779" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/local/Computations/2016_Summer_REU/SolCX/Benchmarks/Particles/SolCX_Library/solcx-particles.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="2626" column="0" selection-start-line="2626" selection-start-column="0" selection-end-line="2626" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/material_model/interface.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="142">
+          <caret line="336" column="0" selection-start-line="336" selection-start-column="0" selection-end-line="336" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/particle/interpolator/interface.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2085">
+          <caret line="139" column="25" selection-start-line="139" selection-start-column="25" selection-end-line="139" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/benchmark/solcx-particles/solcx-particles.cc" />
+    <entry file="file://$PROJECT_DIR$/source/particle/interpolator/cell_average.cc" />
+    <entry file="file://$PROJECT_DIR$/source/particle/property/initial_composition.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-256">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/composition_active.prm">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/discontinuous_composition_bound_preserving_limiter_3d.prm">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="426">
+          <caret line="74" column="4" selection-start-line="74" selection-start-column="4" selection-end-line="74" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/simulator/initial_conditions.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="33">
+          <caret line="260" column="0" selection-start-line="260" selection-start-column="0" selection-end-line="260" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/local/deal.II-8.4.1/deal.II-v8.4.1/include/deal.II/base/function.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="309">
+          <caret line="363" column="6" selection-start-line="363" selection-start-column="6" selection-end-line="363" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/local/deal.II-8.4.1/tmp/unpack/deal.II-v8.4.1/include/deal.II/numerics/vector_tools.templates.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="99">
+          <caret line="6386" column="0" selection-start-line="6386" selection-start-column="0" selection-end-line="6386" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/local/deal.II-8.4.1/tmp/unpack/deal.II-v8.4.1/source/base/exceptions.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="123">
+          <caret line="321" column="0" selection-start-line="321" selection-start-column="0" selection-end-line="321" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/local/Computations/2016_Summer_REU/SolCX/Benchmarks/Compositional_Field/SolCX_Library/solcx.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="124">
+          <caret line="2776" column="0" selection-start-line="2776" selection-start-column="0" selection-end-line="2776" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/benchmark/solcx/solcx.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="553">
+          <caret line="2773" column="48" selection-start-line="2773" selection-start-column="48" selection-end-line="2773" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/benchmark/solcx_compositional_field/solcx.prm">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="42" column="0" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/benchmark/solcx/solcx.prm">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="59">
+          <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/solcx.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="453">
+          <caret line="2376" column="24" selection-start-line="2376" selection-start-column="24" selection-end-line="2376" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/benchmark/solcx_compositional_field/solcx.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="795">
+          <caret line="2388" column="0" selection-start-line="2388" selection-start-column="0" selection-end-line="2388" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
