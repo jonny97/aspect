@@ -49,3 +49,4 @@
 /tests/*.x.prm
 /tests/lib*.so
 /Testing
+/.idea
