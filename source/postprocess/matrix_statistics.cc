@@ -22,6 +22,7 @@
 #include <aspect/postprocess/matrix_statistics.h>
 
 #include <aspect/simulator.h>
+#include <aspect/utilities.h>
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
@@ -44,7 +45,20 @@ namespace
            << std::fixed << std::setprecision(2) << global_matrix_memory_consumption/mb
            << " MB." << std::endl;
 
-    // output number of nonzero elements in matrix
+    // output number of nonzero elements in matrix. Do so with 1000s separator
+    // since they are frequently large; this was previously done by using the empty
+    // string locale, but creating std::locale with an empty string caused problems
+    // on some platforms, so the functionaltity yo catch the exception and ignore
+    // is kept here, even though explicitly setting a facet should always work.
+    try
+      {
+        output.imbue(std::locale(std::locale(), new aspect::Utilities::ThousandSep));
+      }
+    catch (std::runtime_error e)
+      {
+        // If the locale doesn't work, just give up
+      }
+
     const int global_matrix_nnz = matrix.n_nonzero_elements();
     output << "Total " << matrix_name << " nnz: "
            << global_matrix_nnz << std::endl;

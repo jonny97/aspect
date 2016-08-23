@@ -6,6 +6,42 @@
  *
  * <ol>
  *
+ * <li> Changed: Particles now also store their location in the
+ * coordinate system of their current cell. This decreases the
+ * number of times this location has to be computed by inverting
+ * the mapping for the current cell, which is expensive.
+ * On average this change will save 40-50% of the overall
+ * particle computing time, while increasing the particle
+ * memory footprint (which is usually small compared to the
+ * system matrix).
+ * <br>
+ * (Rene Gassmoeller, 2016/08/12)
+ *
+ * <li> Changed: Chunk geometry pull back function now returns
+ * a corrected longitude value when 180 hemisphere is crossed.
+ * <br>
+ * (Anne Glerum, 2016/08/09)
+ *
+ * <li> Changed: It is now possible to read in ascii data files of
+ * which the coordinates are not equally spaced.
+ * <br>
+ * (Anne Glerum, 2016/08/05)
+ *
+ * <li> New: It is now possible to create compositional fields that are
+ * not advected by a field method, but interpolated from particle properties.
+ * This simplifies the process of using the particles as 'active' particles
+ * that carry information that influences the solution. E.g. the material
+ * model can access the compositional field that is interpolated from particle
+ * properties and use this as 'composition' information.
+ * <br>
+ * (Rene Gassmoeller, 2016/08/02)
+ *
+ * <li> New: There is now an initial topography plugin which reads
+ * from the prm file polygon definitions and set the initial topography 
+ * to be constant within those polygons.
+ * <br>
+ * (Menno Fraters, 2016/07/26)
+ * 
  * <li> Changed: Particle initialization no longer routinely computes
  * the solution at the particle positions, since it is usually not needed
  * and complicates the initialization process. Instead it evaluates the 
