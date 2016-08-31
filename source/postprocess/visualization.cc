@@ -283,7 +283,16 @@ namespace aspect
 
       std::ofstream global_visit_master ((this->get_output_directory() +
                                           "solution.visit").c_str());
+
+#if DEAL_II_VERSION_GTE(8,5,0)
+      std::vector<std::pair<double, std::vector<std::string> > > times_and_output_file_names;
+      for (unsigned int timestep=0; timestep<times_and_pvtu_names.size(); ++timestep)
+        times_and_output_file_names.push_back(std::make_pair(times_and_pvtu_names[timestep].first,
+                                                             output_file_names_by_timestep[timestep]));
+      data_out.write_visit_record (global_visit_master, times_and_output_file_names);
+#else
       data_out.write_visit_record (global_visit_master, output_file_names_by_timestep);
+#endif
     }
 
     template <int dim>
@@ -489,6 +498,13 @@ namespace aspect
                                        + Utilities::int_to_string (my_file_id, 4)
                                        + ".vtu";
 
+          // pass time step number and time as metadata into the output file
+          DataOutBase::VtkFlags vtk_flags;
+          vtk_flags.cycle = this->get_timestep_number();
+          vtk_flags.time = time_in_years_or_seconds;
+
+          data_out.set_flags (vtk_flags);
+
           // Write as many files as processes. For this case we support writing in a
           // background thread and to a temporary location, so we first write everything
           // into a string that is written to disk in a writer function
@@ -499,13 +515,6 @@ namespace aspect
               const std::string *file_contents;
               {
                 std::ostringstream tmp;
-
-                // pass time step number and time as metadata into the output file
-                DataOutBase::VtkFlags vtk_flags;
-                vtk_flags.cycle = this->get_timestep_number();
-                vtk_flags.time = time_in_years_or_seconds;
-
-                data_out.set_flags (vtk_flags);
 
                 data_out.write (tmp, DataOutBase::parse_output_format(output_format));
                 file_contents = new std::string (tmp.str());
