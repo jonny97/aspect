@@ -28,6 +28,7 @@
 #include <aspect/plugins.h>
 
 #include <deal.II/base/std_cxx1x/shared_ptr.h>
+#include <deal.II/fe/fe_update_flags.h>
 
 namespace aspect
 {
@@ -178,6 +179,18 @@ namespace aspect
           need_update () const;
 
           /**
+           * Return which data has to be provided to update all properties.
+           * Note that particle properties can only ask for update_default
+           * (no data), update_values (solution values), and update_gradients
+           * (solution gradients). All other update flags will have no effect.
+           *
+           * @return The necessary update flags for this particle property.
+           */
+          virtual
+          UpdateFlags
+          get_needed_update_flags () const;
+
+          /**
            * Returns an enum, which determines how this particle property is
            * initialized for particles that are created later than the initial
            * particle generation, e.g. to balance the particle load or prevent
@@ -287,7 +300,8 @@ namespace aspect
           void
           initialize_late_particle (Particle<dim> &particle,
                                     const std::multimap<types::LevelInd, Particle<dim> > &particles,
-                                    const Interpolator::Interface<dim> &interpolator) const;
+                                    const Interpolator::Interface<dim> &interpolator,
+                                    const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell = typename parallel::distributed::Triangulation<dim>::active_cell_iterator()) const;
 
           /**
            * Update function for particle properties. This function is
@@ -311,6 +325,15 @@ namespace aspect
            */
           UpdateTimeFlags
           need_update () const;
+
+          /**
+           * Return which data has to be provided to update all properties.
+           * Note that particle properties can only ask for update_default
+           * (no data), update_values (solution values), and update_gradients
+           * (solution gradients). All other update flags will have no effect.
+           */
+          UpdateFlags
+          get_needed_update_flags () const;
 
           /**
            * Get the number of components required to represent this particle's

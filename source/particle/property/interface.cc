@@ -62,6 +62,13 @@ namespace aspect
       }
 
       template <int dim>
+      UpdateFlags
+      Interface<dim>::get_needed_update_flags () const
+      {
+        return update_default;
+      }
+
+      template <int dim>
       InitializationModeForLateParticles
       Interface<dim>::late_initialization_mode () const
       {
@@ -143,7 +150,8 @@ namespace aspect
       void
       Manager<dim>::initialize_late_particle (Particle<dim> &particle,
                                               const std::multimap<types::LevelInd, Particle<dim> > &particles,
-                                              const Interpolator::Interface<dim> &interpolator) const
+                                              const Interpolator::Interface<dim> &interpolator,
+                                              const typename parallel::distributed::Triangulation<dim>::active_cell_iterator &cell) const
       {
         std::vector<double> particle_properties (0);
 
@@ -169,12 +177,20 @@ namespace aspect
 
                 case aspect::Particle::Property::interpolate:
                 {
-                  const typename parallel::distributed::Triangulation<dim>::cell_iterator cell =
-                    (GridTools::find_active_cell_around_point<> (this->get_mapping(), this->get_triangulation(), particle.get_location())).first;
+                  typename parallel::distributed::Triangulation<dim>::cell_iterator found_cell;
+
+                  if (cell == typename parallel::distributed::Triangulation<dim>::active_cell_iterator())
+                    {
+                      found_cell = (GridTools::find_active_cell_around_point<> (this->get_mapping(),
+                                                                                this->get_triangulation(),
+                                                                                particle.get_location())).first;
+                    }
+                  else
+                    found_cell = cell;
 
                   const std::vector<std::vector<double> > interpolated_properties = interpolator.properties_at_points(particles,
                                                                                     std::vector<Point<dim> > (1,particle.get_location()),
-                                                                                    cell);
+                                                                                    found_cell);
                   for (unsigned int property_component = 0; property_component < property_component_list[property_index].second; ++property_component)
                     particle_properties.push_back(interpolated_properties[0][positions[property_index]+property_component]);
                   break;
@@ -184,6 +200,8 @@ namespace aspect
                   Assert (false, ExcInternalError());
               }
           }
+
+        Assert (particle_properties.size() == n_property_components, ExcInternalError());
 
         particle.set_properties(particle_properties);
       }
@@ -217,6 +235,20 @@ namespace aspect
             update = std::max(update,(*p)->need_update());
           }
         return update;
+      }
+
+      template <int dim>
+      UpdateFlags
+      Manager<dim>::get_needed_update_flags () const
+      {
+        UpdateFlags update = update_default;
+        for (typename std::list<std_cxx11::shared_ptr<Interface<dim> > >::const_iterator
+             p = property_list.begin(); p!=property_list.end(); ++p)
+          {
+            update |= (*p)->get_needed_update_flags();
+          }
+
+        return (update & (update_default | update_values | update_gradients));
       }
 
       template <int dim>

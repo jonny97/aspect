@@ -6,10 +6,38 @@
  *
  * <ol>
  *
+ * <li> Changed: The 'cell average' particle interpolator is now more
+ * tolerant against cells without particles by interpolating properties
+ * from neighboring cells. This is necessary, because during refinement
+ * even children of cells with a reasonable number of particles can be
+ * void of particles.
+ * <br>
+ * (Rene Gassmoeller, Jonathan Perry-Houts, 2016/08/31)
+ *
+ * <li> Changed: Particle properties should now declare which solution
+ * properties they need to update themselves. The particle world then
+ * only computes values and gradients of the solution at
+ * the particle positions if necessary, which can reduce the computational
+ * cost of the particle update for simple particle properties.
+ * <br>
+ * (Rene Gassmoeller, 2016/08/30)
+ *
+ * <li> New: .visit output files now also contain information about
+ * the model time, as long as ASPECT was build with at least
+ * deal.II 8.5.0.pre. Previously, this information was only available
+ * in the Paraview .pvd files.
+ * <br>
+ * (Rene Gassmoeller, Juliane Dannberg, 2016/08/24)
+ *
  * <li> New: There is now an initial topography plugin that returns
  * initial topography values based on an ascii data file.
  * <br>
  * (Anne Glerum, 2016/08/22)
+ *
+ * <li> Fixed: The point value postprocessor forgot to take into
+ * account the mapping we use when describing curved boundaries.
+ * <br>
+ * (Rene Gassmoeller, Wolfgang Bangerth, 2016/08/16)
  *
  * <li> Changed: Particles now also store their location in the
  * coordinate system of their current cell. This decreases the
@@ -22,7 +50,7 @@
  * <br>
  * (Rene Gassmoeller, 2016/08/12)
  *
- * <li> Changed: Chunk geometry pull back function now returns
+ * <li> Fixed: The chunk geometry pull back function now returns
  * a corrected longitude value when 180 hemisphere is crossed.
  * <br>
  * (Anne Glerum, 2016/08/09)
