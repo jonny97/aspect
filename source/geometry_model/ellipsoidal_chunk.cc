@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2011 - 2015 by the authors of the ASPECT code.
+  Copyright (C) 2011 - 2016 by the authors of the ASPECT code.
 
   This file is part of ASPECT.
 
@@ -75,9 +75,9 @@ namespace aspect
     Point<3>
     EllipsoidalChunk<dim>::EllipsoidalChunkGeometry::push_forward_ellipsoid(const Point<3> &phi_theta_d, const double semi_major_axis_a, const double eccentricity) const
     {
-      const double phi   = phi_theta_d[0];
-      const double theta = phi_theta_d[1];
-      const double d     = phi_theta_d[2];
+      const double phi   = phi_theta_d[0]; // Longitude in radians
+      const double theta = phi_theta_d[1]; // Latitude in radians
+      const double d     = phi_theta_d[2]; // The negative depth (a depth of 10 meters is -10)
 
       const double R_bar = semi_major_axis_a / std::sqrt(1 - (eccentricity * eccentricity *
                                                               std::sin(theta) * std::sin(theta)));
@@ -150,10 +150,8 @@ namespace aspect
     {
       const int dim = 3;
 
-      /**
-       * Generate parallelepiped grid with one point (point 0) at (0,0,0) and the
-       * other corners (respectively corner 1,2 and 4) placed relative to that point.
-       */
+      // Generate parallelepiped grid with one point (point 0) at (0,0,0) and the
+      // other corners (respectively corner 1,2 and 4) placed relative to that point.
       const Point<3> corner_points[dim] = {Point<dim>((corners[1][0]-corners[0][0])*numbers::PI/180,
                                                       (corners[1][1]-corners[0][1])*numbers::PI/180,
                                                       0),
@@ -168,11 +166,9 @@ namespace aspect
 
       GridGenerator::subdivided_parallelepiped (coarse_grid, subdivisions,corner_points, true);
 
-      /**
-       * Shift the grid point at (0,0,0) (and the rest of the
-       * points with it) to the correct location at corner[0] at a
-       * negative depth.
-       */
+      // Shift the grid point at (0,0,0) (and the rest of the
+      // points with it) to the correct location at corner[0] at a
+      // negative depth.
       const Point<3> base_point(corners[0][0] *numbers::PI/180,corners[0][1] *numbers::PI/180,-bottom_depth);
       GridTools::shift(base_point,coarse_grid);
 
@@ -343,20 +339,16 @@ namespace aspect
       {
         prm.enter_subsection("Ellipsoidal chunk");
         {
-          /**
-           * Get latitude and longitudes defining region of interest from
-           * the parameter file.
-           */
+          // Get latitude and longitudes defining region of interest from
+          // the parameter file.
           corners.resize(4);
           std::string NEcorner = prm.get("NE corner");
           std::string NWcorner = prm.get("NW corner");
           std::string SWcorner = prm.get("SW corner");
           std::string SEcorner = prm.get("SE corner");
 
-          /**
-           * make a list of what corners are present and check that there should be one or two corner missing,
-           * otherwise throw an exception
-           */
+          // make a list of what corners are present and check that there should be one or two corner missing,
+          // otherwise throw an exception
           std::vector<bool> present(4,true);
           unsigned int missing = 0;
           if (NEcorner == "")
@@ -537,9 +529,7 @@ namespace aspect
       prm.leave_subsection();
 
 
-      /**
-       * Construct manifold object Pointer to an object that describes the geometry.
-       */
+      // Construct manifold object Pointer to an object that describes the geometry.
       manifold.set_manifold_parameters(semi_major_axis_a,
                                        eccentricity,
                                        semi_minor_axis_b,
@@ -627,16 +617,11 @@ namespace aspect
              ExcMessage("Given depth must be less than or equal to the maximal depth of this geometry."));
 
       // Choose a point on the center axis of the domain
-      Point<dim> p =
-        (manifold.push_forward(Point<3>(southLatitude * numbers::PI/180,
-                                        eastLongitude * numbers::PI/180,
-                                        -bottom_depth))
-         + manifold.push_forward(Point<3>(northLatitude * numbers::PI/180,
-                                          westLongitude * numbers::PI/180
-                                          , 0))) / 2;
-      p /= p.norm();
-      p *= get_radius(p) - depth;
-      return p;
+      Point<dim> p = Point<3>((eastLongitude + westLongitude) * 0.5 * numbers::PI/180,
+                              (southLatitude + northLatitude) * 0.5 * numbers::PI/180,
+                              -depth);
+
+      return manifold.push_forward(p);
     }
 
 
